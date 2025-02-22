@@ -1,5 +1,5 @@
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Spark.Apps;
 
 namespace Microsoft.Spark.AspNetCore;
 
@@ -7,41 +7,40 @@ public static class HostApplicationBuilderExtensions
 {
     public static IHostApplicationBuilder AddSpark(this IHostApplicationBuilder builder)
     {
-        builder.Logging.AddSpark();
-        builder.Services.AddSpark();
-        builder.Services.AddSingleton<Apps.IApp>(new Apps.App());
+        var app = new App();
+
+        builder.Logging.AddSpark(app.Logger);
+        builder.Services.AddSpark(app);
         return builder;
     }
 
-    public static IHostApplicationBuilder AddSpark(this IHostApplicationBuilder builder, Apps.IApp app)
+    public static IHostApplicationBuilder AddSpark(this IHostApplicationBuilder builder, IApp app)
     {
-        builder.Logging.AddSpark();
-        builder.Services.AddSpark();
-        builder.Services.AddSingleton(app);
+        builder.Logging.AddSpark(app.Logger);
+        builder.Services.AddSpark(app);
         return builder;
     }
 
-    public static IHostApplicationBuilder AddSpark(this IHostApplicationBuilder builder, Apps.IAppBuilder app)
+    public static IHostApplicationBuilder AddSpark(this IHostApplicationBuilder builder, IAppBuilder appBuilder)
     {
-        builder.Logging.AddSpark();
-        builder.Services.AddSpark();
-        builder.Services.AddSingleton(app.Build());
+        var app = appBuilder.Build();
+
+        builder.Logging.AddSpark(app.Logger);
+        builder.Services.AddSpark(app);
         return builder;
     }
 
-    public static IHostApplicationBuilder AddSpark(this IHostApplicationBuilder builder, Func<Apps.IApp> @delegate)
+    public static IHostApplicationBuilder AddSpark(this IHostApplicationBuilder builder, Func<IServiceProvider, IApp> factory)
     {
         builder.Logging.AddSpark();
-        builder.Services.AddSpark();
-        builder.Services.AddSingleton(new Lazy<Apps.IApp>(@delegate));
+        builder.Services.AddSpark(factory);
         return builder;
     }
 
-    public static IHostApplicationBuilder AddSpark(this IHostApplicationBuilder builder, Func<Task<Apps.IApp>> @delegate)
+    public static IHostApplicationBuilder AddSpark(this IHostApplicationBuilder builder, Func<IServiceProvider, Task<IApp>> factory)
     {
         builder.Logging.AddSpark();
-        builder.Services.AddSpark();
-        builder.Services.AddSingleton(new Lazy<Apps.IApp>(() => @delegate().GetAwaiter().GetResult()));
+        builder.Services.AddSpark(factory);
         return builder;
     }
 }

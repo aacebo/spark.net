@@ -1,34 +1,60 @@
-﻿using System.Reflection;
-
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Spark.Apps;
 
 namespace Microsoft.Spark.AspNetCore;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddSpark(this IServiceCollection collection, Common.Logging.ILogger logger)
+    public static IServiceCollection AddSpark(this IServiceCollection collection, IAppOptions options)
     {
-        var log = new SparkLogger(logger);
+        var app = new App(options);
+        var log = new SparkLogger(app.Logger);
 
+        collection.AddSingleton(app.Logger);
         collection.AddSingleton<ILoggerFactory>(_ => new LoggerFactory([new SparkLoggerProvider(log)]));
         collection.AddSingleton<ILogger>(log);
-        collection.AddSingleton(logger);
-
-        return collection;
+        return collection.AddSingleton<IApp>(app);
     }
 
-    public static IServiceCollection AddSpark(this IServiceCollection collection, string? name = null, Common.Logging.LogLevel level = Common.Logging.LogLevel.Info)
+    public static IServiceCollection AddSpark(this IServiceCollection collection, IAppBuilder builder)
     {
-        name ??= Assembly.GetEntryAssembly()?.GetName().Name ?? "@Spark";
+        var app = builder.Build();
+        var log = new SparkLogger(app.Logger);
 
-        var logger = new Common.Logging.ConsoleLogger(name, level);
-        var log = new SparkLogger(logger);
-
+        collection.AddSingleton(app.Logger);
         collection.AddSingleton<ILoggerFactory>(_ => new LoggerFactory([new SparkLoggerProvider(log)]));
         collection.AddSingleton<ILogger>(log);
-        collection.AddSingleton<Common.Logging.ILogger>(logger);
+        return collection.AddSingleton(app);
+    }
 
-        return collection;
+    public static IServiceCollection AddSpark(this IServiceCollection collection, IApp app)
+    {
+        var log = new SparkLogger(app.Logger);
+
+        collection.AddSingleton(app.Logger);
+        collection.AddSingleton<ILoggerFactory>(_ => new LoggerFactory([new SparkLoggerProvider(log)]));
+        collection.AddSingleton<ILogger>(log);
+        return collection.AddSingleton(app);
+    }
+
+    public static IServiceCollection AddSpark(this IServiceCollection collection, Func<IServiceProvider, IApp> factory)
+    {
+        var log = new SparkLogger();
+
+        collection.AddSingleton(log.Logger);
+        collection.AddSingleton<ILoggerFactory>(_ => new LoggerFactory([new SparkLoggerProvider(log)]));
+        collection.AddSingleton<ILogger>(log);
+        return collection.AddSingleton(factory);
+    }
+
+    public static IServiceCollection AddSpark(this IServiceCollection collection, Func<IServiceProvider, Task<IApp>> factory)
+    {
+        var log = new SparkLogger();
+
+        collection.AddSingleton(log.Logger);
+        collection.AddSingleton<ILoggerFactory>(_ => new LoggerFactory([new SparkLoggerProvider(log)]));
+        collection.AddSingleton<ILogger>(log);
+        return collection.AddSingleton(provider => factory(provider).GetAwaiter().GetResult());
     }
 }

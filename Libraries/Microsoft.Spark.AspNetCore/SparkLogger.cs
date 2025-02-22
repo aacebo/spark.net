@@ -6,6 +6,7 @@ namespace Microsoft.Spark.AspNetCore;
 
 public class SparkLogger : ILogger, IDisposable
 {
+    public Common.Logging.ILogger Logger { get => _logger; }
     protected Common.Logging.ILogger _logger;
 
     public SparkLogger(string? name = null, Common.Logging.LogLevel level = Common.Logging.LogLevel.Info)
