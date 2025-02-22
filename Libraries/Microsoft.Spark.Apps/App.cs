@@ -1,5 +1,6 @@
 using System.Reflection;
 
+using Microsoft.Spark.Apps.Plugins;
 using Microsoft.Spark.Common.Http;
 using Microsoft.Spark.Common.Logging;
 

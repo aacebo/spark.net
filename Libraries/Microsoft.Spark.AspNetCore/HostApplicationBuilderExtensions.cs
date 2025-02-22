@@ -1,8 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Spark.Extensions.Logging;
 
-namespace Microsoft.Spark.Extensions.Hosting;
+namespace Microsoft.Spark.AspNetCore;
 
 public static class HostApplicationBuilderExtensions
 {

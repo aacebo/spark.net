@@ -16,6 +16,8 @@ public static class ApplicationBuilderExtensions
             });
         });
 
+        var plugin = new AspNetCorePlugin();
+
         return builder;
     }
 }

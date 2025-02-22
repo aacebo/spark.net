@@ -2,7 +2,7 @@ using System.Reflection;
 
 using Microsoft.Extensions.Logging;
 
-namespace Microsoft.Spark.Extensions.Logging;
+namespace Microsoft.Spark.AspNetCore;
 
 public static class LoggingFactoryExtensions
 {

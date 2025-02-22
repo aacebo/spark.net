@@ -1,4 +1,4 @@
-namespace Microsoft.Spark.Apps;
+namespace Microsoft.Spark.Apps.Plugins;
 
 public interface IPlugin
 {

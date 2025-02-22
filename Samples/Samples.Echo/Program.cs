@@ -4,8 +4,6 @@ using Microsoft.Spark.Apps;
 using Microsoft.Spark.Apps.Events;
 using Microsoft.Spark.Apps.Routing;
 using Microsoft.Spark.AspNetCore;
-using Microsoft.Spark.Extensions.Hosting;
-using Microsoft.Spark.Extensions.Logging;
 
 namespace Samples.Echo;
 

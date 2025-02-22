@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Logging;
 
-namespace Microsoft.Spark.Extensions.Logging;
+namespace Microsoft.Spark.AspNetCore;
 
 [ProviderAlias("SparkLogger")]
 public class SparkLoggerProvider : ILoggerProvider
