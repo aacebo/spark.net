@@ -2,26 +2,36 @@ using Microsoft.Spark.Api.Activities;
 
 namespace Microsoft.Spark.Apps.Routing;
 
-internal class Router
+public interface IRouter
 {
-    internal int Length { get => _routes.Count(); }
+    public int Length { get; }
 
-    protected readonly List<Route> _routes = [];
+    public IList<IRoute> Select(IActivity activity);
+    public IRouter Register(IRoute route);
+    public IRouter Register(Func<IContext<IActivity>, Task> handler);
+    public IRouter Register(string name, Func<IContext<IActivity>, Task> handler);
+}
 
-    internal List<Route> Select(IActivity activity)
+public class Router : IRouter
+{
+    public int Length { get => _routes.Count; }
+
+    protected readonly List<IRoute> _routes = [];
+
+    public IList<IRoute> Select(IActivity activity)
     {
         return _routes
-            .Where(route => route.Select.Invoke(activity))
+            .Where(route => route.Select(activity))
             .ToList();
     }
 
-    internal Router Register(Route route)
+    public IRouter Register(IRoute route)
     {
         _routes.Add(route);
         return this;
     }
 
-    internal Router Register(Func<IContext<IActivity>, Task> handler)
+    public IRouter Register(Func<IContext<IActivity>, Task> handler)
     {
         return Register(new Route()
         {
@@ -30,26 +40,19 @@ internal class Router
         });
     }
 
-    internal Router Register(string name, Func<IContext<IActivity>, Task> handler)
+    public IRouter Register(string name, Func<IContext<IActivity>, Task> handler)
     {
         return Register(new Route()
         {
             Name = name,
             Handler = handler,
-            Select = activity =>
+            Select = (activity) =>
             {
-                if (name == "activity") return true;
+                if (name == null || name == "activity") return true;
                 if (name == activity.Type) return true;
 
                 return false;
             }
         });
-    }
-
-    internal class Route
-    {
-        public string? Name { get; set; }
-        public required Func<IActivity, bool> Select { get; set; }
-        public required Func<IContext<IActivity>, Task> Handler { get; set; }
     }
 }

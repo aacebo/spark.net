@@ -20,6 +20,12 @@ public static partial class Program
 
         var app = builder.Build();
 
+        var spark = app.Services.GetService<IApp>();
+        spark!.OnMessage(context =>
+        {
+            return Task.Run(() => { });
+        });
+
         if (app.Environment.IsDevelopment())
         {
             app.MapOpenApi();

@@ -1,18 +1,17 @@
 using System.Reflection;
 
+using Microsoft.Spark.Api.Activities;
 using Microsoft.Spark.Apps.Routing;
 
 namespace Microsoft.Spark.Apps;
 
-public partial class App
-{
-    protected List<ActivityHandler> Handlers { get; set; } = [];
-    internal readonly Router Router;
+public partial interface IApp : IAppRouting;
 
-    protected static List<ActivityHandler> GetActivityHandlers()
+public partial class App : AppRouting
+{
+    protected void RegisterAttributeRoutes()
     {
         var assembly = Assembly.GetEntryAssembly() ?? Assembly.GetCallingAssembly();
-        var handlers = new List<ActivityHandler>();
 
         foreach (Type type in assembly.GetTypes())
         {
@@ -47,21 +46,15 @@ public partial class App
                         throw new ArgumentException($"'{generic.Name}' is not assignable to '{attribute.Type.Name}'");
                     }
 
-                    handlers.Add(new()
+                    Router.Register(attribute.Name, async (IContext<IActivity> context) =>
                     {
-                        Method = method,
-                        Attribute = attribute
+                        var res = method.Invoke(null, [context]);
+
+                        if (res is Task task)
+                            await task;
                     });
                 }
             }
         }
-
-        return handlers;
-    }
-
-    protected class ActivityHandler
-    {
-        public required MethodInfo Method { get; set; }
-        public required ActivityAttribute Attribute { get; set; }
     }
 }

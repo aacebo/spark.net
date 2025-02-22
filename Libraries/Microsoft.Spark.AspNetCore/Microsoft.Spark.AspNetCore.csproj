@@ -10,4 +10,8 @@
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Microsoft.Spark.Apps\Microsoft.Spark.Apps.csproj" />
+  </ItemGroup>
+
 </Project>

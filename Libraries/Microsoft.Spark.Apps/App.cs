@@ -1,7 +1,5 @@
 using System.Reflection;
 
-using Microsoft.Spark.Api.Activities;
-using Microsoft.Spark.Apps.Routing;
 using Microsoft.Spark.Common.Http;
 using Microsoft.Spark.Common.Logging;
 
@@ -28,20 +26,8 @@ public partial class App : IApp
         Http = options?.Http ?? options?.HttpFactory?.CreateClient() ?? new Common.Http.HttpClient();
         Credentials = options?.Credentials;
         Plugins = options?.Plugins ?? [];
-        Router = new Router();
         Error = OnError;
-        Handlers = GetActivityHandlers();
-
-        foreach (var handler in Handlers)
-        {
-            Router.Register(
-                handler.Attribute.Name,
-                delegate (IContext<IActivity> context)
-                {
-                    return Task.Run(() => { });
-                }
-            );
-        }
+        RegisterAttributeRoutes();
     }
 
     public static IAppBuilder Builder(IAppOptions? options = null)

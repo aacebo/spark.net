@@ -2,7 +2,7 @@ using Microsoft.Spark.Api;
 using Microsoft.Spark.Api.Activities;
 using Microsoft.Spark.Common.Logging;
 
-namespace Microsoft.Spark.Apps;
+namespace Microsoft.Spark.Apps.Routing;
 
 public interface IContext<TActivity> where TActivity : IActivity
 {
