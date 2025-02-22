@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Packages\Microsoft.Spark.Api\Microsoft.Spark.Api.csproj" />
+    <ProjectReference Include="..\..\Libraries\Microsoft.Spark.Api\Microsoft.Spark.Api.csproj" />
   </ItemGroup>
 
 </Project>

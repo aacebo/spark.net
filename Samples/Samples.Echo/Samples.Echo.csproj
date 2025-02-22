@@ -11,12 +11,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Packages\Microsoft.Spark.Common\Microsoft.Spark.Common.csproj" />
-    <ProjectReference Include="..\..\Packages\Microsoft.Spark.Api\Microsoft.Spark.Api.csproj" />
-    <ProjectReference Include="..\..\Packages\Microsoft.Spark.Apps\Microsoft.Spark.Apps.csproj" />
-    <ProjectReference Include="..\..\Packages\Microsoft.Spark.Extensions.Logging\Microsoft.Spark.Extensions.Logging.csproj" />
-    <ProjectReference Include="..\..\Packages\Microsoft.Spark.Extensions.Hosting\Microsoft.Spark.Extensions.Hosting.csproj" />
-    <ProjectReference Include="..\..\Packages\Microsoft.Spark.AspNetCore\Microsoft.Spark.AspNetCore.csproj" />
+    <ProjectReference Include="..\..\Libraries\Microsoft.Spark.Common\Microsoft.Spark.Common.csproj" />
+    <ProjectReference Include="..\..\Libraries\Microsoft.Spark.Api\Microsoft.Spark.Api.csproj" />
+    <ProjectReference Include="..\..\Libraries\Microsoft.Spark.Apps\Microsoft.Spark.Apps.csproj" />
+    <ProjectReference Include="..\..\Libraries\Microsoft.Spark.Extensions.Logging\Microsoft.Spark.Extensions.Logging.csproj" />
+    <ProjectReference Include="..\..\Libraries\Microsoft.Spark.Extensions.Hosting\Microsoft.Spark.Extensions.Hosting.csproj" />
+    <ProjectReference Include="..\..\Libraries\Microsoft.Spark.AspNetCore\Microsoft.Spark.AspNetCore.csproj" />
   </ItemGroup>
 
 </Project>
