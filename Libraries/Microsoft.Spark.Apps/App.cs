@@ -21,6 +21,7 @@ public partial class App : IApp
     protected IHttpCredentials? Credentials { get; set; }
     protected IList<IPlugin> Plugins { get; set; }
     protected List<ActivityHandler> Handlers { get; set; } = [];
+    protected event EventHandler<Events.ErrorEventArgs> Error;
 
     internal readonly Router Router;
 
@@ -31,6 +32,7 @@ public partial class App : IApp
         Credentials = options?.Credentials;
         Plugins = options?.Plugins ?? [];
         Router = new Router();
+        Error = OnError;
         Handlers = GetActivityHandlers();
 
         foreach (var handler in Handlers)
@@ -48,6 +50,11 @@ public partial class App : IApp
     public void Start()
     {
 
+    }
+
+    protected void OnError(object? sender, Events.ErrorEventArgs e)
+    {
+        
     }
 
     public static IAppBuilder Builder(IAppOptions? options = null)

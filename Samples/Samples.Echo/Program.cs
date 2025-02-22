@@ -25,7 +25,6 @@ public static partial class Program
         }
 
         app.UseHttpsRedirection();
-        app.UseRouting();
         app.UseSpark();
         app.Run();
     }
