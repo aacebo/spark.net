@@ -1,7 +1,8 @@
 using Microsoft.Spark.Api.Activities;
 using Microsoft.Spark.Api.Activities.Message;
 using Microsoft.Spark.Apps;
-using Microsoft.Spark.Apps.Routes;
+using Microsoft.Spark.Apps.Events;
+using Microsoft.Spark.Apps.Routing;
 using Microsoft.Spark.AspNetCore;
 using Microsoft.Spark.Extensions.Hosting;
 using Microsoft.Spark.Extensions.Logging;
@@ -29,15 +30,21 @@ public static partial class Program
         app.Run();
     }
 
-    [OnActivity]
-    public static void OnActivity(IActivityContext<IActivity> context)
+    [Activity]
+    public static void OnActivity(IContext<IActivity> context)
     {
         context.Logger.Info("on activity...");
     }
 
-    [OnMessage]
-    public static void OnMessage(IActivityContext<IMessageSendActivity> context)
+    [Message]
+    public static void OnMessage(IContext<IMessageSendActivity> context)
     {
         context.Logger.Info("on message...");
+    }
+
+    [ErrorEvent]
+    public static void OnEvent()
+    {
+
     }
 }

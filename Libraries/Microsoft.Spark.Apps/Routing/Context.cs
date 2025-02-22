@@ -4,7 +4,7 @@ using Microsoft.Spark.Common.Logging;
 
 namespace Microsoft.Spark.Apps;
 
-public interface IActivityContext<TActivity> where TActivity : IActivity
+public interface IContext<TActivity> where TActivity : IActivity
 {
     public string Plugin { get; set; }
     public string AppId { get; set; }
@@ -13,7 +13,7 @@ public interface IActivityContext<TActivity> where TActivity : IActivity
     public ConversationReference Ref { get; set; }
 }
 
-public class ActivityContext<TActivity> : IActivityContext<TActivity> where TActivity : IActivity
+public class Context<TActivity> : IContext<TActivity> where TActivity : IActivity
 {
     public required string Plugin { get; set; }
     public required string AppId { get; set; }
