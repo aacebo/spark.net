@@ -3,20 +3,13 @@ using System.Text.RegularExpressions;
 
 namespace Microsoft.Spark.Common.Logging;
 
+public partial class ConsoleLogger<T>(LogLevel level = LogLevel.Info) : ConsoleLogger(typeof(T).Name, level), ILogger<T>;
 public partial class ConsoleLogger : ILogger
 {
     public string Name { get; }
     public LogLevel Level { get; set; }
 
     protected Regex _pattern;
-
-    internal ANSI LevelColor
-    {
-        get => Level == LogLevel.Error ? ANSI.ForegroundRed
-            : Level == LogLevel.Warn ? ANSI.ForegroundYellow
-            : Level == LogLevel.Info ? ANSI.ForegroundCyan
-            : ANSI.ForegroundMagenta;
-    }
 
     public ConsoleLogger(string name, LogLevel level = LogLevel.Info)
     {
@@ -66,11 +59,19 @@ public partial class ConsoleLogger : ILogger
         return this;
     }
 
+    internal ANSI GetLevelColor(LogLevel level)
+    {
+        return level == LogLevel.Error ? ANSI.ForegroundRed
+             : level == LogLevel.Warn ? ANSI.ForegroundYellow
+             : level == LogLevel.Info ? ANSI.ForegroundCyan
+             : ANSI.ForegroundMagenta;
+    }
+
     protected void Write(LogLevel level, params object?[] args)
     {
         if (!IsEnabled(level)) return;
 
-        var prefix = $"{LevelColor.Value}{ANSI.Bold.Value}[{Enum.GetName(Level)?.ToUpper()}]";
+        var prefix = $"{GetLevelColor(level)}{ANSI.Bold.Value}[{Enum.GetName(level)?.ToUpper()}]";
         var name = $"{Name}{ANSI.ForegroundReset.Value}{ANSI.BoldReset.Value}";
 
         foreach (var arg in args)
@@ -97,8 +98,4 @@ public partial class ConsoleLogger : ILogger
 
         return new Regex(res);
     }
-}
-
-public partial class ConsoleLogger<T>(LogLevel level = LogLevel.Info) : ConsoleLogger(typeof(T).Name, level), ILogger<T>
-{
 }

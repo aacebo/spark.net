@@ -17,32 +17,32 @@ public class SparkService : IHostedLifecycleService
 
     public Task StartingAsync(CancellationToken cancellationToken)
     {
-        return Task.Run(() => _logger.LogDebug("StartingAsync"));
+        return Task.Run(() => _logger.LogDebug("Starting"));
     }
 
     public Task StartAsync(CancellationToken cancellationToken)
     {
-        return Task.Run(() => _logger.LogDebug("StartAsync"));
+        return Task.Run(() => _logger.LogDebug("Start"));
     }
 
     public async Task StartedAsync(CancellationToken cancellationToken)
     {
         await _app.Start();
-        _logger.LogDebug("StartedAsync");
+        _logger.LogDebug("Started");
     }
 
     public Task StoppingAsync(CancellationToken cancellationToken)
     {
-        return Task.Run(() => _logger.LogDebug("StoppingAsync"));
+        return Task.Run(() => _logger.LogDebug("Stopping"));
     }
 
     public Task StopAsync(CancellationToken cancellationToken)
     {
-        return Task.Run(() => _logger.LogDebug("StopAsync"));
+        return Task.Run(() => _logger.LogDebug("Stop"));
     }
 
     public Task StoppedAsync(CancellationToken cancellationToken)
     {
-        return Task.Run(() => _logger.LogDebug("StoppedAsync"));
+        return Task.Run(() => _logger.LogDebug("Stopped"));
     }
 }

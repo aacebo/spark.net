@@ -71,12 +71,14 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddSparkPlugin<TPlugin>(this IServiceCollection collection, TPlugin plugin) where TPlugin : class, IPlugin
     {
         collection.AddSingleton(plugin);
+        collection.AddSingleton<IPlugin>(plugin);
         return collection.AddHostedService<SparkPluginService<TPlugin>>();
     }
 
     public static IServiceCollection AddSparkPlugin<TPlugin>(this IServiceCollection collection, Func<IServiceProvider, TPlugin> factory) where TPlugin : class, IPlugin
     {
         collection.AddSingleton(factory);
+        collection.AddSingleton<IPlugin>(factory);
         return collection.AddHostedService<SparkPluginService<TPlugin>>();
     }
 }

@@ -25,11 +25,11 @@ public class AspNetCorePlugin : IPlugin
 
     public Task OnStart()
     {
-        return Task.Run(() => _logger.Info("OnStart"));
+        return Task.Run(() => _logger.Debug("OnStart"));
     }
 
     public Task OnActivity(IActivity activity)
     {
-        return Task.Run(() => _logger.Info("OnActivity"));
+        return Task.Run(() => _logger.Debug("OnActivity"));
     }
 }

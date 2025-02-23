@@ -1,5 +1,6 @@
 namespace Microsoft.Spark.Common.Logging;
 
+public partial interface ILogger<T> : ILogger;
 public partial interface ILogger
 {
     public void Error(params object?[] args);
@@ -10,8 +11,4 @@ public partial interface ILogger
     public ILogger Child(string name);
     public bool IsEnabled(LogLevel level);
     public ILogger SetLevel(LogLevel level);
-}
-
-public partial interface ILogger<T> : ILogger
-{
 }
