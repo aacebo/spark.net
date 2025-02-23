@@ -9,15 +9,14 @@ public static class ApplicationBuilderExtensions
     public static IApplicationBuilder UseSpark(this IApplicationBuilder builder)
     {
         var app = builder.ApplicationServices.GetService<IApp>() ?? new App(builder.ApplicationServices.GetService<IAppOptions>());
+        var plugins = builder.ApplicationServices.GetServices<IPlugin>();
+
+        foreach (var plugin in plugins)
+            app.AddPlugin(plugin);
 
         builder.UseRouting();
         builder.UseEndpoints(endpoints =>
         {
-            endpoints.MapGet("/", async (context) =>
-            {
-                await Task.FromResult("hello world");
-            });
-
             endpoints.MapPost("/api/messages", async (context) =>
             {
                 await Task.Run(() => app.Logger.Info("new message..."));

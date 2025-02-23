@@ -43,4 +43,16 @@ public static class HostApplicationBuilderExtensions
         builder.Services.AddSpark(factory);
         return builder;
     }
+
+    public static IHostApplicationBuilder AddSparkPlugin<TPlugin>(this IHostApplicationBuilder builder, TPlugin plugin) where TPlugin : class, IPlugin
+    {
+        builder.Services.AddSparkPlugin(plugin);
+        return builder;
+    }
+
+    public static IHostApplicationBuilder AddSparkPlugin<TPlugin>(this IHostApplicationBuilder builder, Func<IServiceProvider, Task<TPlugin>> factory) where TPlugin : class, IPlugin
+    {
+        builder.Services.AddSparkPlugin(provider => factory(provider).GetAwaiter().GetResult());
+        return builder;
+    }
 }

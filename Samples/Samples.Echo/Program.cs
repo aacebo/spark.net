@@ -1,5 +1,6 @@
 using Microsoft.Spark.Api.Activities;
 using Microsoft.Spark.Api.Activities.Message;
+using Microsoft.Spark.Apps;
 using Microsoft.Spark.Apps.Events;
 using Microsoft.Spark.Apps.Routing;
 using Microsoft.Spark.AspNetCore;
@@ -13,7 +14,7 @@ public static partial class Program
         var builder = WebApplication.CreateBuilder(args);
 
         builder.Services.AddOpenApi();
-        builder.AddSpark();
+        builder.AddSpark(App.Builder().AddLogger(level: Microsoft.Spark.Common.Logging.LogLevel.Debug));
 
         var app = builder.Build();
 

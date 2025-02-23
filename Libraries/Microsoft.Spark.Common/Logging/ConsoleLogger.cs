@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 
 namespace Microsoft.Spark.Common.Logging;
 
-public class ConsoleLogger : ILogger
+public partial class ConsoleLogger : ILogger
 {
     public string Name { get; }
     public LogLevel Level { get; set; }
@@ -60,6 +60,12 @@ public class ConsoleLogger : ILogger
         return level <= Level || !_pattern.IsMatch(Name);
     }
 
+    public ILogger SetLevel(LogLevel level)
+    {
+        Level = level;
+        return this;
+    }
+
     protected void Write(LogLevel level, params object?[] args)
     {
         if (!IsEnabled(level)) return;
@@ -91,4 +97,8 @@ public class ConsoleLogger : ILogger
 
         return new Regex(res);
     }
+}
+
+public partial class ConsoleLogger<T>(LogLevel level = LogLevel.Info) : ConsoleLogger(typeof(T).Name, level), ILogger<T>
+{
 }

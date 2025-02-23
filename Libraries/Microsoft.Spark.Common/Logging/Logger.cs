@@ -8,5 +8,10 @@ public partial interface ILogger
     public void Debug(params object?[] args);
     public void Log(LogLevel level, params object?[] args);
     public ILogger Child(string name);
-    public bool IsEnabled(LogLevel logLevel);
+    public bool IsEnabled(LogLevel level);
+    public ILogger SetLevel(LogLevel level);
+}
+
+public partial interface ILogger<T> : ILogger
+{
 }
