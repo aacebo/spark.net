@@ -1,5 +1,6 @@
 using Microsoft.Spark.Api.Activities;
 using Microsoft.Spark.Api.Activities.Message;
+using Microsoft.Spark.Apps;
 using Microsoft.Spark.Apps.Events;
 using Microsoft.Spark.Apps.Routing;
 using Microsoft.Spark.AspNetCore;
@@ -22,6 +23,9 @@ public static partial class Program
         {
             app.MapOpenApi();
         }
+
+        var spark = app.Services.GetService<IApp>();
+        spark!.OnMessage(context => Task.Run(() => context.Logger.Info("message delegate...")));
 
         app.UseHttpsRedirection();
         app.UseSpark();
