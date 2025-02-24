@@ -35,7 +35,7 @@ public class AspNetCorePlugin : IPlugin
         return Task.Run(() => _logger.Debug("OnStart"));
     }
 
-    public Task OnActivity(IApp app, Apps.Events.ActivityReceivedEventArgs activity)
+    public Task OnActivity(IApp app, IPlugin plugin, Apps.Events.ActivityReceivedEventArgs activity)
     {
         return Task.Run(() => _logger.Debug("OnActivity"));
     }

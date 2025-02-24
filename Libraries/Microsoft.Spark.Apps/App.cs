@@ -27,6 +27,9 @@ public partial class App : IApp
         Http = options?.Http ?? options?.HttpFactory?.CreateClient() ?? new Common.Http.HttpClient();
         Credentials = options?.Credentials;
         Plugins = options?.Plugins ?? [];
+        ErrorEvent = (_, args) => OnErrorEvent(args);
+        StartEvent = (_, args) => OnStartEvent(args);
+        ActivityReceivedEvent = (_, plugin, args) => OnActivityReceivedEvent(plugin, args);
         RegisterAttributeRoutes();
     }
 

@@ -1,3 +1,6 @@
+using Microsoft.Spark.Api.Activities;
+using Microsoft.Spark.Apps.Routing;
+
 namespace Microsoft.Spark.Apps;
 
 public partial interface IApp
@@ -8,14 +11,14 @@ public partial interface IApp
 
     public delegate Task ErrorEventHandler(IApp app, Events.ErrorEventArgs args);
     public delegate Task StartEventHandler(IApp app, Events.StartEventArgs args);
-    public delegate Task<object?> ActivityReceivedEventHandler(IApp app, Events.ActivityReceivedEventArgs args);
+    public delegate Task<object?> ActivityReceivedEventHandler(IApp app, IPlugin plugin, Events.ActivityReceivedEventArgs args);
 }
 
 public partial class App
 {
-    protected event IApp.ErrorEventHandler ErrorEvent = (app, args) => Task.Run(() => { });
-    protected event IApp.StartEventHandler StartEvent = (app, args) => Task.Run(() => { });
-    protected event IApp.ActivityReceivedEventHandler ActivityReceivedEvent = (app, args) => Task.Run(() => (object?)null);
+    protected event IApp.ErrorEventHandler ErrorEvent;
+    protected event IApp.StartEventHandler StartEvent;
+    protected event IApp.ActivityReceivedEventHandler ActivityReceivedEvent;
 
     public IApp OnError(IApp.ErrorEventHandler handler)
     {
@@ -33,5 +36,46 @@ public partial class App
     {
         ActivityReceivedEvent += handler;
         return this;
+    }
+
+    protected Task OnErrorEvent(Events.ErrorEventArgs args)
+    {
+        return Task.Run(() => args.Logger.Error(args.Error));
+    }
+
+    protected Task OnStartEvent(Events.StartEventArgs args)
+    {
+        return Task.Run(() => args.Logger.Info("started"));
+    }
+
+    protected async Task<object?> OnActivityReceivedEvent(IPlugin plugin, Events.ActivityReceivedEventArgs args)
+    {
+        var routes = Router.Select(args.Activity);
+
+        try
+        {
+            IContext<IActivity> context = new Context<IActivity>()
+            {
+                Activity = args.Activity,
+                AppId = args.Token.AppId ?? "",
+                Logger = Logger,
+                Plugin = plugin.Name
+            };
+
+            foreach (var route in routes)
+            {
+                await route.Handler(context);
+            }
+        }
+        catch (Exception err)
+        {
+            await ErrorEvent(this, new()
+            {
+                Error = err,
+                Logger = Logger
+            });
+        }
+
+        return null;
     }
 }

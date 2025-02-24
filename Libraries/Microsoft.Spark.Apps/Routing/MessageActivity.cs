@@ -22,7 +22,7 @@ public partial class AppRouting : IAppRouting
     {
         Router.Register(new Route()
         {
-            Handler = context => handler((IContext<IMessageSendActivity>)context),
+            Handler = context => handler(context.ToActivityType<IMessageSendActivity>()),
             Select = activity =>
             {
                 if (activity is IMessageSendActivity message)
@@ -41,7 +41,7 @@ public partial class AppRouting : IAppRouting
     {
         Router.Register(new Route()
         {
-            Handler = context => handler((IContext<IMessageSendActivity>)context),
+            Handler = context => handler(context.ToActivityType<IMessageSendActivity>()),
             Select = activity =>
             {
                 if (activity is IMessageSendActivity message)
@@ -60,7 +60,7 @@ public partial class AppRouting : IAppRouting
     {
         Router.Register(new Route()
         {
-            Handler = context => handler((IContext<IMessageSendActivity>)context),
+            Handler = context => handler(context.ToActivityType<IMessageSendActivity>()),
             Select = activity =>
             {
                 if (activity is IMessageSendActivity message)
