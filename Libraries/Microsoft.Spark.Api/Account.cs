@@ -16,7 +16,7 @@ public class Account
 
     [JsonPropertyName("role")]
     [JsonPropertyOrder(2)]
-    public required Role Role { get; set; }
+    public Role? Role { get; set; }
 
     [JsonPropertyName("name")]
     [JsonPropertyOrder(3)]

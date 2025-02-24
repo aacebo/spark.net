@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Microsoft.Spark.Apps\Microsoft.Spark.Apps.csproj" />
+    <ProjectReference Include="..\Microsoft.Spark.Api\Microsoft.Spark.Api.csproj" />
   </ItemGroup>
 
 </Project>

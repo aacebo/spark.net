@@ -8,7 +8,7 @@ public class Attachment
 {
     [JsonPropertyName("id")]
     [JsonPropertyOrder(0)]
-    public required string Id { get; set; }
+    public string? Id { get; set; }
 
     [JsonPropertyName("name")]
     [JsonPropertyOrder(1)]

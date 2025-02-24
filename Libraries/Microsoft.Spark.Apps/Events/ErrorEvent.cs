@@ -7,6 +7,6 @@ public class ErrorEventArgs : EventArgs
 }
 
 [AttributeUsage(AttributeTargets.Method, Inherited = true)]
-public class @ErrorEventAttribute() : EventAttribute("error", typeof(ErrorEventArgs))
+public class ErrorEventAttribute() : EventAttribute("error", typeof(ErrorEventArgs))
 {
 }

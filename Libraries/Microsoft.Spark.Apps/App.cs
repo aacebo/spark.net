@@ -34,14 +34,11 @@ public partial class App : IApp
     {
         try
         {
-            foreach (var plugin in Plugins)
-            {
-                await plugin.OnStart();
-            }
+            await StartEvent(this, new() { Logger = Logger });
         }
         catch (Exception err)
         {
-            Error(this, new Events.ErrorEventArgs()
+            await ErrorEvent(this, new()
             {
                 Error = err,
                 Logger = Logger
