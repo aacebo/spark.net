@@ -160,6 +160,15 @@ public class Activity : IActivity
             Appearance = appearance.ToDocument()
         });
     }
+
+    public override string ToString()
+    {
+        return JsonSerializer.Serialize(this, new JsonSerializerOptions()
+        {
+            WriteIndented = true,
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+        });
+    }
 }
 
 public class ActivityJsonConverter : JsonConverter<IActivity>

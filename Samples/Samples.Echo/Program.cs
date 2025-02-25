@@ -42,6 +42,7 @@ public static partial class Program
     public static void OnMessage(IContext<IMessageSendActivity> context)
     {
         context.Logger.Info("on message...");
+        context.Logger.Info(context.Activity);
     }
 
     [ErrorEvent]
