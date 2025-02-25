@@ -64,7 +64,7 @@ public partial class App
 
             foreach (var route in routes)
             {
-                await route.Handler(context);
+                await route.Invoke(context);
             }
         }
         catch (Exception err)
