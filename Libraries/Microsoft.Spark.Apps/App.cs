@@ -9,7 +9,7 @@ public partial interface IApp
 {
     public ILogger Logger { get; }
 
-    public Task<IApp> Start();
+    public Task Start();
 }
 
 public partial class App : IApp
@@ -21,6 +21,8 @@ public partial class App : IApp
     protected IHttpClient Http { get; set; }
     protected IHttpCredentials? Credentials { get; set; }
 
+    internal IContainer Container { get; set; }
+
     public App(IAppOptions? options = null)
     {
         Logger = options?.Logger ?? new ConsoleLogger(Assembly.GetEntryAssembly()?.GetName().Name ?? "@Spark");
@@ -30,13 +32,23 @@ public partial class App : IApp
         ErrorEvent = (_, args) => OnErrorEvent(args);
         StartEvent = (_, args) => OnStartEvent(args);
         ActivityEvent = (_, plugin, args) => OnActivityEvent(plugin, args);
+
+        Container = new Container();
+        Container.Register(Logger);
+
         RegisterAttributeRoutes();
     }
 
-    public async Task<IApp> Start()
+    public async Task Start()
     {
         try
         {
+            foreach (var plugin in Plugins)
+            {
+                Inject(plugin);
+                await plugin.OnInit(this);
+            }
+
             await StartEvent(this, new() { Logger = Logger });
         }
         catch (Exception err)
@@ -47,7 +59,5 @@ public partial class App : IApp
                 Logger = Logger
             });
         }
-
-        return this;
     }
 }

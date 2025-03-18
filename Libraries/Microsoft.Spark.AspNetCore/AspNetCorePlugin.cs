@@ -27,7 +27,7 @@ public class AspNetCorePlugin : ISender
         return Task.Run(() => { });
     }
 
-    public Task OnStart(IApp app, Apps.Events.StartEventArgs args)
+    public Task OnStart(IApp app, StartEventArgs args)
     {
         return Task.Run(() => Logger.Debug("OnStart"));
     }

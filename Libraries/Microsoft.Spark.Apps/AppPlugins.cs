@@ -1,4 +1,7 @@
+using System.Reflection;
+
 using Microsoft.Spark.Apps.Plugins;
+using Microsoft.Spark.Common.Logging;
 
 namespace Microsoft.Spark.Apps;
 
@@ -25,6 +28,8 @@ public partial class App
 
     public IApp AddPlugin(IPlugin plugin)
     {
+        var attr = GetPluginAttribute(plugin);
+
         // subscribe plugin to app events
         ErrorEvent += plugin.OnError;
         StartEvent += plugin.OnStart;
@@ -43,6 +48,56 @@ public partial class App
         };
 
         Plugins.Add(plugin);
+        Container.Register(attr.Name, new ValueProvider(plugin));
+        Container.Register(plugin.GetType().Name, new ValueProvider(plugin));
         return this;
+    }
+
+    protected PluginAttribute GetPluginAttribute(IPlugin plugin)
+    {
+        var attribute = (PluginAttribute?)Attribute.GetCustomAttribute(plugin.GetType(), typeof(PluginAttribute));
+
+        if (attribute == null)
+        {
+            throw new InvalidOperationException($"type '{plugin.GetType().Name}' is not a valid plugin");
+        }
+
+        return attribute;
+    }
+
+    protected void Inject(IPlugin plugin)
+    {
+        var metadata = GetPluginAttribute(plugin);
+        var properties = plugin
+            .GetType()
+            .GetProperties()
+            .Where(property => property.IsDefined(typeof(DependencyAttribute), true));
+
+        foreach (var property in properties)
+        {
+            var attribute = property.GetCustomAttribute<DependencyAttribute>();
+
+            if (attribute == null) continue;
+
+            var dependency = Container.Resolve<object>(attribute.Name ?? property.PropertyType.Name);
+
+            if (dependency == null)
+            {
+                dependency = Container.Resolve<object>(property.Name);
+            }
+
+            if (dependency == null)
+            {
+                if (attribute.Optional == true) continue;
+                throw new InvalidOperationException($"dependency '{property.PropertyType.Name}' of property '{property.Name}' not found, but plugin '{metadata.Name}' depends on it");
+            }
+
+            if (dependency is ILogger logger)
+            {
+                dependency = logger.Child(metadata.Name);
+            }
+
+            property.SetValue(plugin, dependency);
+        }
     }
 }
