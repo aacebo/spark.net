@@ -9,7 +9,7 @@ public interface IMessageActivityBase : IActivity
 
 }
 
-public class MessageActivityBase : Activity, IMessageActivityBase
+public class MessageActivityBase(string type) : Activity(type), IMessageActivityBase
 {
 
 }

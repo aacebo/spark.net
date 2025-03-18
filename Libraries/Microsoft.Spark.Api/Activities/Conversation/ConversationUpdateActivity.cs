@@ -35,7 +35,7 @@ public interface IConversationUpdateActivity : IConversationActivityBase
     public Account[] MembersRemoved { get; set; }
 }
 
-public class ConversationUpdateActivity : ConversationActivityBase, IConversationUpdateActivity
+public class ConversationUpdateActivity() : ConversationActivityBase("conversationUpdate"), IConversationUpdateActivity
 {
     /// <summary>
     /// The updated topic name of the conversation.

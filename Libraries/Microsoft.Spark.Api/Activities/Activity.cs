@@ -70,7 +70,7 @@ public interface IActivity
     public Dictionary<string, object?> Properties { get; set; }
 }
 
-public class Activity : IActivity
+public class Activity(string type) : IActivity
 {
     [JsonPropertyName("id")]
     [JsonPropertyOrder(0)]
@@ -78,7 +78,7 @@ public class Activity : IActivity
 
     [JsonPropertyName("type")]
     [JsonPropertyOrder(10)]
-    public string Type { get; init; } = string.Empty;
+    public string Type { get; init; } = type;
 
     [JsonPropertyName("replyToId")]
     [JsonPropertyOrder(20)]

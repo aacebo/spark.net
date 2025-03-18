@@ -13,7 +13,7 @@ public interface IMessageReactionActivity : IMessageActivityBase
     public IList<MessageReaction>? ReactionsRemoved { get; set; }
 }
 
-public class MessageReactionActivity : MessageActivityBase, IMessageReactionActivity
+public class MessageReactionActivity() : MessageActivityBase("messageReaction"), IMessageReactionActivity
 {
     [JsonPropertyName("reactionsAdded")]
     [JsonPropertyOrder(121)]
@@ -22,11 +22,6 @@ public class MessageReactionActivity : MessageActivityBase, IMessageReactionActi
     [JsonPropertyName("reactionsRemoved")]
     [JsonPropertyOrder(122)]
     public IList<MessageReaction>? ReactionsRemoved { get; set; }
-
-    public MessageReactionActivity() : base()
-    {
-        Type = "messageReaction";
-    }
 
     public MessageReactionActivity AddReaction(MessageReaction reaction)
     {

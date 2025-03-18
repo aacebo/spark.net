@@ -105,9 +105,13 @@ public class MessageActivity : MessageActivityBase, IMessageActivity
     [JsonPropertyOrder(43)]
     public dynamic? Value { get; set; }
 
-    public MessageActivity(string text) : base()
+    public MessageActivity() : base("message")
     {
-        Type = "message";
+        Text = string.Empty;
+    }
+
+    public MessageActivity(string text) : base("message")
+    {
         Text = text;
     }
 

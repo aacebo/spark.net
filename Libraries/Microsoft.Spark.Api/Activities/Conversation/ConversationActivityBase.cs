@@ -8,7 +8,7 @@ public interface IConversationActivityBase : IActivity
 
 }
 
-public class ConversationActivityBase : Activity, IConversationActivityBase
+public class ConversationActivityBase(string type) : Activity(type), IConversationActivityBase
 {
 
 }

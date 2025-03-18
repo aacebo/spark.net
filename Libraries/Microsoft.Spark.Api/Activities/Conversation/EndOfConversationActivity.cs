@@ -21,7 +21,7 @@ public interface IEndOfConversationActivity : IConversationActivityBase
     public string Text { get; set; }
 }
 
-public class EndOfConversationActivity : ConversationActivityBase, IEndOfConversationActivity
+public class EndOfConversationActivity() : ConversationActivityBase("endOfConversation"), IEndOfConversationActivity
 {
     /// <summary>
     /// The a code for endOfConversation activities that indicates why the conversation ended.

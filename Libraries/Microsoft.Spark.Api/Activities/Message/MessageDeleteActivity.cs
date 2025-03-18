@@ -4,10 +4,6 @@ public interface IMessageDeleteActivity : IMessageActivityBase
 {
 }
 
-public class MessageDeleteActivity : MessageActivityBase, IMessageDeleteActivity
+public class MessageDeleteActivity() : MessageActivityBase("messageDelete"), IMessageDeleteActivity
 {
-    public MessageDeleteActivity() : base()
-    {
-        Type = "messageDelete";
-    }
 }

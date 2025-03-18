@@ -11,7 +11,7 @@ public interface IInstallUpdateActivity : IActivity
     public InstallUpdateAction Action { get; set; }
 }
 
-public class InstallUpdateActivity : Activity, IInstallUpdateActivity
+public class InstallUpdateActivity() : Activity("installationUpdate"), IInstallUpdateActivity
 {
     [JsonPropertyName("action")]
     [JsonPropertyOrder(31)]

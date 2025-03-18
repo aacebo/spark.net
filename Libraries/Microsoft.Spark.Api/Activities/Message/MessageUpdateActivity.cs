@@ -49,14 +49,12 @@ public class MessageUpdateActivity : MessageActivityBase, IMessageUpdateActivity
     [JsonPropertyOrder(43)]
     public dynamic? Value { get; set; }
 
-    public MessageUpdateActivity() : base()
+    public MessageUpdateActivity() : base("messageUpdate")
     {
-        Type = "messageUpdate";
     }
 
-    public MessageUpdateActivity(string text) : base()
+    public MessageUpdateActivity(string text) : base("messageUpdate")
     {
-        Type = "messageUpdate";
         Text = text;
     }
 
