@@ -5,7 +5,7 @@ namespace Microsoft.Spark.Common.Http;
 
 public static class QueryString
 {
-    public static string Serialize<T>(T value) where T : class
+    public static string Serialize(object value)
     {
         var properties = value.GetType().GetProperties();
         var parts = new List<string>();

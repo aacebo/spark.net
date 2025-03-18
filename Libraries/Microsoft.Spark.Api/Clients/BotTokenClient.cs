@@ -21,6 +21,11 @@ public class BotTokenClient : Client
 
     public async Task<ITokenResponse> GetAsync(IHttpCredentials credentials)
     {
-        return await credentials.Resolve(_http);
+        return await credentials.Resolve(_http, "https://api.botframework.com/.default");
+    }
+
+    public async Task<ITokenResponse> GetGraphAsync(IHttpCredentials credentials)
+    {
+        return await credentials.Resolve(_http, "https://graph.microsoft.com/.default");
     }
 }

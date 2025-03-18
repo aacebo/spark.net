@@ -49,7 +49,7 @@ public partial class App
         return Task.Run(() => args.Logger.Info("started"));
     }
 
-    protected async Task<object?> OnActivityEvent(IPlugin plugin, Events.ActivityEventArgs args)
+    protected async Task<object?> OnActivityEvent(ISender plugin, Events.ActivityEventArgs args)
     {
         var routes = Router.Select(args.Activity);
 

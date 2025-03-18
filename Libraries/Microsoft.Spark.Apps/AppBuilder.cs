@@ -9,10 +9,10 @@ public interface IAppBuilder
     public IAppBuilder AddLogger(Common.Logging.ILogger logger);
     public IAppBuilder AddLogger(string? name = null, Common.Logging.LogLevel level = Common.Logging.LogLevel.Info);
 
-    public IAppBuilder AddHttp(Common.Http.IHttpClient client);
-    public IAppBuilder AddHttp(Common.Http.IHttpClientFactory factory);
-    public IAppBuilder AddHttp(Func<Common.Http.IHttpClient> @delegate);
-    public IAppBuilder AddHttp(Func<Task<Common.Http.IHttpClient>> @delegate);
+    public IAppBuilder AddClient(Common.Http.IHttpClient client);
+    public IAppBuilder AddClient(Common.Http.IHttpClientFactory factory);
+    public IAppBuilder AddClient(Func<Common.Http.IHttpClient> @delegate);
+    public IAppBuilder AddClient(Func<Task<Common.Http.IHttpClient>> @delegate);
 
     public IAppBuilder AddCredentials(Common.Http.IHttpCredentials credentials);
     public IAppBuilder AddCredentials(Func<Common.Http.IHttpCredentials> @delegate);
@@ -47,27 +47,27 @@ public partial class AppBuilder : IAppBuilder
         return this;
     }
 
-    public IAppBuilder AddHttp(Common.Http.IHttpClient client)
+    public IAppBuilder AddClient(Common.Http.IHttpClient client)
     {
-        _options.Http = client;
+        _options.Client = client;
         return this;
     }
 
-    public IAppBuilder AddHttp(Common.Http.IHttpClientFactory factory)
+    public IAppBuilder AddClient(Common.Http.IHttpClientFactory factory)
     {
-        _options.HttpFactory = factory;
+        _options.ClientFactory = factory;
         return this;
     }
 
-    public IAppBuilder AddHttp(Func<Common.Http.IHttpClient> @delegate)
+    public IAppBuilder AddClient(Func<Common.Http.IHttpClient> @delegate)
     {
-        _options.Http = @delegate();
+        _options.Client = @delegate();
         return this;
     }
 
-    public IAppBuilder AddHttp(Func<Task<Common.Http.IHttpClient>> @delegate)
+    public IAppBuilder AddClient(Func<Task<Common.Http.IHttpClient>> @delegate)
     {
-        _options.Http = @delegate().GetAwaiter().GetResult();
+        _options.Client = @delegate().GetAwaiter().GetResult();
         return this;
     }
 

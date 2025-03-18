@@ -2,7 +2,7 @@ using Microsoft.Spark.Common.Http;
 
 namespace Microsoft.Spark.Api.Auth;
 
-public delegate Task<ITokenResponse> TokenFactory(string? tenantId, params string[] scope);
+public delegate Task<ITokenResponse> TokenFactory(string? tenantId, params string[] scopes);
 
 public class TokenCredentials : IHttpCredentials
 {
@@ -23,8 +23,8 @@ public class TokenCredentials : IHttpCredentials
         Token = token;
     }
 
-    public async Task<ITokenResponse> Resolve(IHttpClient _client)
+    public async Task<ITokenResponse> Resolve(IHttpClient _client, params string[] scopes)
     {
-        return await Token(TenantId, "https://api.botframework.com/.default");
+        return await Token(TenantId, scopes);
     }
 }

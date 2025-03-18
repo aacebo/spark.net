@@ -14,14 +14,14 @@ public class ClientCredentials : IHttpCredentials
         ClientSecret = clientSecret;
     }
 
-    public ClientCredentials(string clientId, string clientSecret, string tenantId)
+    public ClientCredentials(string clientId, string clientSecret, string? tenantId)
     {
         ClientId = clientId;
         ClientSecret = clientSecret;
         TenantId = tenantId;
     }
 
-    public async Task<ITokenResponse> Resolve(IHttpClient client)
+    public async Task<ITokenResponse> Resolve(IHttpClient client, params string[] scopes)
     {
         var tenantId = TenantId ?? "botframework.com";
         var request = HttpRequest.Post(
@@ -29,13 +29,12 @@ public class ClientCredentials : IHttpCredentials
         );
 
         request.Headers.Add("Content-Type", ["application/x-www-form-urlencoded"]);
-        request.Body = QueryString.Serialize(new
-        {
-            grant_type = "client_credentials",
-            client_id = ClientId,
-            client_secret = ClientSecret,
-            scope = "https://api.botframework.com/.default"
-        });
+        request.Body = new Dictionary<string, string>() {
+            { "grant_type", "client_credentials" },
+            { "client_id", ClientId },
+            { "client_secret", ClientSecret },
+            { "scope", string.Join(',', scopes) }
+        };
 
         var res = await client.SendAsync<TokenResponse>(request);
         return res.Body;

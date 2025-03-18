@@ -27,6 +27,12 @@ public class HttpClient : IHttpClient
         _requestOptions = requestOptions;
     }
 
+    public HttpClient(System.Net.Http.HttpClient client)
+    {
+        _client = client;
+        _requestOptions = new HttpRequestOptions();
+    }
+
     public async Task<IHttpResponse<string>> SendAsync(IHttpRequest request)
     {
         var httpRequest = CreateRequest(request);
@@ -69,19 +75,37 @@ public class HttpClient : IHttpClient
 
         foreach (var (key, value) in _requestOptions.Headers)
         {
+            if (key.StartsWith("Content-"))
+            {
+                httpRequest.Content?.Headers.Add(key, value);
+                continue;
+            }
+
             httpRequest.Headers.Add(key, value);
         }
 
         foreach (var (key, value) in request.Headers)
         {
+            if (key.StartsWith("Content-"))
+            {
+                httpRequest.Content?.Headers.Add(key, value);
+                continue;
+            }
+
             httpRequest.Headers.Add(key, value);
         }
 
         if (request.Body != null)
         {
-            if (request.Body is string body)
+            if (request.Body is string stringBody)
             {
-                httpRequest.Content = new StringContent(body);
+                httpRequest.Content = new StringContent(stringBody);
+                return httpRequest;
+            }
+
+            if (request.Body is IEnumerable<KeyValuePair<string, string>> dictionaryBody)
+            {
+                httpRequest.Content = new FormUrlEncodedContent(dictionaryBody);
                 return httpRequest;
             }
 
@@ -93,7 +117,18 @@ public class HttpClient : IHttpClient
 
     protected async Task<IHttpResponse<string>> CreateResponse(HttpResponseMessage response, CancellationToken cancellationToken = default)
     {
-        response.EnsureSuccessStatusCode();
+        if (!response.IsSuccessStatusCode)
+        {
+            var errorBody = await response.Content.ReadFromJsonAsync<Dictionary<string, object>>(cancellationToken);
+
+            throw new HttpException()
+            {
+                Headers = response.Headers,
+                StatusCode = response.StatusCode,
+                Body = errorBody
+            };
+        }
+
         var bytes = await response.Content.ReadAsByteArrayAsync(cancellationToken);
         var body = bytes?.ToString();
 
@@ -109,7 +144,18 @@ public class HttpClient : IHttpClient
 
     protected async Task<IHttpResponse<TResponseBody>> CreateResponse<TResponseBody>(HttpResponseMessage response, CancellationToken cancellationToken = default)
     {
-        response.EnsureSuccessStatusCode();
+        if (!response.IsSuccessStatusCode)
+        {
+            var errorBody = await response.Content.ReadFromJsonAsync<Dictionary<string, object>>(cancellationToken);
+
+            throw new HttpException()
+            {
+                Headers = response.Headers,
+                StatusCode = response.StatusCode,
+                Body = errorBody
+            };
+        }
+
         var body = await response.Content.ReadFromJsonAsync<TResponseBody>(cancellationToken);
 
         ArgumentNullException.ThrowIfNull(body);
