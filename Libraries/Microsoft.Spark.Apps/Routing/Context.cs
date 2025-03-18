@@ -5,7 +5,6 @@ namespace Microsoft.Spark.Apps.Routing;
 
 public interface IContext<TActivity> where TActivity : IActivity
 {
-    public string Plugin { get; set; }
     public string AppId { get; set; }
     public ILogger Logger { get; set; }
     public TActivity Activity { get; set; }
@@ -15,7 +14,6 @@ public interface IContext<TActivity> where TActivity : IActivity
 
 public class Context<TActivity> : IContext<TActivity> where TActivity : IActivity
 {
-    public required string Plugin { get; set; }
     public required string AppId { get; set; }
     public required ILogger Logger { get; set; }
     public required TActivity Activity { get; set; }
@@ -25,7 +23,6 @@ public class Context<TActivity> : IContext<TActivity> where TActivity : IActivit
     {
         return new Context<TToActivity>()
         {
-            Plugin = Plugin,
             AppId = AppId,
             Logger = Logger,
             Activity = (TToActivity)Activity

@@ -29,7 +29,7 @@ public partial class App : IApp
         Plugins = options?.Plugins ?? [];
         ErrorEvent = (_, args) => OnErrorEvent(args);
         StartEvent = (_, args) => OnStartEvent(args);
-        ActivityReceivedEvent = (_, plugin, args) => OnActivityReceivedEvent(plugin, args);
+        ActivityEvent = (_, plugin, args) => OnActivityEvent(plugin, args);
         RegisterAttributeRoutes();
     }
 

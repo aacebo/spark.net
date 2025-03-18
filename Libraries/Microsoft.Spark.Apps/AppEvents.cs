@@ -1,4 +1,5 @@
 using Microsoft.Spark.Api.Activities;
+using Microsoft.Spark.Apps.Plugins;
 using Microsoft.Spark.Apps.Routing;
 
 namespace Microsoft.Spark.Apps;
@@ -7,18 +8,18 @@ public partial interface IApp
 {
     public IApp OnError(ErrorEventHandler handler);
     public IApp OnStart(StartEventHandler handler);
-    public IApp OnActivityReceived(ActivityReceivedEventHandler handler);
+    public IApp OnActivity(ActivityEventHandler handler);
 
     public delegate Task ErrorEventHandler(IApp app, Events.ErrorEventArgs args);
     public delegate Task StartEventHandler(IApp app, Events.StartEventArgs args);
-    public delegate Task<object?> ActivityReceivedEventHandler(IApp app, IPlugin plugin, Events.ActivityReceivedEventArgs args);
+    public delegate Task<object?> ActivityEventHandler(IApp app, IPlugin plugin, Events.ActivityEventArgs args);
 }
 
 public partial class App
 {
     protected event IApp.ErrorEventHandler ErrorEvent;
     protected event IApp.StartEventHandler StartEvent;
-    protected event IApp.ActivityReceivedEventHandler ActivityReceivedEvent;
+    protected event IApp.ActivityEventHandler ActivityEvent;
 
     public IApp OnError(IApp.ErrorEventHandler handler)
     {
@@ -32,9 +33,9 @@ public partial class App
         return this;
     }
 
-    public IApp OnActivityReceived(IApp.ActivityReceivedEventHandler handler)
+    public IApp OnActivity(IApp.ActivityEventHandler handler)
     {
-        ActivityReceivedEvent += handler;
+        ActivityEvent += handler;
         return this;
     }
 
@@ -48,7 +49,7 @@ public partial class App
         return Task.Run(() => args.Logger.Info("started"));
     }
 
-    protected async Task<object?> OnActivityReceivedEvent(IPlugin plugin, Events.ActivityReceivedEventArgs args)
+    protected async Task<object?> OnActivityEvent(IPlugin plugin, Events.ActivityEventArgs args)
     {
         var routes = Router.Select(args.Activity);
 
@@ -59,7 +60,6 @@ public partial class App
                 Activity = args.Activity,
                 AppId = args.Token.AppId ?? "",
                 Logger = Logger,
-                Plugin = plugin.Name
             };
 
             foreach (var route in routes)

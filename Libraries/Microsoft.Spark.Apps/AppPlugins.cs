@@ -1,3 +1,5 @@
+using Microsoft.Spark.Apps.Plugins;
+
 namespace Microsoft.Spark.Apps;
 
 public partial interface IApp
@@ -26,7 +28,7 @@ public partial class App
         // subscribe plugin to app events
         ErrorEvent += plugin.OnError;
         StartEvent += plugin.OnStart;
-        ActivityReceivedEvent += async (app, sender, args) =>
+        ActivityEvent += async (app, sender, args) =>
         {
             await plugin.OnActivity(app, sender, args);
             return null;
@@ -35,9 +37,9 @@ public partial class App
         // broadcast plugin events
         plugin.ErrorEvent += (_, args) => ErrorEvent(this, args);
         plugin.StartEvent += (_, args) => StartEvent(this, args);
-        plugin.ActivityReceivedEvent += async (plugin, args) =>
+        plugin.ActivityEvent += async (plugin, args) =>
         {
-            await ActivityReceivedEvent(this, plugin, args);
+            await ActivityEvent(this, plugin, args);
             return null;
         };
 

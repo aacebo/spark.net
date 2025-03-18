@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Spark.Apps;
+using Microsoft.Spark.Apps.Plugins;
 
 namespace Microsoft.Spark.AspNetCore;
 

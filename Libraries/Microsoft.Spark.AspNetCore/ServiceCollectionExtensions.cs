@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Spark.Apps;
+using Microsoft.Spark.Apps.Plugins;
 
 namespace Microsoft.Spark.AspNetCore;
 

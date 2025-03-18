@@ -1,5 +1,7 @@
 using System.Reflection;
 
+using Microsoft.Spark.Apps.Plugins;
+
 namespace Microsoft.Spark.Apps;
 
 public interface IAppBuilder

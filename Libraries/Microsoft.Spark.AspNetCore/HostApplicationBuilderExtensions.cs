@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Hosting;
 using Microsoft.Spark.Apps;
+using Microsoft.Spark.Apps.Plugins;
 
 namespace Microsoft.Spark.AspNetCore;
 

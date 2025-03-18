@@ -3,7 +3,7 @@ using Microsoft.Spark.Api.Auth;
 
 namespace Microsoft.Spark.Apps.Events;
 
-public class ActivityReceivedEventArgs : EventArgs
+public class ActivityEventArgs : EventArgs
 {
     public required IActivity Activity { get; set; }
     public required IToken Token { get; set; }
@@ -11,6 +11,6 @@ public class ActivityReceivedEventArgs : EventArgs
 }
 
 [AttributeUsage(AttributeTargets.Method, Inherited = true)]
-public class ActivityReceivedEventAttribute() : EventAttribute("activity.received", typeof(ActivityReceivedEventAttribute))
+public class ActivityEventAttribute() : EventAttribute("activity", typeof(ActivityEventAttribute))
 {
 }

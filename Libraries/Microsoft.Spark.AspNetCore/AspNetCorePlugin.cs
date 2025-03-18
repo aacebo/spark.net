@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Spark.Api.Activities;
 using Microsoft.Spark.Api.Auth;
 using Microsoft.Spark.Apps;
+using Microsoft.Spark.Apps.Plugins;
 using Microsoft.Spark.Common.Logging;
 
 namespace Microsoft.Spark.AspNetCore;
@@ -15,7 +16,7 @@ public class AspNetCorePlugin : IPlugin
 
     public event IPlugin.ErrorEventHandler ErrorEvent = (_, _) => Task.Run(() => { });
     public event IPlugin.StartEventHandler StartEvent = (_, _) => Task.Run(() => { });
-    public event IPlugin.ActivityReceivedEventHandler ActivityReceivedEvent = (_, _) => Task.Run(() => (object?)null);
+    public event IPlugin.ActivityEventHandler ActivityEvent = (_, _) => Task.Run(() => (object?)null);
 
     protected ILogger _logger;
 
@@ -35,7 +36,7 @@ public class AspNetCorePlugin : IPlugin
         return Task.Run(() => _logger.Debug("OnStart"));
     }
 
-    public Task OnActivity(IApp app, IPlugin plugin, Apps.Events.ActivityReceivedEventArgs activity)
+    public Task OnActivity(IApp app, IPlugin plugin, Apps.Events.ActivityEventArgs activity)
     {
         return Task.Run(() => _logger.Debug("OnActivity"));
     }
@@ -56,7 +57,7 @@ public class AspNetCorePlugin : IPlugin
             var token = new JsonWebToken(authHeader.Replace("Bearer ", ""));
 
             var activity = await JsonSerializer.DeserializeAsync<IActivity>(context.Request.Body) ?? throw new BadHttpRequestException("could not read json activity payload");
-            var res = await ActivityReceivedEvent(this, new()
+            var res = await ActivityEvent(this, new()
             {
                 Token = token,
                 Activity = activity,
