@@ -50,22 +50,44 @@ public partial class App : AppRouting
                     {
                         if (!attribute.Type.IsAssignableFrom(context.Activity.GetType())) return;
 
-                        context.Activity = context.Activity.ToActivity();
                         object? res = null;
-                        res = method.Invoke(null, [context]);
 
-                        // if (attribute.Name == "activity")
-                        // {
-                        //     res = method.Invoke(null, [context]);
-                        // }
-                        // else if (attribute.Name == "message")
-                        // {
-                        //     res = method.Invoke(null, [context.ToActivityType<MessageActivity>()]);
-                        // }
-                        // else if (attribute.Name == "messageUpdate")
-                        // {
-                        //     res = method.Invoke(null, [context.ToActivityType<MessageUpdateActivity>()]);
-                        // }
+                        if (attribute.Name == "activity")
+                        {
+                            res = method.Invoke(null, [context]);
+                        }
+                        else if (ActivityType.Typing.Equals(attribute.Name))
+                        {
+                            res = method.Invoke(null, [context.ToActivityType<TypingActivity>()]);
+                        }
+                        else if (ActivityType.InstallUpdate.Equals(attribute.Name))
+                        {
+                            res = method.Invoke(null, [context.ToActivityType<InstallUpdateActivity>()]);
+                        }
+                        else if (ActivityType.Message.Equals(attribute.Name))
+                        {
+                            res = method.Invoke(null, [context.ToActivityType<MessageActivity>()]);
+                        }
+                        else if (ActivityType.MessageUpdate.Equals(attribute.Name))
+                        {
+                            res = method.Invoke(null, [context.ToActivityType<MessageUpdateActivity>()]);
+                        }
+                        else if (ActivityType.MessageReaction.Equals(attribute.Name))
+                        {
+                            res = method.Invoke(null, [context.ToActivityType<MessageReactionActivity>()]);
+                        }
+                        else if (ActivityType.MessageDelete.Equals(attribute.Name))
+                        {
+                            res = method.Invoke(null, [context.ToActivityType<MessageDeleteActivity>()]);
+                        }
+                        else if (ActivityType.ConversationUpdate.Equals(attribute.Name))
+                        {
+                            res = method.Invoke(null, [context.ToActivityType<ConversationUpdateActivity>()]);
+                        }
+                        else if (ActivityType.EndOfConversation.Equals(attribute.Name))
+                        {
+                            res = method.Invoke(null, [context.ToActivityType<EndOfConversationActivity>()]);
+                        }
 
                         if (res is Task task)
                             await task;

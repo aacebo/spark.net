@@ -104,20 +104,6 @@ public class Activity(string type)
         });
     }
 
-    public Activity ToActivity()
-    {
-        if (Type.IsTyping) return ToTyping();
-        if (Type.IsInstallUpdate) return ToInstallUpdate();
-        if (Type.IsMessage) return ToMessage();
-        if (Type.IsMessageDelete) return ToMessageDelete();
-        if (Type.IsMessageUpdate) return ToMessageUpdate();
-        if (Type.IsMessageReaction) return ToMessageReaction();
-        if (Type.IsConversationUpdate) return ToConversationUpdate();
-        if (Type.IsEndOfConversation) return ToEndOfConversation();
-
-        return this;
-    }
-
     public TypingActivity ToTyping()
     {
         return (TypingActivity)this;
