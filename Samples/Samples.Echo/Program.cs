@@ -36,6 +36,7 @@ public static partial class Program
     public static void OnActivity(IContext<Activity> context)
     {
         context.Logger.Info("on activity...");
+        context.Logger.Info(context.Activity);
     }
 
     [Message]

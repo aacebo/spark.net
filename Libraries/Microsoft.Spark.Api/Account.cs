@@ -20,7 +20,7 @@ public class Account
 
     [JsonPropertyName("name")]
     [JsonPropertyOrder(3)]
-    public required string Name { get; set; }
+    public string? Name { get; set; }
 
     [JsonPropertyName("properties")]
     [JsonPropertyOrder(4)]

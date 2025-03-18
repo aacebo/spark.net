@@ -39,17 +39,17 @@ public class AspNetCorePlugin : ISender
 
     public Task OnActivity(IApp app, ISender plugin, ActivityEventArgs args)
     {
-        throw new NotImplementedException();
+        return Task.Run(() => Logger.Debug("OnActivity"));
     }
 
     public Task OnActivitySent(IApp app, ISender plugin, ActivitySentEventArgs args)
     {
-        throw new NotImplementedException();
+        return Task.Run(() => Logger.Debug("OnActivitySent"));
     }
 
     public Task OnActivityResponse(IApp app, ISender plugin, ActivityResponseEventArgs args)
     {
-        throw new NotImplementedException();
+        return Task.Run(() => Logger.Debug("OnActivityResponse"));
     }
 
     public Task<Activity> Send(Activity activity, ConversationReference reference)

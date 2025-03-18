@@ -64,7 +64,7 @@ public class Activity(string type)
 
     [JsonPropertyName("channelData")]
     [JsonPropertyOrder(130)]
-    public IChannelData? ChannelData { get; set; }
+    public ChannelData? ChannelData { get; set; }
 
     [JsonExtensionData]
     public Dictionary<string, object?> Properties { get; set; } = [];
