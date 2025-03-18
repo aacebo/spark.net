@@ -144,7 +144,7 @@ public class MessageActivityTests
                 Type = ConversationType.Personal
             },
             Recipient = bot
-        }.Mention(bot);
+        }.AddMention(bot);
 
         var json = JsonSerializer.Serialize(activity, new JsonSerializerOptions()
         {

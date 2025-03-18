@@ -111,7 +111,7 @@ public class MessageActivity : MessageActivityBase, IMessageActivity
         Text = text;
     }
 
-    public MessageActivity Attachment(Attachment value)
+    public MessageActivity AddAttachment(Attachment value)
     {
         if (Attachments == null)
         {
@@ -122,9 +122,9 @@ public class MessageActivity : MessageActivityBase, IMessageActivity
         return this;
     }
 
-    public MessageActivity Mention(Account account)
+    public MessageActivity AddMention(Account account)
     {
-        return (MessageActivity)Entity(new MentionEntity()
+        return (MessageActivity)AddEntity(new MentionEntity()
         {
             Mentioned = account,
             Text = $"<at>{account.Name}</at>"

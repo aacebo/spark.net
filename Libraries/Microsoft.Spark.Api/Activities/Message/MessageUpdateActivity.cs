@@ -62,7 +62,7 @@ public class MessageUpdateActivity : MessageActivityBase, IMessageUpdateActivity
 
     public MessageUpdateActivity Mention(Account account)
     {
-        return (MessageUpdateActivity)Entity(new MentionEntity()
+        return (MessageUpdateActivity)AddEntity(new MentionEntity()
         {
             Mentioned = account,
             Text = $"<at>{account.Name}</at>"

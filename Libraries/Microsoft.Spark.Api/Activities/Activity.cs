@@ -130,7 +130,7 @@ public class Activity : IActivity
     [JsonExtensionData]
     public Dictionary<string, object?> Properties { get; set; } = [];
 
-    public Activity Entity(IEntity entity)
+    public Activity AddEntity(IEntity entity)
     {
         if (Entities == null)
         {
@@ -141,9 +141,9 @@ public class Activity : IActivity
         return this;
     }
 
-    public Activity AIGenerated()
+    public Activity AddAIGenerated()
     {
-        return Entity(new MessageEntity()
+        return AddEntity(new MessageEntity()
         {
             Type = "https://schema.org/Message",
             OType = "Message",
@@ -152,9 +152,9 @@ public class Activity : IActivity
         });
     }
 
-    public Activity Citation(int position, CitationAppearance appearance)
+    public Activity AddCitation(int position, CitationAppearance appearance)
     {
-        return Entity(new CitationEntity()
+        return AddEntity(new CitationEntity()
         {
             Position = position,
             Appearance = appearance.ToDocument()
