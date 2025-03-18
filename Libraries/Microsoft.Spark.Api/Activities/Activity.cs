@@ -200,6 +200,7 @@ public class ActivityJsonConverter : JsonConverter<IActivity>
             "typing" => JsonSerializer.Deserialize<TypingActivity>(element.ToString(), options),
             "message" or "messageUpdate" or "messageDelete" or "messageReaction" => JsonSerializer.Deserialize<IMessageActivityBase>(element.ToString(), options),
             "conversationUpdate" or "endOfConversation" => JsonSerializer.Deserialize<IConversationActivityBase>(element.ToString(), options),
+            "installationUpdate" => JsonSerializer.Deserialize<IInstallUpdateActivity>(element.ToString(), options),
             _ => JsonSerializer.Deserialize<Activity>(element.ToString(), options)
         };
     }

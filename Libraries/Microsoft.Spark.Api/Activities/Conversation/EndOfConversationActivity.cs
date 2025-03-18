@@ -38,7 +38,7 @@ public class EndOfConversationActivity : ConversationActivityBase, IEndOfConvers
     public required string Text { get; set; }
 }
 
-[JsonConverter(typeof(JsonConverter<EventType>))]
+[JsonConverter(typeof(JsonConverter<EndOfConversationCode>))]
 public class EndOfConversationCode(string value) : StringEnum(value)
 {
     public static readonly EndOfConversationCode Unknown = new("unknown");
