@@ -61,6 +61,10 @@ public partial class App : AppRouting
                         {
                             res = method.Invoke(null, [context.ToActivityType<IMessageActivity>()]);
                         }
+                        else if (attribute.Name == "messageUpdate")
+                        {
+                            res = method.Invoke(null, [context.ToActivityType<IMessageUpdateActivity>()]);
+                        }
 
                         if (res is Task task)
                             await task;

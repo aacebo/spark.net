@@ -1,11 +1,61 @@
+using System.Text.Json.Serialization;
+
+using Microsoft.Spark.Common;
+
 namespace Microsoft.Spark.Api.Activities.Conversation;
 
 public interface IEndOfConversationActivity : IConversationActivityBase
 {
+    /// <summary>
+    /// The a code for endOfConversation activities that indicates why the conversation ended.
+    /// </summary>
+    [JsonPropertyName("code")]
+    [JsonPropertyOrder(31)]
+    public EndOfConversationCode? Code { get; set; }
 
+    /// <summary>
+    /// The text content of the message.
+    /// </summary>
+    [JsonPropertyName("text")]
+    [JsonPropertyOrder(32)]
+    public string Text { get; set; }
 }
 
 public class EndOfConversationActivity : ConversationActivityBase, IEndOfConversationActivity
 {
+    /// <summary>
+    /// The a code for endOfConversation activities that indicates why the conversation ended.
+    /// </summary>
+    [JsonPropertyName("code")]
+    [JsonPropertyOrder(31)]
+    public EndOfConversationCode? Code { get; set; }
 
+    /// <summary>
+    /// The text content of the message.
+    /// </summary>
+    [JsonPropertyName("text")]
+    [JsonPropertyOrder(32)]
+    public required string Text { get; set; }
+}
+
+[JsonConverter(typeof(JsonConverter<EventType>))]
+public class EndOfConversationCode(string value) : StringEnum(value)
+{
+    public static readonly EndOfConversationCode Unknown = new("unknown");
+    public bool IsUnknown => Unknown.Equals(Value);
+
+    public static readonly EndOfConversationCode CompletedSuccessfully = new("completedSuccessfully");
+    public bool IsCompletedSuccessfully => CompletedSuccessfully.Equals(Value);
+
+    public static readonly EndOfConversationCode UserCancelled = new("userCancelled");
+    public bool IsUserCancelled => UserCancelled.Equals(Value);
+
+    public static readonly EndOfConversationCode BotTimedOut = new("botTimedOut");
+    public bool IsBotTimedOut => BotTimedOut.Equals(Value);
+
+    public static readonly EndOfConversationCode BotIssuedInvalidMessage = new("botIssuedInvalidMessage");
+    public bool IsBotIssuedInvalidMessage => BotIssuedInvalidMessage.Equals(Value);
+
+    public static readonly EndOfConversationCode ChannelFailed = new("channelFailed");
+    public bool IsChannelFailed => ChannelFailed.Equals(Value);
 }
