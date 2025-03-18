@@ -1,16 +1,27 @@
 namespace Microsoft.Spark.Apps.Plugins;
 
-public class PluginOptions
-{
-    public string? Name { get; set; }
-    public string? Version { get; set; }
-    public string? Description { get; set; }
-}
-
 [AttributeUsage(AttributeTargets.Class, Inherited = true)]
-public class PluginAttribute() : Attribute
+public class PluginAttribute : Attribute
 {
-    public required string Name { get; set; }
+    public string Name { get; set; }
     public string Version { get; set; } = "0.0.0";
     public string? Description { get; set; }
+
+    public PluginAttribute(string name) : base()
+    {
+        Name = name;
+    }
+
+    public PluginAttribute(string name, string version) : base()
+    {
+        Name = name;
+        Version = version;
+    }
+
+    public PluginAttribute(string name, string version, string description) : base()
+    {
+        Name = name;
+        Version = version;
+        Description = description;
+    }
 }

@@ -1,4 +1,4 @@
-using System.Reflection;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
 using Microsoft.AspNetCore.Http;
@@ -10,40 +10,35 @@ using Microsoft.Spark.Common.Logging;
 
 namespace Microsoft.Spark.AspNetCore;
 
+[Plugin(name: "Microsoft.Spark.AspNetCore", version: "0.0.0")]
 public class AspNetCorePlugin : IPlugin
 {
-    public string Name { get; } = "Microsoft.Spark.AspNetCore";
+    [AllowNull]
+    [Dependency]
+    public ILogger Logger { get; set; }
 
     public event IPlugin.ErrorEventHandler ErrorEvent = (_, _) => Task.Run(() => { });
     public event IPlugin.StartEventHandler StartEvent = (_, _) => Task.Run(() => { });
     public event IPlugin.ActivityEventHandler ActivityEvent = (_, _) => Task.Run(() => (object?)null);
 
-    protected ILogger _logger;
-
-    public AspNetCorePlugin(ILogger? logger = null)
-    {
-        logger ??= new ConsoleLogger(Assembly.GetEntryAssembly()?.GetName().Name ?? "@Spark");
-        _logger = logger.Child(Name);
-    }
-
     public Task OnInit(IApp app)
     {
-        return Task.Run(() => _logger = app.Logger.Child(Name));
+        return Task.Run(() => {});
     }
 
     public Task OnStart(IApp app, Apps.Events.StartEventArgs args)
     {
-        return Task.Run(() => _logger.Debug("OnStart"));
+        return Task.Run(() => Logger.Debug("OnStart"));
     }
 
     public Task OnActivity(IApp app, IPlugin plugin, Apps.Events.ActivityEventArgs activity)
     {
-        return Task.Run(() => _logger.Debug("OnActivity"));
+        return Task.Run(() => Logger.Debug("OnActivity"));
     }
 
     public Task OnError(IApp app, Apps.Events.ErrorEventArgs args)
     {
-        return Task.Run(() => _logger.Debug("OnError"));
+        return Task.Run(() => Logger.Debug("OnError"));
     }
 
     internal async Task<IResult> OnMessage(HttpContext context)
@@ -61,14 +56,14 @@ public class AspNetCorePlugin : IPlugin
             {
                 Token = token,
                 Activity = activity,
-                Logger = _logger
+                Logger = Logger
             });
 
             return Results.Ok(res);
         }
         catch (Exception err)
         {
-            _logger.Error(err);
+            Logger.Error(err);
             return Results.InternalServerError(err);
         }
     }

@@ -73,7 +73,7 @@ public class Activity : IActivity
 {
     [JsonPropertyName("id")]
     [JsonPropertyOrder(0)]
-    public required string Id { get; set; }
+    public string Id { get; set; } = "";
 
     [JsonPropertyName("type")]
     [JsonPropertyOrder(10)]

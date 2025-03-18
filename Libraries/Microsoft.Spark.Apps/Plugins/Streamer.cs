@@ -1,0 +1,33 @@
+using Microsoft.Spark.Api.Activities;
+using Microsoft.Spark.Api.Activities.Message;
+
+namespace Microsoft.Spark.Apps.Plugins;
+
+/// <summary>
+/// component that can send streamed chunks of an activity
+/// </summary>
+public interface IStreamer
+{
+    /// <summary>
+    /// emit an activity
+    /// </summary>
+    /// <param name="activity">the activity</param>
+    public void Emit(IMessageActivity activity);
+
+    /// <summary>
+    /// emit an activity
+    /// </summary>
+    /// <param name="activity">the activity</param>
+    public void Emit(ITypingActivity activity);
+
+    /// <summary>
+    /// emit text chunk
+    /// </summary>
+    /// <param name="text">the text</param>
+    public void Emit(string text);
+
+    /// <summary>
+    /// close the stream
+    /// </summary>
+    public Task Close();
+}

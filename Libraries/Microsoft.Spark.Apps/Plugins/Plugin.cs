@@ -1,5 +1,9 @@
 namespace Microsoft.Spark.Apps.Plugins;
 
+/// <summary>
+/// a component for extending the base
+/// `App` functionality
+/// </summary>
 public interface IPlugin
 {
     public event ErrorEventHandler ErrorEvent;
