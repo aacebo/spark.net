@@ -49,7 +49,7 @@ public class Router : IRouter
             Select = (activity) =>
             {
                 if (name == null || name == "activity") return true;
-                if (name == activity.Type) return true;
+                if (activity.Type.Equals(name)) return true;
 
                 return false;
             }

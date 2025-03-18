@@ -1,5 +1,4 @@
 using Microsoft.Spark.Api.Activities;
-using Microsoft.Spark.Api.Activities.Message;
 
 namespace Microsoft.Spark.Apps.Plugins;
 

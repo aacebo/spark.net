@@ -1,8 +1,15 @@
 using System.Text.Json.Serialization;
 
 using Microsoft.Spark.Api.Entities;
+using Microsoft.Spark.Common;
 
-namespace Microsoft.Spark.Api.Activities.Message;
+namespace Microsoft.Spark.Api.Activities;
+
+public partial class ActivityType : StringEnum
+{
+    public static readonly ActivityType Message = new("message");
+    public bool IsMessage => Message.Equals(Value);
+}
 
 public class MessageActivity : Activity
 {

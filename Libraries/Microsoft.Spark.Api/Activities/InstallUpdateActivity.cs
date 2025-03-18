@@ -4,6 +4,12 @@ using Microsoft.Spark.Common;
 
 namespace Microsoft.Spark.Api.Activities;
 
+public partial class ActivityType : StringEnum
+{
+    public static readonly ActivityType InstallUpdate = new("installationUpdate");
+    public bool IsInstallUpdate => InstallUpdate.Equals(Value);
+}
+
 public class InstallUpdateActivity() : Activity("installationUpdate")
 {
     [JsonPropertyName("action")]

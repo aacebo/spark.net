@@ -2,7 +2,13 @@ using System.Text.Json.Serialization;
 
 using Microsoft.Spark.Common;
 
-namespace Microsoft.Spark.Api.Activities.Conversation;
+namespace Microsoft.Spark.Api.Activities;
+
+public partial class ActivityType : StringEnum
+{
+    public static readonly ActivityType EndOfConversation = new("endOfConversation");
+    public bool IsEndOfConversation => EndOfConversation.Equals(Value);
+}
 
 public class EndOfConversationActivity() : Activity("endOfConversation")
 {

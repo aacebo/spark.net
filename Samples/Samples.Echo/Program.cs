@@ -1,5 +1,4 @@
 using Microsoft.Spark.Api.Activities;
-using Microsoft.Spark.Api.Activities.Message;
 using Microsoft.Spark.Apps;
 using Microsoft.Spark.Apps.Events;
 using Microsoft.Spark.Apps.Routing;

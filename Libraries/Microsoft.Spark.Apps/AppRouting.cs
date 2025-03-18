@@ -1,7 +1,6 @@
 using System.Reflection;
 
 using Microsoft.Spark.Api.Activities;
-using Microsoft.Spark.Api.Activities.Message;
 using Microsoft.Spark.Apps.Routing;
 
 namespace Microsoft.Spark.Apps;
@@ -51,20 +50,22 @@ public partial class App : AppRouting
                     {
                         if (!attribute.Type.IsAssignableFrom(context.Activity.GetType())) return;
 
+                        context.Activity = context.Activity.ToActivity();
                         object? res = null;
+                        res = method.Invoke(null, [context]);
 
-                        if (attribute.Name == "activity")
-                        {
-                            res = method.Invoke(null, [context]);
-                        }
-                        else if (attribute.Name == "message")
-                        {
-                            res = method.Invoke(null, [context.ToActivityType<MessageActivity>()]);
-                        }
-                        else if (attribute.Name == "messageUpdate")
-                        {
-                            res = method.Invoke(null, [context.ToActivityType<MessageUpdateActivity>()]);
-                        }
+                        // if (attribute.Name == "activity")
+                        // {
+                        //     res = method.Invoke(null, [context]);
+                        // }
+                        // else if (attribute.Name == "message")
+                        // {
+                        //     res = method.Invoke(null, [context.ToActivityType<MessageActivity>()]);
+                        // }
+                        // else if (attribute.Name == "messageUpdate")
+                        // {
+                        //     res = method.Invoke(null, [context.ToActivityType<MessageUpdateActivity>()]);
+                        // }
 
                         if (res is Task task)
                             await task;

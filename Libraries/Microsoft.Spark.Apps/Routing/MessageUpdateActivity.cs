@@ -1,4 +1,4 @@
-using Microsoft.Spark.Api.Activities.Message;
+using Microsoft.Spark.Api.Activities;
 
 namespace Microsoft.Spark.Apps.Routing;
 

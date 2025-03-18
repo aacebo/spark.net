@@ -1,6 +1,14 @@
 using System.Text.Json.Serialization;
 
-namespace Microsoft.Spark.Api.Activities.Message;
+using Microsoft.Spark.Common;
+
+namespace Microsoft.Spark.Api.Activities;
+
+public partial class ActivityType : StringEnum
+{
+    public static readonly ActivityType MessageReaction = new("messageReaction");
+    public bool IsMessageReaction => MessageReaction.Equals(Value);
+}
 
 public class MessageReactionActivity() : Activity("messageReaction")
 {

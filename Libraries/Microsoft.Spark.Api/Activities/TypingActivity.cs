@@ -1,6 +1,14 @@
 using System.Text.Json.Serialization;
 
+using Microsoft.Spark.Common;
+
 namespace Microsoft.Spark.Api.Activities;
+
+public partial class ActivityType : StringEnum
+{
+    public static readonly ActivityType Typing = new("typing");
+    public bool IsTyping => Typing.Equals(Value);
+}
 
 public class TypingActivity : Activity
 {

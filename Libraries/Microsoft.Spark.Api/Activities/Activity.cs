@@ -1,11 +1,15 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-using Microsoft.Spark.Api.Activities.Conversation;
-using Microsoft.Spark.Api.Activities.Message;
 using Microsoft.Spark.Api.Entities;
+using Microsoft.Spark.Common;
 
 namespace Microsoft.Spark.Api.Activities;
+
+[JsonConverter(typeof(JsonConverter<ActivityType>))]
+public partial class ActivityType(string value) : StringEnum(value)
+{
+}
 
 [JsonConverter(typeof(ActivityJsonConverter))]
 public class Activity(string type)
@@ -16,7 +20,7 @@ public class Activity(string type)
 
     [JsonPropertyName("type")]
     [JsonPropertyOrder(10)]
-    public string Type { get; init; } = type;
+    public ActivityType Type { get; init; } = new(type);
 
     [JsonPropertyName("replyToId")]
     [JsonPropertyOrder(20)]
@@ -98,6 +102,60 @@ public class Activity(string type)
             Position = position,
             Appearance = appearance.ToDocument()
         });
+    }
+
+    public Activity ToActivity()
+    {
+        if (Type.IsTyping) return ToTyping();
+        if (Type.IsInstallUpdate) return ToInstallUpdate();
+        if (Type.IsMessage) return ToMessage();
+        if (Type.IsMessageDelete) return ToMessageDelete();
+        if (Type.IsMessageUpdate) return ToMessageUpdate();
+        if (Type.IsMessageReaction) return ToMessageReaction();
+        if (Type.IsConversationUpdate) return ToConversationUpdate();
+        if (Type.IsEndOfConversation) return ToEndOfConversation();
+
+        return this;
+    }
+
+    public TypingActivity ToTyping()
+    {
+        return (TypingActivity)this;
+    }
+
+    public InstallUpdateActivity ToInstallUpdate()
+    {
+        return (InstallUpdateActivity)this;
+    }
+
+    public MessageActivity ToMessage()
+    {
+        return (MessageActivity)this;
+    }
+
+    public MessageUpdateActivity ToMessageUpdate()
+    {
+        return (MessageUpdateActivity)this;
+    }
+
+    public MessageDeleteActivity ToMessageDelete()
+    {
+        return (MessageDeleteActivity)this;
+    }
+
+    public MessageReactionActivity ToMessageReaction()
+    {
+        return (MessageReactionActivity)this;
+    }
+
+    public ConversationUpdateActivity ToConversationUpdate()
+    {
+        return (ConversationUpdateActivity)this;
+    }
+
+    public EndOfConversationActivity ToEndOfConversation()
+    {
+        return (EndOfConversationActivity)this;
     }
 
     public override string ToString()

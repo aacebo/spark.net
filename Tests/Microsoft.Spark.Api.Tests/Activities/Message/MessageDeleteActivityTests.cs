@@ -1,9 +1,8 @@
 using System.Text.Json;
 
 using Microsoft.Spark.Api.Activities;
-using Microsoft.Spark.Api.Activities.Message;
 
-namespace Microsoft.Spark.Api.Tests.Activities.Message;
+namespace Microsoft.Spark.Api.Tests.Activities;
 
 public class MessageDeleteActivityTests
 {
