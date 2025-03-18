@@ -1,6 +1,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
+using Microsoft.Spark.Api.Activities.Conversation;
 using Microsoft.Spark.Api.Activities.Message;
 using Microsoft.Spark.Api.Entities;
 
@@ -35,7 +36,7 @@ public interface IActivity
 
     [JsonPropertyName("conversation")]
     [JsonPropertyOrder(60)]
-    public Conversation Conversation { get; set; }
+    public Api.Conversation Conversation { get; set; }
 
     [JsonPropertyName("relatesTo")]
     [JsonPropertyOrder(70)]
@@ -63,7 +64,7 @@ public interface IActivity
 
     [JsonPropertyName("channelData")]
     [JsonPropertyOrder(130)]
-    public ChannelData? ChannelData { get; set; }
+    public IChannelData? ChannelData { get; set; }
 
     [JsonExtensionData]
     public Dictionary<string, object?> Properties { get; set; }
@@ -97,7 +98,7 @@ public class Activity : IActivity
 
     [JsonPropertyName("conversation")]
     [JsonPropertyOrder(60)]
-    public required Conversation Conversation { get; set; }
+    public required Api.Conversation Conversation { get; set; }
 
     [JsonPropertyName("relatesTo")]
     [JsonPropertyOrder(70)]
@@ -125,7 +126,7 @@ public class Activity : IActivity
 
     [JsonPropertyName("channelData")]
     [JsonPropertyOrder(130)]
-    public ChannelData? ChannelData { get; set; }
+    public IChannelData? ChannelData { get; set; }
 
     [JsonExtensionData]
     public Dictionary<string, object?> Properties { get; set; } = [];
@@ -198,6 +199,7 @@ public class ActivityJsonConverter : JsonConverter<IActivity>
         {
             "typing" => JsonSerializer.Deserialize<TypingActivity>(element.ToString(), options),
             "message" or "messageUpdate" or "messageDelete" or "messageReaction" => JsonSerializer.Deserialize<IMessageActivityBase>(element.ToString(), options),
+            "conversationUpdate" or "endOfConversation" => JsonSerializer.Deserialize<IConversationActivityBase>(element.ToString(), options),
             _ => JsonSerializer.Deserialize<Activity>(element.ToString(), options)
         };
     }
