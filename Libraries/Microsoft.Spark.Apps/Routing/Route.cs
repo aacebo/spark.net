@@ -5,18 +5,18 @@ namespace Microsoft.Spark.Apps.Routing;
 public interface IRoute
 {
     public string? Name { get; }
-    public Func<IActivity, bool> Select { get; }
+    public Func<Activity, bool> Select { get; }
 
-    public Task Invoke(IContext<IActivity> context);
+    public Task Invoke(IContext<Activity> context);
 }
 
 public class Route : IRoute
 {
     public string? Name { get; set; }
-    public required Func<IActivity, bool> Select { get; set; }
-    public required Func<IContext<IActivity>, Task> Handler { get; set; }
+    public required Func<Activity, bool> Select { get; set; }
+    public required Func<IContext<Activity>, Task> Handler { get; set; }
 
-    public Task Invoke(IContext<IActivity> context)
+    public Task Invoke(IContext<Activity> context)
     {
         return Handler(context);
     }

@@ -55,7 +55,7 @@ public class MessageReactionActivityTests
     [Fact]
     public void JsonSerialize_Derived()
     {
-        IMessageReactionActivity activity = new MessageReactionActivity()
+        MessageReactionActivity activity = new MessageReactionActivity()
         {
             Id = "1",
             From = new()
@@ -100,7 +100,7 @@ public class MessageReactionActivityTests
     [Fact]
     public void JsonSerialize_Derived_Interface()
     {
-        IActivity activity = new MessageReactionActivity()
+        Activity activity = new MessageReactionActivity()
         {
             Id = "1",
             From = new()
@@ -184,7 +184,7 @@ public class MessageReactionActivityTests
     public void JsonDeserialize_Derived()
     {
         var json = File.ReadAllText(@"../../../Json/Activity/Message/MessageReactionActivity.json");
-        var activity = JsonSerializer.Deserialize<IActivity>(json);
+        var activity = JsonSerializer.Deserialize<Activity>(json);
         var expected = new MessageReactionActivity()
         {
             Id = "1",

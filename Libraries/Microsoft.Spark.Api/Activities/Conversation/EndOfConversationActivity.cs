@@ -4,24 +4,7 @@ using Microsoft.Spark.Common;
 
 namespace Microsoft.Spark.Api.Activities.Conversation;
 
-public interface IEndOfConversationActivity : IActivity
-{
-    /// <summary>
-    /// The a code for endOfConversation activities that indicates why the conversation ended.
-    /// </summary>
-    [JsonPropertyName("code")]
-    [JsonPropertyOrder(31)]
-    public EndOfConversationCode? Code { get; set; }
-
-    /// <summary>
-    /// The text content of the message.
-    /// </summary>
-    [JsonPropertyName("text")]
-    [JsonPropertyOrder(32)]
-    public string Text { get; set; }
-}
-
-public class EndOfConversationActivity() : Activity("endOfConversation"), IEndOfConversationActivity
+public class EndOfConversationActivity() : Activity("endOfConversation")
 {
     /// <summary>
     /// The a code for endOfConversation activities that indicates why the conversation ended.

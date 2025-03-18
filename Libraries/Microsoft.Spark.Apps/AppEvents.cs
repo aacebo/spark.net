@@ -55,7 +55,7 @@ public partial class App
 
         try
         {
-            IContext<IActivity> context = new Context<IActivity>()
+            IContext<Activity> context = new Context<Activity>()
             {
                 Activity = args.Activity,
                 AppId = args.Token.AppId ?? "",

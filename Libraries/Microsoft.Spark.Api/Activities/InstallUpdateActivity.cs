@@ -4,14 +4,7 @@ using Microsoft.Spark.Common;
 
 namespace Microsoft.Spark.Api.Activities;
 
-public interface IInstallUpdateActivity : IActivity
-{
-    [JsonPropertyName("action")]
-    [JsonPropertyOrder(31)]
-    public InstallUpdateAction Action { get; set; }
-}
-
-public class InstallUpdateActivity() : Activity("installationUpdate"), IInstallUpdateActivity
+public class InstallUpdateActivity() : Activity("installationUpdate")
 {
     [JsonPropertyName("action")]
     [JsonPropertyOrder(31)]

@@ -47,7 +47,7 @@ public partial class App : AppRouting
                         throw new ArgumentException($"'{generic.Name}' is not assignable to '{attribute.Type.Name}'");
                     }
 
-                    Router.Register(attribute.Name, async (IContext<IActivity> context) =>
+                    Router.Register(attribute.Name, async (IContext<Activity> context) =>
                     {
                         if (!attribute.Type.IsAssignableFrom(context.Activity.GetType())) return;
 
@@ -59,11 +59,11 @@ public partial class App : AppRouting
                         }
                         else if (attribute.Name == "message")
                         {
-                            res = method.Invoke(null, [context.ToActivityType<IMessageActivity>()]);
+                            res = method.Invoke(null, [context.ToActivityType<MessageActivity>()]);
                         }
                         else if (attribute.Name == "messageUpdate")
                         {
-                            res = method.Invoke(null, [context.ToActivityType<IMessageUpdateActivity>()]);
+                            res = method.Invoke(null, [context.ToActivityType<MessageUpdateActivity>()]);
                         }
 
                         if (res is Task task)

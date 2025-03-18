@@ -5,7 +5,7 @@ namespace Microsoft.Spark.Apps.Events;
 
 public class ActivityEventArgs : EventArgs
 {
-    public required IActivity Activity { get; set; }
+    public required Activity Activity { get; set; }
     public required IToken Token { get; set; }
     public required Common.Logging.ILogger Logger { get; set; }
 }

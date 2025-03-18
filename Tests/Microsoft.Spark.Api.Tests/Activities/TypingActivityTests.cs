@@ -83,7 +83,7 @@ public class TypingActivityTests
     [Fact]
     public void JsonSerialize_Derived_Interface()
     {
-        IActivity activity = new TypingActivity()
+        Activity activity = new TypingActivity()
         {
             Id = "1",
             From = new()
@@ -151,7 +151,7 @@ public class TypingActivityTests
     public void JsonDeserialize_Derived()
     {
         var json = File.ReadAllText(@"../../../Json/Activity/TypingActivity.json");
-        var activity = JsonSerializer.Deserialize<IActivity>(json);
+        var activity = JsonSerializer.Deserialize<Activity>(json);
         var expected = new TypingActivity()
         {
             Id = "1",

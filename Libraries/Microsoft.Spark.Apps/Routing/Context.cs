@@ -3,7 +3,7 @@ using Microsoft.Spark.Common.Logging;
 
 namespace Microsoft.Spark.Apps.Routing;
 
-public interface IContext<TActivity> where TActivity : IActivity
+public interface IContext<TActivity> where TActivity : Activity
 {
     public string AppId { get; set; }
     public ILogger Logger { get; set; }
@@ -12,7 +12,7 @@ public interface IContext<TActivity> where TActivity : IActivity
     public IContext<TToActivity> ToActivityType<TToActivity>() where TToActivity : TActivity;
 }
 
-public class Context<TActivity> : IContext<TActivity> where TActivity : IActivity
+public class Context<TActivity> : IContext<TActivity> where TActivity : Activity
 {
     public required string AppId { get; set; }
     public required ILogger Logger { get; set; }

@@ -52,7 +52,7 @@ public class AspNetCorePlugin : ISender
         throw new NotImplementedException();
     }
 
-    public Task<IActivity> Send(IActivity activity, ConversationReference reference)
+    public Task<Activity> Send(Activity activity, ConversationReference reference)
     {
         throw new NotImplementedException();
     }
@@ -72,7 +72,7 @@ public class AspNetCorePlugin : ISender
             var authHeader = context.Request.Headers.Authorization.FirstOrDefault() ?? throw new UnauthorizedAccessException();
             var token = new JsonWebToken(authHeader.Replace("Bearer ", ""));
 
-            var activity = await JsonSerializer.DeserializeAsync<IActivity>(context.Request.Body) ?? throw new BadHttpRequestException("could not read json activity payload");
+            var activity = await JsonSerializer.DeserializeAsync<Activity>(context.Request.Body) ?? throw new BadHttpRequestException("could not read json activity payload");
             var res = await ActivityEvent(this, new()
             {
                 Token = token,

@@ -12,13 +12,13 @@ public interface IStreamer
     /// emit an activity
     /// </summary>
     /// <param name="activity">the activity</param>
-    public void Emit(IMessageActivity activity);
+    public void Emit(MessageActivity activity);
 
     /// <summary>
     /// emit an activity
     /// </summary>
     /// <param name="activity">the activity</param>
-    public void Emit(ITypingActivity activity);
+    public void Emit(TypingActivity activity);
 
     /// <summary>
     /// emit text chunk

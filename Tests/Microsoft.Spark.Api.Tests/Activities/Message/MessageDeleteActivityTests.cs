@@ -47,7 +47,7 @@ public class MessageDeleteActivityTests
     [Fact]
     public void JsonSerialize_Derived()
     {
-        IMessageDeleteActivity activity = new MessageDeleteActivity()
+        MessageDeleteActivity activity = new MessageDeleteActivity()
         {
             Id = "1",
             From = new()
@@ -84,7 +84,7 @@ public class MessageDeleteActivityTests
     [Fact]
     public void JsonSerialize_Derived_Interface()
     {
-        IActivity activity = new MessageDeleteActivity()
+        Activity activity = new MessageDeleteActivity()
         {
             Id = "1",
             From = new()
@@ -152,7 +152,7 @@ public class MessageDeleteActivityTests
     public void JsonDeserialize_Derived()
     {
         var json = File.ReadAllText(@"../../../Json/Activity/Message/MessageDeleteActivity.json");
-        var activity = JsonSerializer.Deserialize<IActivity>(json);
+        var activity = JsonSerializer.Deserialize<Activity>(json);
         var expected = new MessageDeleteActivity()
         {
             Id = "1",

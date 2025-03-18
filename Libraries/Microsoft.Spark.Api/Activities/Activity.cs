@@ -8,69 +8,7 @@ using Microsoft.Spark.Api.Entities;
 namespace Microsoft.Spark.Api.Activities;
 
 [JsonConverter(typeof(ActivityJsonConverter))]
-public interface IActivity
-{
-    [JsonPropertyName("id")]
-    [JsonPropertyOrder(0)]
-    public string Id { get; set; }
-
-    [JsonPropertyName("type")]
-    [JsonPropertyOrder(10)]
-    public string Type { get; init; }
-
-    [JsonPropertyName("replyToId")]
-    [JsonPropertyOrder(20)]
-    public string? ReplyToId { get; set; }
-
-    [JsonPropertyName("channelId")]
-    [JsonPropertyOrder(30)]
-    public ChannelId ChannelId { get; set; }
-
-    [JsonPropertyName("from")]
-    [JsonPropertyOrder(40)]
-    public Account From { get; set; }
-
-    [JsonPropertyName("recipient")]
-    [JsonPropertyOrder(50)]
-    public Account Recipient { get; set; }
-
-    [JsonPropertyName("conversation")]
-    [JsonPropertyOrder(60)]
-    public Api.Conversation Conversation { get; set; }
-
-    [JsonPropertyName("relatesTo")]
-    [JsonPropertyOrder(70)]
-    public ConversationReference? RelatesTo { get; set; }
-
-    [JsonPropertyName("serviceUrl")]
-    [JsonPropertyOrder(80)]
-    public string? ServiceUrl { get; set; }
-
-    [JsonPropertyName("locale")]
-    [JsonPropertyOrder(90)]
-    public string? Locale { get; set; }
-
-    [JsonPropertyName("timestamp")]
-    [JsonPropertyOrder(100)]
-    public DateTime? Timestamp { get; set; }
-
-    [JsonPropertyName("localTimestamp")]
-    [JsonPropertyOrder(110)]
-    public DateTime? LocalTimestamp { get; set; }
-
-    [JsonPropertyName("entities")]
-    [JsonPropertyOrder(120)]
-    public IList<IEntity>? Entities { get; set; }
-
-    [JsonPropertyName("channelData")]
-    [JsonPropertyOrder(130)]
-    public IChannelData? ChannelData { get; set; }
-
-    [JsonExtensionData]
-    public Dictionary<string, object?> Properties { get; set; }
-}
-
-public class Activity(string type) : IActivity
+public class Activity(string type)
 {
     [JsonPropertyName("id")]
     [JsonPropertyOrder(0)]
@@ -172,14 +110,14 @@ public class Activity(string type) : IActivity
     }
 }
 
-public class ActivityJsonConverter : JsonConverter<IActivity>
+public class ActivityJsonConverter : JsonConverter<Activity>
 {
     public override bool CanConvert(Type typeToConvert)
     {
         return base.CanConvert(typeToConvert);
     }
 
-    public override IActivity? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    public override Activity? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         var element = JsonSerializer.Deserialize<JsonElement>(ref reader, options);
 
@@ -204,50 +142,50 @@ public class ActivityJsonConverter : JsonConverter<IActivity>
             "messageReaction" => JsonSerializer.Deserialize<MessageReactionActivity>(element.ToString(), options),
             "conversationUpdate" => JsonSerializer.Deserialize<ConversationUpdateActivity>(element.ToString(), options),
             "endOfConversation" => JsonSerializer.Deserialize<EndOfConversationActivity>(element.ToString(), options),
-            "installationUpdate" => JsonSerializer.Deserialize<IInstallUpdateActivity>(element.ToString(), options),
+            "installationUpdate" => JsonSerializer.Deserialize<InstallUpdateActivity>(element.ToString(), options),
             _ => JsonSerializer.Deserialize<Activity>(element.ToString(), options)
         };
     }
 
-    public override void Write(Utf8JsonWriter writer, IActivity value, JsonSerializerOptions options)
+    public override void Write(Utf8JsonWriter writer, Activity value, JsonSerializerOptions options)
     {
-        if (value is ITypingActivity typing)
+        if (value is TypingActivity typing)
         {
             JsonSerializer.Serialize(writer, typing, options);
             return;
         }
 
-        if (value is IMessageActivity message)
+        if (value is MessageActivity message)
         {
             JsonSerializer.Serialize(writer, message, options);
             return;
         }
 
-        if (value is IMessageUpdateActivity messageUpdate)
+        if (value is MessageUpdateActivity messageUpdate)
         {
             JsonSerializer.Serialize(writer, messageUpdate, options);
             return;
         }
 
-        if (value is IMessageDeleteActivity messageDelete)
+        if (value is MessageDeleteActivity messageDelete)
         {
             JsonSerializer.Serialize(writer, messageDelete, options);
             return;
         }
 
-        if (value is IMessageReactionActivity messageReaction)
+        if (value is MessageReactionActivity messageReaction)
         {
             JsonSerializer.Serialize(writer, messageReaction, options);
             return;
         }
 
-        if (value is IConversationUpdateActivity conversationUpdate)
+        if (value is ConversationUpdateActivity conversationUpdate)
         {
             JsonSerializer.Serialize(writer, conversationUpdate, options);
             return;
         }
 
-        if (value is IEndOfConversationActivity endOfConversation)
+        if (value is EndOfConversationActivity endOfConversation)
         {
             JsonSerializer.Serialize(writer, endOfConversation, options);
             return;

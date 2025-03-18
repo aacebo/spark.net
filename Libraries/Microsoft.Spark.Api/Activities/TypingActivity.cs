@@ -2,14 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace Microsoft.Spark.Api.Activities;
 
-public interface ITypingActivity : IActivity
-{
-    [JsonPropertyName("text")]
-    [JsonPropertyOrder(31)]
-    public string? Text { get; set; }
-}
-
-public class TypingActivity : Activity, ITypingActivity
+public class TypingActivity : Activity
 {
     [JsonPropertyName("text")]
     [JsonPropertyOrder(31)]

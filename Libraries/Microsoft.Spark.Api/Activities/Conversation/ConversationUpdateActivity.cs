@@ -4,38 +4,7 @@ using Microsoft.Spark.Common;
 
 namespace Microsoft.Spark.Api.Activities.Conversation;
 
-public interface IConversationUpdateActivity : IActivity
-{
-    /// <summary>
-    /// The updated topic name of the conversation.
-    /// </summary>
-    [JsonPropertyName("topicName")]
-    [JsonPropertyOrder(31)]
-    public string? TopicName { get; set; }
-
-    /// <summary>
-    /// Indicates whether the prior history of the channel is disclosed.
-    /// </summary>
-    [JsonPropertyName("historyDisclosed")]
-    [JsonPropertyOrder(32)]
-    public bool? HistoryDisclosed { get; set; }
-
-    /// <summary>
-    /// The collection of members added to the conversation.
-    /// </summary>
-    [JsonPropertyName("membersAdded")]
-    [JsonPropertyOrder(33)]
-    public Account[] MembersAdded { get; set; }
-
-    /// <summary>
-    /// The collection of members removed from the conversation.
-    /// </summary>
-    [JsonPropertyName("membersRemoved")]
-    [JsonPropertyOrder(34)]
-    public Account[] MembersRemoved { get; set; }
-}
-
-public class ConversationUpdateActivity() : Activity("conversationUpdate"), IConversationUpdateActivity
+public class ConversationUpdateActivity() : Activity("conversationUpdate")
 {
     /// <summary>
     /// The updated topic name of the conversation.

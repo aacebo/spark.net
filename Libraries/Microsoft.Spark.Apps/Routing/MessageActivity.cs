@@ -5,27 +5,27 @@ using Microsoft.Spark.Api.Activities.Message;
 namespace Microsoft.Spark.Apps.Routing;
 
 [AttributeUsage(AttributeTargets.Method, Inherited = true)]
-public class MessageAttribute() : ActivityAttribute("message", typeof(IMessageActivity))
+public class MessageAttribute() : ActivityAttribute("message", typeof(MessageActivity))
 {
 }
 
 public partial interface IAppRouting
 {
-    public IAppRouting OnMessage(Func<IContext<IMessageActivity>, Task> handler);
-    public IAppRouting OnMessage(string pattern, Func<IContext<IMessageActivity>, Task> handler);
-    public IAppRouting OnMessage(Regex pattern, Func<IContext<IMessageActivity>, Task> handler);
+    public IAppRouting OnMessage(Func<IContext<MessageActivity>, Task> handler);
+    public IAppRouting OnMessage(string pattern, Func<IContext<MessageActivity>, Task> handler);
+    public IAppRouting OnMessage(Regex pattern, Func<IContext<MessageActivity>, Task> handler);
 }
 
 public partial class AppRouting : IAppRouting
 {
-    public IAppRouting OnMessage(Func<IContext<IMessageActivity>, Task> handler)
+    public IAppRouting OnMessage(Func<IContext<MessageActivity>, Task> handler)
     {
         Router.Register(new Route()
         {
-            Handler = context => handler(context.ToActivityType<IMessageActivity>()),
+            Handler = context => handler(context.ToActivityType<MessageActivity>()),
             Select = activity =>
             {
-                if (activity is IMessageActivity message)
+                if (activity is MessageActivity message)
                 {
                     return true;
                 }
@@ -37,14 +37,14 @@ public partial class AppRouting : IAppRouting
         return this;
     }
 
-    public IAppRouting OnMessage(string pattern, Func<IContext<IMessageActivity>, Task> handler)
+    public IAppRouting OnMessage(string pattern, Func<IContext<MessageActivity>, Task> handler)
     {
         Router.Register(new Route()
         {
-            Handler = context => handler(context.ToActivityType<IMessageActivity>()),
+            Handler = context => handler(context.ToActivityType<MessageActivity>()),
             Select = activity =>
             {
-                if (activity is IMessageActivity message)
+                if (activity is MessageActivity message)
                 {
                     return new Regex(pattern).IsMatch(message.Text);
                 }
@@ -56,14 +56,14 @@ public partial class AppRouting : IAppRouting
         return this;
     }
 
-    public IAppRouting OnMessage(Regex regex, Func<IContext<IMessageActivity>, Task> handler)
+    public IAppRouting OnMessage(Regex regex, Func<IContext<MessageActivity>, Task> handler)
     {
         Router.Register(new Route()
         {
-            Handler = context => handler(context.ToActivityType<IMessageActivity>()),
+            Handler = context => handler(context.ToActivityType<MessageActivity>()),
             Select = activity =>
             {
-                if (activity is IMessageActivity message)
+                if (activity is MessageActivity message)
                 {
                     return regex.IsMatch(message.Text);
                 }

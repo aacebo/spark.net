@@ -33,13 +33,13 @@ public static partial class Program
     }
 
     [Activity]
-    public static void OnActivity(IContext<IActivity> context)
+    public static void OnActivity(IContext<Activity> context)
     {
         context.Logger.Info("on activity...");
     }
 
     [Message]
-    public static void OnMessage(IContext<IMessageActivity> context)
+    public static void OnMessage(IContext<MessageActivity> context)
     {
         context.Logger.Info("on message...");
         context.Logger.Info(context.Activity);

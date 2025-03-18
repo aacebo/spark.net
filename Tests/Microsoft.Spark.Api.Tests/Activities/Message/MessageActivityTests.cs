@@ -48,7 +48,7 @@ public class MessageActivityTests
     [Fact]
     public void JsonSerialize_Derived()
     {
-        IMessageActivity activity = new MessageActivity("testing123")
+        MessageActivity activity = new MessageActivity("testing123")
         {
             Id = "1",
             From = new()
@@ -85,7 +85,7 @@ public class MessageActivityTests
     [Fact]
     public void JsonSerialize_Derived_Interface()
     {
-        IActivity activity = new MessageActivity("testing123")
+        Activity activity = new MessageActivity("testing123")
         {
             Id = "1",
             From = new()
@@ -129,7 +129,7 @@ public class MessageActivityTests
             Role = Role.Bot
         };
 
-        IActivity activity = new MessageActivity("testing123")
+        Activity activity = new MessageActivity("testing123")
         {
             Id = "1",
             From = new()
@@ -196,7 +196,7 @@ public class MessageActivityTests
     public void JsonDeserialize_Derived()
     {
         var json = File.ReadAllText(@"../../../Json/Activity/Message/MessageActivity.json");
-        var activity = JsonSerializer.Deserialize<IActivity>(json);
+        var activity = JsonSerializer.Deserialize<Activity>(json);
         var expected = new MessageActivity("testing123")
         {
             Id = "1",
