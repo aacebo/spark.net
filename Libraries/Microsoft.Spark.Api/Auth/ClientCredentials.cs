@@ -1,21 +1,11 @@
-using System.Text.Json.Serialization;
-
 using Microsoft.Spark.Common.Http;
 
 namespace Microsoft.Spark.Api.Auth;
 
 public class ClientCredentials : IHttpCredentials
 {
-    [JsonPropertyName("clientId")]
-    [JsonPropertyOrder(0)]
     public string ClientId { get; set; }
-
-    [JsonPropertyName("clientSecret")]
-    [JsonPropertyOrder(1)]
     public string ClientSecret { get; set; }
-
-    [JsonPropertyName("tenantId")]
-    [JsonPropertyOrder(2)]
     public string? TenantId { get; set; }
 
     public ClientCredentials(string clientId, string clientSecret)
@@ -31,8 +21,13 @@ public class ClientCredentials : IHttpCredentials
         TenantId = tenantId;
     }
 
-    public IHttpRequest OnRequest(IHttpRequest request)
+    public async Task<ITokenResponse> Resolve(IHttpClient client)
     {
+        var tenantId = TenantId ?? "botframework.com";
+        var request = HttpRequest.Post(
+            $"https://login.microsoftonline.com/{tenantId}/oauth2/v2.0/token"
+        );
+
         request.Headers.Add("Content-Type", ["application/x-www-form-urlencoded"]);
         request.Body = QueryString.Serialize(new
         {
@@ -42,6 +37,7 @@ public class ClientCredentials : IHttpCredentials
             scope = "https://api.botframework.com/.default"
         });
 
-        return request;
+        var res = await client.SendAsync<TokenResponse>(request);
+        return res.Body;
     }
 }
