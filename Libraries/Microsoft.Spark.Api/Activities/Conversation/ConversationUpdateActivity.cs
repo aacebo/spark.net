@@ -4,7 +4,7 @@ using Microsoft.Spark.Common;
 
 namespace Microsoft.Spark.Api.Activities.Conversation;
 
-public interface IConversationUpdateActivity : IConversationActivityBase
+public interface IConversationUpdateActivity : IActivity
 {
     /// <summary>
     /// The updated topic name of the conversation.
@@ -35,7 +35,7 @@ public interface IConversationUpdateActivity : IConversationActivityBase
     public Account[] MembersRemoved { get; set; }
 }
 
-public class ConversationUpdateActivity() : ConversationActivityBase("conversationUpdate"), IConversationUpdateActivity
+public class ConversationUpdateActivity() : Activity("conversationUpdate"), IConversationUpdateActivity
 {
     /// <summary>
     /// The updated topic name of the conversation.

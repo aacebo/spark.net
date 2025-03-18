@@ -47,7 +47,7 @@ public class MessageDeleteActivityTests
     [Fact]
     public void JsonSerialize_Derived()
     {
-        IMessageActivityBase activity = new MessageDeleteActivity()
+        IMessageDeleteActivity activity = new MessageDeleteActivity()
         {
             Id = "1",
             From = new()

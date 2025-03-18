@@ -1,9 +1,9 @@
 namespace Microsoft.Spark.Api.Activities.Message;
 
-public interface IMessageDeleteActivity : IMessageActivityBase
+public interface IMessageDeleteActivity : IActivity
 {
 }
 
-public class MessageDeleteActivity() : MessageActivityBase("messageDelete"), IMessageDeleteActivity
+public class MessageDeleteActivity() : Activity("messageDelete"), IMessageDeleteActivity
 {
 }

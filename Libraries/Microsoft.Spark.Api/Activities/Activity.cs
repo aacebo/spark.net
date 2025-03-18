@@ -198,8 +198,12 @@ public class ActivityJsonConverter : JsonConverter<IActivity>
         return type switch
         {
             "typing" => JsonSerializer.Deserialize<TypingActivity>(element.ToString(), options),
-            "message" or "messageUpdate" or "messageDelete" or "messageReaction" => JsonSerializer.Deserialize<IMessageActivityBase>(element.ToString(), options),
-            "conversationUpdate" or "endOfConversation" => JsonSerializer.Deserialize<IConversationActivityBase>(element.ToString(), options),
+            "message" => JsonSerializer.Deserialize<MessageActivity>(element.ToString(), options),
+            "messageUpdate" => JsonSerializer.Deserialize<MessageUpdateActivity>(element.ToString(), options),
+            "messageDelete" => JsonSerializer.Deserialize<MessageDeleteActivity>(element.ToString(), options),
+            "messageReaction" => JsonSerializer.Deserialize<MessageReactionActivity>(element.ToString(), options),
+            "conversationUpdate" => JsonSerializer.Deserialize<ConversationUpdateActivity>(element.ToString(), options),
+            "endOfConversation" => JsonSerializer.Deserialize<EndOfConversationActivity>(element.ToString(), options),
             "installationUpdate" => JsonSerializer.Deserialize<IInstallUpdateActivity>(element.ToString(), options),
             _ => JsonSerializer.Deserialize<Activity>(element.ToString(), options)
         };
@@ -213,9 +217,39 @@ public class ActivityJsonConverter : JsonConverter<IActivity>
             return;
         }
 
-        if (value is IMessageActivityBase message)
+        if (value is IMessageActivity message)
         {
             JsonSerializer.Serialize(writer, message, options);
+            return;
+        }
+
+        if (value is IMessageUpdateActivity messageUpdate)
+        {
+            JsonSerializer.Serialize(writer, messageUpdate, options);
+            return;
+        }
+
+        if (value is IMessageDeleteActivity messageDelete)
+        {
+            JsonSerializer.Serialize(writer, messageDelete, options);
+            return;
+        }
+
+        if (value is IMessageReactionActivity messageReaction)
+        {
+            JsonSerializer.Serialize(writer, messageReaction, options);
+            return;
+        }
+
+        if (value is IConversationUpdateActivity conversationUpdate)
+        {
+            JsonSerializer.Serialize(writer, conversationUpdate, options);
+            return;
+        }
+
+        if (value is IEndOfConversationActivity endOfConversation)
+        {
+            JsonSerializer.Serialize(writer, endOfConversation, options);
             return;
         }
 

@@ -4,7 +4,7 @@ using Microsoft.Spark.Common;
 
 namespace Microsoft.Spark.Api.Activities.Conversation;
 
-public interface IEndOfConversationActivity : IConversationActivityBase
+public interface IEndOfConversationActivity : IActivity
 {
     /// <summary>
     /// The a code for endOfConversation activities that indicates why the conversation ended.
@@ -21,7 +21,7 @@ public interface IEndOfConversationActivity : IConversationActivityBase
     public string Text { get; set; }
 }
 
-public class EndOfConversationActivity() : ConversationActivityBase("endOfConversation"), IEndOfConversationActivity
+public class EndOfConversationActivity() : Activity("endOfConversation"), IEndOfConversationActivity
 {
     /// <summary>
     /// The a code for endOfConversation activities that indicates why the conversation ended.
