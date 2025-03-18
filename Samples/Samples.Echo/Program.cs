@@ -39,7 +39,7 @@ public static partial class Program
     }
 
     [Message]
-    public static void OnMessage(IContext<IMessageSendActivity> context)
+    public static void OnMessage(IContext<IMessageActivity> context)
     {
         context.Logger.Info("on message...");
         context.Logger.Info(context.Activity);

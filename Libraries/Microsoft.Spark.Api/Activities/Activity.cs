@@ -197,7 +197,7 @@ public class ActivityJsonConverter : JsonConverter<IActivity>
         return type switch
         {
             "typing" => JsonSerializer.Deserialize<TypingActivity>(element.ToString(), options),
-            "message" or "messageUpdate" or "messageDelete" or "messageReaction" => JsonSerializer.Deserialize<IMessageActivity>(element.ToString(), options),
+            "message" or "messageUpdate" or "messageDelete" or "messageReaction" => JsonSerializer.Deserialize<IMessageActivityBase>(element.ToString(), options),
             _ => JsonSerializer.Deserialize<Activity>(element.ToString(), options)
         };
     }
@@ -210,7 +210,7 @@ public class ActivityJsonConverter : JsonConverter<IActivity>
             return;
         }
 
-        if (value is IMessageActivity message)
+        if (value is IMessageActivityBase message)
         {
             JsonSerializer.Serialize(writer, message, options);
             return;

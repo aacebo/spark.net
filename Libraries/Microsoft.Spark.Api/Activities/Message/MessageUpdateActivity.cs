@@ -4,7 +4,7 @@ using Microsoft.Spark.Api.Entities;
 
 namespace Microsoft.Spark.Api.Activities.Message;
 
-public interface IMessageUpdateActivity : IMessageActivity
+public interface IMessageUpdateActivity : IMessageActivityBase
 {
     [JsonPropertyName("text")]
     [JsonPropertyOrder(31)]
@@ -27,7 +27,7 @@ public interface IMessageUpdateActivity : IMessageActivity
     public dynamic? Value { get; set; }
 }
 
-public class MessageUpdateActivity : MessageActivity, IMessageUpdateActivity
+public class MessageUpdateActivity : MessageActivityBase, IMessageUpdateActivity
 {
     [JsonPropertyName("text")]
     [JsonPropertyOrder(31)]

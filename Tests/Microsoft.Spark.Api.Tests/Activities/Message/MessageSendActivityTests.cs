@@ -6,12 +6,12 @@ using Microsoft.Spark.Api.Activities.Message;
 
 namespace Microsoft.Spark.Api.Tests.Activities.Message;
 
-public class MessageSendActivityTests
+public class MessageActivityTests
 {
     [Fact]
     public void JsonSerialize()
     {
-        var activity = new MessageSendActivity("testing123")
+        var activity = new MessageActivity("testing123")
         {
             Id = "1",
             From = new()
@@ -41,14 +41,14 @@ public class MessageSendActivityTests
         });
 
         Assert.Equal(File.ReadAllText(
-            @"../../../Json/Activity/Message/MessageSendActivity.json"
+            @"../../../Json/Activity/Message/MessageActivity.json"
         ), json);
     }
 
     [Fact]
     public void JsonSerialize_Derived()
     {
-        IMessageActivity activity = new MessageSendActivity("testing123")
+        IMessageActivity activity = new MessageActivity("testing123")
         {
             Id = "1",
             From = new()
@@ -78,14 +78,14 @@ public class MessageSendActivityTests
         });
 
         Assert.Equal(File.ReadAllText(
-            @"../../../Json/Activity/Message/MessageSendActivity.json"
+            @"../../../Json/Activity/Message/MessageActivity.json"
         ), json);
     }
 
     [Fact]
     public void JsonSerialize_Derived_Interface()
     {
-        IActivity activity = new MessageSendActivity("testing123")
+        IActivity activity = new MessageActivity("testing123")
         {
             Id = "1",
             From = new()
@@ -115,7 +115,7 @@ public class MessageSendActivityTests
         });
 
         Assert.Equal(File.ReadAllText(
-            @"../../../Json/Activity/Message/MessageSendActivity.json"
+            @"../../../Json/Activity/Message/MessageActivity.json"
         ), json);
     }
 
@@ -129,7 +129,7 @@ public class MessageSendActivityTests
             Role = Role.Bot
         };
 
-        IActivity activity = new MessageSendActivity("testing123")
+        IActivity activity = new MessageActivity("testing123")
         {
             Id = "1",
             From = new()
@@ -155,7 +155,7 @@ public class MessageSendActivityTests
         });
 
         var text = File.ReadAllText(
-            @"../../../Json/Activity/Message/MessageSendActivity_Mention.json",
+            @"../../../Json/Activity/Message/MessageActivity_Mention.json",
             Encoding.UTF8
         );
 
@@ -165,9 +165,9 @@ public class MessageSendActivityTests
     [Fact]
     public void JsonDeserialize()
     {
-        var json = File.ReadAllText(@"../../../Json/Activity/Message/MessageSendActivity.json");
-        var activity = JsonSerializer.Deserialize<MessageSendActivity>(json);
-        var expected = new MessageSendActivity("testing123")
+        var json = File.ReadAllText(@"../../../Json/Activity/Message/MessageActivity.json");
+        var activity = JsonSerializer.Deserialize<MessageActivity>(json);
+        var expected = new MessageActivity("testing123")
         {
             Id = "1",
             From = new()
@@ -195,9 +195,9 @@ public class MessageSendActivityTests
     [Fact]
     public void JsonDeserialize_Derived()
     {
-        var json = File.ReadAllText(@"../../../Json/Activity/Message/MessageSendActivity.json");
+        var json = File.ReadAllText(@"../../../Json/Activity/Message/MessageActivity.json");
         var activity = JsonSerializer.Deserialize<IActivity>(json);
-        var expected = new MessageSendActivity("testing123")
+        var expected = new MessageActivity("testing123")
         {
             Id = "1",
             From = new()

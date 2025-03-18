@@ -59,7 +59,7 @@ public partial class App : AppRouting
                         }
                         else if (attribute.Name == "message")
                         {
-                            res = method.Invoke(null, [context.ToActivityType<IMessageSendActivity>()]);
+                            res = method.Invoke(null, [context.ToActivityType<IMessageActivity>()]);
                         }
 
                         if (res is Task task)

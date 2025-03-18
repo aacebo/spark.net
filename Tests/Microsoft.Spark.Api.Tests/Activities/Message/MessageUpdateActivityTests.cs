@@ -47,7 +47,7 @@ public class MessageUpdateActivityTests
     [Fact]
     public void JsonSerialize_Derived()
     {
-        IMessageActivity activity = new MessageUpdateActivity("test")
+        IMessageActivityBase activity = new MessageUpdateActivity("test")
         {
             Id = "1",
             From = new()

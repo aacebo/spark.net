@@ -1,78 +1,133 @@
-using System.Text.Json;
 using System.Text.Json.Serialization;
+
+using Microsoft.Spark.Api.Entities;
 
 namespace Microsoft.Spark.Api.Activities.Message;
 
-[JsonConverter(typeof(MessageActivityJsonConverter))]
-public interface IMessageActivity : IActivity
+public interface IMessageActivity : IMessageActivityBase
 {
+    [JsonPropertyName("text")]
+    [JsonPropertyOrder(31)]
+    public string Text { get; set; }
 
+    [JsonPropertyName("speak")]
+    [JsonPropertyOrder(32)]
+    public string? Speak { get; set; }
+
+    [JsonPropertyName("inputHint")]
+    [JsonPropertyOrder(33)]
+    public InputHint? InputHint { get; set; }
+
+    [JsonPropertyName("summary")]
+    [JsonPropertyOrder(34)]
+    public string? Summary { get; set; }
+
+    [JsonPropertyName("textFormat")]
+    [JsonPropertyOrder(35)]
+    public TextFormat? TextFormat { get; set; }
+
+    [JsonPropertyName("attachmentLayout")]
+    [JsonPropertyOrder(121)]
+    public Attachment.Layout? AttachmentLayout { get; set; }
+
+    [JsonPropertyName("attachments")]
+    [JsonPropertyOrder(122)]
+    public IList<Attachment>? Attachments { get; set; }
+
+    [JsonPropertyName("suggestedActions")]
+    [JsonPropertyOrder(123)]
+    public SuggestedActions? SuggestedActions { get; set; }
+
+    [JsonPropertyName("importance")]
+    [JsonPropertyOrder(39)]
+    public Importance? Importance { get; set; }
+
+    [JsonPropertyName("deliveryMode")]
+    [JsonPropertyOrder(41)]
+    public DeliveryMode? DeliveryMode { get; set; }
+
+    [JsonPropertyName("expiration")]
+    [JsonPropertyOrder(42)]
+    public DateTime? Expiration { get; set; }
+
+    [JsonPropertyName("value")]
+    [JsonPropertyOrder(43)]
+    public dynamic? Value { get; set; }
 }
 
-public class MessageActivity : Activity, IMessageActivity
+public class MessageActivity : MessageActivityBase, IMessageActivity
 {
+    [JsonPropertyName("text")]
+    [JsonPropertyOrder(31)]
+    public string Text { get; set; }
 
-}
+    [JsonPropertyName("speak")]
+    [JsonPropertyOrder(32)]
+    public string? Speak { get; set; }
 
-public class MessageActivityJsonConverter : JsonConverter<IMessageActivity>
-{
-    public override bool CanConvert(Type typeToConvert)
+    [JsonPropertyName("inputHint")]
+    [JsonPropertyOrder(33)]
+    public InputHint? InputHint { get; set; }
+
+    [JsonPropertyName("summary")]
+    [JsonPropertyOrder(34)]
+    public string? Summary { get; set; }
+
+    [JsonPropertyName("textFormat")]
+    [JsonPropertyOrder(35)]
+    public TextFormat? TextFormat { get; set; }
+
+    [JsonPropertyName("attachmentLayout")]
+    [JsonPropertyOrder(121)]
+    public Attachment.Layout? AttachmentLayout { get; set; }
+
+    [JsonPropertyName("attachments")]
+    [JsonPropertyOrder(122)]
+    public IList<Attachment>? Attachments { get; set; }
+
+    [JsonPropertyName("suggestedActions")]
+    [JsonPropertyOrder(123)]
+    public SuggestedActions? SuggestedActions { get; set; }
+
+    [JsonPropertyName("importance")]
+    [JsonPropertyOrder(39)]
+    public Importance? Importance { get; set; }
+
+    [JsonPropertyName("deliveryMode")]
+    [JsonPropertyOrder(41)]
+    public DeliveryMode? DeliveryMode { get; set; }
+
+    [JsonPropertyName("expiration")]
+    [JsonPropertyOrder(42)]
+    public DateTime? Expiration { get; set; }
+
+    [JsonPropertyName("value")]
+    [JsonPropertyOrder(43)]
+    public dynamic? Value { get; set; }
+
+    public MessageActivity(string text) : base()
     {
-        return base.CanConvert(typeToConvert);
+        Type = "message";
+        Text = text;
     }
 
-    public override IMessageActivity? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    public MessageActivity Attachment(Attachment value)
     {
-        var element = JsonSerializer.Deserialize<JsonElement>(ref reader, options);
-
-        if (!element.TryGetProperty("type", out JsonElement property))
+        if (Attachments == null)
         {
-            throw new JsonException("activity must have a 'type' property");
+            Attachments = [];
         }
 
-        var type = property.Deserialize<string>(options);
-
-        if (type == null)
-        {
-            throw new JsonException("failed to deserialize activity 'type' property");
-        }
-
-        return type switch
-        {
-            "message" => JsonSerializer.Deserialize<MessageSendActivity>(element.ToString(), options),
-            "messageUpdate" => JsonSerializer.Deserialize<MessageUpdateActivity>(element.ToString(), options),
-            "messageDelete" => JsonSerializer.Deserialize<MessageDeleteActivity>(element.ToString(), options),
-            "messageReaction" => JsonSerializer.Deserialize<MessageReactionActivity>(element.ToString(), options),
-            _ => JsonSerializer.Deserialize<MessageActivity>(element.ToString(), options)
-        };
+        Attachments.Add(value);
+        return this;
     }
 
-    public override void Write(Utf8JsonWriter writer, IMessageActivity value, JsonSerializerOptions options)
+    public MessageActivity Mention(Account account)
     {
-        if (value is IMessageSendActivity send)
+        return (MessageActivity)Entity(new MentionEntity()
         {
-            JsonSerializer.Serialize(writer, send, options);
-            return;
-        }
-
-        if (value is IMessageUpdateActivity update)
-        {
-            JsonSerializer.Serialize(writer, update, options);
-            return;
-        }
-
-        if (value is IMessageDeleteActivity delete)
-        {
-            JsonSerializer.Serialize(writer, delete, options);
-            return;
-        }
-
-        if (value is IMessageReactionActivity reaction)
-        {
-            JsonSerializer.Serialize(writer, reaction, options);
-            return;
-        }
-
-        JsonSerializer.Serialize(writer, value, options);
+            Mentioned = account,
+            Text = $"<at>{account.Name}</at>"
+        });
     }
 }

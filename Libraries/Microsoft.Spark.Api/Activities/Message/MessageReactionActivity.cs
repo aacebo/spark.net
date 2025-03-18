@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace Microsoft.Spark.Api.Activities.Message;
 
-public interface IMessageReactionActivity : IMessageActivity
+public interface IMessageReactionActivity : IMessageActivityBase
 {
     [JsonPropertyName("reactionsAdded")]
     [JsonPropertyOrder(121)]
@@ -13,7 +13,7 @@ public interface IMessageReactionActivity : IMessageActivity
     public IList<MessageReaction>? ReactionsRemoved { get; set; }
 }
 
-public class MessageReactionActivity : MessageActivity, IMessageReactionActivity
+public class MessageReactionActivity : MessageActivityBase, IMessageReactionActivity
 {
     [JsonPropertyName("reactionsAdded")]
     [JsonPropertyOrder(121)]
