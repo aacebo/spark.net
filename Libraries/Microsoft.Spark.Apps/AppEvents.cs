@@ -12,7 +12,7 @@ public partial interface IApp
 
     public delegate Task ErrorEventHandler(IApp app, Events.ErrorEventArgs args);
     public delegate Task StartEventHandler(IApp app, Events.StartEventArgs args);
-    public delegate Task<object?> ActivityEventHandler(IApp app, IPlugin plugin, Events.ActivityEventArgs args);
+    public delegate Task<object?> ActivityEventHandler(IApp app, ISender plugin, Events.ActivityEventArgs args);
 }
 
 public partial class App

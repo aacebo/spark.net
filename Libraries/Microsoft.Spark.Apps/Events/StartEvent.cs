@@ -6,6 +6,6 @@ public class StartEventArgs : EventArgs
 }
 
 [AttributeUsage(AttributeTargets.Method, Inherited = true)]
-public class StartEventAttribute() : EventAttribute("start", typeof(StartEventAttribute))
+public class StartEventAttribute() : EventAttribute("start", typeof(StartEventArgs))
 {
 }

@@ -11,6 +11,6 @@ public class ActivityEventArgs : EventArgs
 }
 
 [AttributeUsage(AttributeTargets.Method, Inherited = true)]
-public class ActivityEventAttribute() : EventAttribute("activity", typeof(ActivityEventAttribute))
+public class ActivityEventAttribute() : EventAttribute("activity", typeof(ActivityEventArgs))
 {
 }

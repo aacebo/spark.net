@@ -36,14 +36,12 @@ public partial class App
 
         // broadcast plugin events
         plugin.ErrorEvent += (_, args) => ErrorEvent(this, args);
-        plugin.StartEvent += (_, args) => StartEvent(this, args);
         plugin.ActivityEvent += async (plugin, args) =>
         {
             await ActivityEvent(this, plugin, args);
             return null;
         };
 
-        plugin.OnInit(this);
         Plugins.Add(plugin);
         return this;
     }
