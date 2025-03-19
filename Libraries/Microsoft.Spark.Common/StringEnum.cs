@@ -3,17 +3,27 @@
 namespace Microsoft.Spark.Common;
 
 [System.Text.Json.Serialization.JsonConverter(typeof(JsonConverter<StringEnum>))]
-public class StringEnum(string value) : ICloneable, IComparable, IComparable<string>, IEquatable<string>
+public class StringEnum(string value, bool caseSensitive = true) : ICloneable, IComparable, IComparable<string>, IEquatable<string>
 {
     public string Value { get; set; } = value;
+
+    private readonly bool _caseSensitive = caseSensitive;
 
     public object Clone() => new StringEnum(Value);
     public int CompareTo(object? value) => Value.CompareTo(value);
     public int CompareTo(string? value) => Value.CompareTo(value);
-    public bool Equals(string? value) => Value.Equals(value);
-    public override bool Equals(object? value) => Value.Equals(value);
     public override string ToString() => Value;
     public override int GetHashCode() => Value.GetHashCode();
+    public override bool Equals(object? value) => Value.Equals(value);
+    public bool Equals(string? value)
+    {
+        if (!_caseSensitive)
+        {
+            return Value.ToLower().Equals(value?.ToLower());
+        }
+
+        return Value.Equals(value);
+    }
 
     public static bool operator ==(StringEnum? a, StringEnum? b) => a?.Value == b?.Value;
     public static bool operator !=(StringEnum? a, StringEnum? b) => a?.Value != b?.Value;

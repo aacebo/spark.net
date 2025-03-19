@@ -1,8 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="..\Microsoft.Spark.Api\Microsoft.Spark.Api.csproj" />
-    <ProjectReference Include="..\Microsoft.Spark.Cards\Microsoft.Spark.Cards.csproj" />
+    <ProjectReference Include="..\Microsoft.Spark.Common\Microsoft.Spark.Common.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

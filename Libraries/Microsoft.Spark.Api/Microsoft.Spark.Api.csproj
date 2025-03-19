@@ -2,6 +2,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Microsoft.Spark.Common\Microsoft.Spark.Common.csproj" />
+    <ProjectReference Include="..\Microsoft.Spark.Cards\Microsoft.Spark.Cards.csproj" />
   </ItemGroup>
 
   <ItemGroup>
