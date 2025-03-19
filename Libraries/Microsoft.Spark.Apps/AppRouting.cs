@@ -88,6 +88,14 @@ public partial class App : AppRouting
                         {
                             res = method.Invoke(null, [context.ToActivityType<EndOfConversationActivity>()]);
                         }
+                        else if (ActivityType.Command.Equals(attribute.Name))
+                        {
+                            res = method.Invoke(null, [context.ToActivityType<CommandActivity>()]);
+                        }
+                        else if (ActivityType.CommandResult.Equals(attribute.Name))
+                        {
+                            res = method.Invoke(null, [context.ToActivityType<CommandResultActivity>()]);
+                        }
 
                         if (res is Task task)
                             await task;

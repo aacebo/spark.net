@@ -187,6 +187,8 @@ public class ActivityJsonConverter : JsonConverter<Activity>
             "conversationUpdate" => JsonSerializer.Deserialize<ConversationUpdateActivity>(element.ToString(), options),
             "endOfConversation" => JsonSerializer.Deserialize<EndOfConversationActivity>(element.ToString(), options),
             "installationUpdate" => JsonSerializer.Deserialize<InstallUpdateActivity>(element.ToString(), options),
+            "command" => JsonSerializer.Deserialize<CommandActivity>(element.ToString(), options),
+            "commandResult" => JsonSerializer.Deserialize<CommandResultActivity>(element.ToString(), options),
             _ => JsonSerializer.Deserialize<Activity>(element.ToString(), options)
         };
     }
@@ -232,6 +234,18 @@ public class ActivityJsonConverter : JsonConverter<Activity>
         if (value is EndOfConversationActivity endOfConversation)
         {
             JsonSerializer.Serialize(writer, endOfConversation, options);
+            return;
+        }
+
+        if (value is CommandActivity command)
+        {
+            JsonSerializer.Serialize(writer, command, options);
+            return;
+        }
+
+        if (value is CommandResultActivity commandResult)
+        {
+            JsonSerializer.Serialize(writer, commandResult, options);
             return;
         }
 
