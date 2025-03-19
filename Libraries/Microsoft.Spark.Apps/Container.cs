@@ -78,6 +78,12 @@ internal class Container : IContainer
         }
 
         value = provider.Resolve();
+
+        if (value == null)
+        {
+            return default;
+        }
+
         _values.Add(key, value);
         return (T)value;
     }

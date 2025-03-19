@@ -47,9 +47,9 @@ public partial class App : IApp
         Container.Register(Logger);
         Container.Register(Client);
         Container.Register(Api);
-
-        if (Credentials != null)
-            Container.Register(Credentials);
+        Container.Register(new FactoryProvider(() => Credentials));
+        Container.Register("BotToken", new FactoryProvider(() => BotToken));
+        Container.Register("GraphToken", new FactoryProvider(() => GraphToken));
 
         RegisterAttributeRoutes();
     }

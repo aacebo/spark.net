@@ -2,14 +2,14 @@ namespace Microsoft.Spark.Apps;
 
 internal interface IProvider
 {
-    public object Resolve();
+    public object? Resolve();
 }
 
-internal class ValueProvider(object value) : IProvider
+internal class ValueProvider(object? value) : IProvider
 {
-    public object UseValue { get; set; } = value;
+    public object? UseValue { get; set; } = value;
 
-    public object Resolve()
+    public object? Resolve()
     {
         return UseValue;
     }
@@ -19,10 +19,10 @@ internal class FactoryProvider(FactoryProvider.FactoryProviderDelegate factory) 
 {
     public FactoryProviderDelegate UseFactory { get; set; } = factory;
 
-    public object Resolve()
+    public object? Resolve()
     {
         return UseFactory();
     }
 
-    public delegate object FactoryProviderDelegate();
+    public delegate object? FactoryProviderDelegate();
 }
