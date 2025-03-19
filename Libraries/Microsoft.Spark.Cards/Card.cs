@@ -1,7 +1,6 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
 
-using Microsoft.Spark.Cards.Actions;
 using Microsoft.Spark.Common;
 
 namespace Microsoft.Spark.Cards;
@@ -68,7 +67,7 @@ public class Card
     /// </summary>
     [JsonPropertyName("actions")]
     [JsonPropertyOrder(6)]
-    public IList<Actions.Action>? Actions { get; set; }
+    public IList<Action>? Actions { get; set; }
 
     /// <summary>
     /// An Action that will be invoked when the card is tapped or selected. Action.ShowCard is not supported.
@@ -178,7 +177,7 @@ public class Card
         return this;
     }
 
-    public Card AddActions(params Actions.Action[] value)
+    public Card AddActions(params Action[] value)
     {
         Actions ??= [];
 

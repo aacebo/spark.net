@@ -1,6 +1,6 @@
-namespace Microsoft.Spark.Cards.Actions;
+namespace Microsoft.Spark.Cards;
 
-public class SelectAction : Action
+public class SelectAction(CardType type) : Action(type)
 {
 
 }

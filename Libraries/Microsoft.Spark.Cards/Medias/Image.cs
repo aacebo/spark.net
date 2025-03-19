@@ -1,6 +1,5 @@
 using System.Text.Json.Serialization;
 
-using Microsoft.Spark.Cards.Actions;
 using Microsoft.Spark.Common;
 
 namespace Microsoft.Spark.Cards;
