@@ -36,4 +36,3 @@ public class AdaptiveCardInvokeAction
     [JsonPropertyOrder(3)]
     public IDictionary<string, object> Data { get; set; } = new Dictionary<string, object>();
 }
-
