@@ -11,7 +11,7 @@ namespace Microsoft.Spark.Cards;
 /// their layout to the available horizontal space.
 /// </summary>
 [JsonConverter(typeof(JsonConverter<TargetWidth>))]
-public partial class TargetWidth(string value) : StringEnum(value)
+public partial class TargetWidth(string value) : StringEnum(value, caseSensitive: false)
 {
     public static readonly TargetWidth VeryNarrow = new("VeryNarrow");
     public bool IsVeryNarrow => VeryNarrow.Equals(Value);

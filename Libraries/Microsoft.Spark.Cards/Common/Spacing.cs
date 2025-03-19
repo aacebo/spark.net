@@ -11,19 +11,19 @@ namespace Microsoft.Spark.Cards;
 public partial class Spacing(string value) : StringEnum(value, caseSensitive: false)
 {
     public static readonly Spacing Default = new("default");
-    public bool IsDefault => Default.Equals(Value.ToLower());
+    public bool IsDefault => Default.Equals(Value);
 
     public static readonly Spacing None = new("none");
-    public bool IsNone => None.Equals(Value.ToLower());
+    public bool IsNone => None.Equals(Value);
 
     public static readonly Spacing Small = new("small");
-    public bool IsSmall => Small.Equals(Value.ToLower());
+    public bool IsSmall => Small.Equals(Value);
 
     public static readonly Spacing Medium = new("medium");
-    public bool IsMedium => Medium.Equals(Value.ToLower());
+    public bool IsMedium => Medium.Equals(Value);
 
     public static readonly Spacing Large = new("large");
-    public bool IsLarge => Large.Equals(Value.ToLower());
+    public bool IsLarge => Large.Equals(Value);
 
     public static readonly Spacing ExtraLarge = new("extraLarge");
     public bool IsExtraLarge => ExtraLarge.Equals(Value);
