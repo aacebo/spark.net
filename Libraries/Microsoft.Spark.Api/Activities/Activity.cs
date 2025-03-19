@@ -12,7 +12,7 @@ public partial class ActivityType(string value) : StringEnum(value)
 }
 
 [JsonConverter(typeof(ActivityJsonConverter))]
-public class Activity(string type)
+public class Activity(ActivityType type)
 {
     [JsonPropertyName("id")]
     [JsonPropertyOrder(0)]
@@ -20,7 +20,7 @@ public class Activity(string type)
 
     [JsonPropertyName("type")]
     [JsonPropertyOrder(10)]
-    public ActivityType Type { get; init; } = new(type);
+    public ActivityType Type { get; init; } = type;
 
     [JsonPropertyName("replyToId")]
     [JsonPropertyOrder(20)]

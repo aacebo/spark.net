@@ -10,7 +10,7 @@ public partial class ActivityType : StringEnum
     public bool IsInstallUpdate => InstallUpdate.Equals(Value);
 }
 
-public class InstallUpdateActivity() : Activity("installationUpdate")
+public class InstallUpdateActivity() : Activity(ActivityType.InstallUpdate)
 {
     [JsonPropertyName("action")]
     [JsonPropertyOrder(31)]

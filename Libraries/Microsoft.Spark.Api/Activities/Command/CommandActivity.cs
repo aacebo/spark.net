@@ -10,7 +10,7 @@ public partial class ActivityType : StringEnum
     public bool IsCommand => Command.Equals(Value);
 }
 
-public class CommandActivity() : Activity("command")
+public class CommandActivity() : Activity(ActivityType.Command)
 {
     /// <summary>
     /// The name of the event.

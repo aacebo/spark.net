@@ -33,11 +33,11 @@ public class MessageUpdateActivity : Activity
     [JsonPropertyOrder(43)]
     public dynamic? Value { get; set; }
 
-    public MessageUpdateActivity() : base("messageUpdate")
+    public MessageUpdateActivity() : base(ActivityType.MessageUpdate)
     {
     }
 
-    public MessageUpdateActivity(string text) : base("messageUpdate")
+    public MessageUpdateActivity(string text) : base(ActivityType.MessageUpdate)
     {
         Text = text;
     }

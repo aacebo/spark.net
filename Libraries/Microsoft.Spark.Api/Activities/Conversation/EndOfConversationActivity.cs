@@ -10,7 +10,7 @@ public partial class ActivityType : StringEnum
     public bool IsEndOfConversation => EndOfConversation.Equals(Value);
 }
 
-public class EndOfConversationActivity() : Activity("endOfConversation")
+public class EndOfConversationActivity() : Activity(ActivityType.EndOfConversation)
 {
     /// <summary>
     /// The a code for endOfConversation activities that indicates why the conversation ended.

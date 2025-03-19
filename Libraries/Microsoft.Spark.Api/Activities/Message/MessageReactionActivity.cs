@@ -10,7 +10,7 @@ public partial class ActivityType : StringEnum
     public bool IsMessageReaction => MessageReaction.Equals(Value);
 }
 
-public class MessageReactionActivity() : Activity("messageReaction")
+public class MessageReactionActivity() : Activity(ActivityType.MessageReaction)
 {
     [JsonPropertyName("reactionsAdded")]
     [JsonPropertyOrder(121)]

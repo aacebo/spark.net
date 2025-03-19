@@ -8,6 +8,6 @@ public partial class ActivityType : StringEnum
     public bool IsMessageDelete => MessageDelete.Equals(Value);
 }
 
-public class MessageDeleteActivity() : Activity("messageDelete")
+public class MessageDeleteActivity() : Activity(ActivityType.MessageDelete)
 {
 }

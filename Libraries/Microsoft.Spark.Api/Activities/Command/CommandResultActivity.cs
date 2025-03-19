@@ -13,7 +13,7 @@ public partial class ActivityType : StringEnum
 /// <summary>
 /// Asynchronous external command result.
 /// </summary>
-public class CommandResultActivity() : Activity("commandResult")
+public class CommandResultActivity() : Activity(ActivityType.CommandResult)
 {
     /// <summary>
     /// The name of the event.

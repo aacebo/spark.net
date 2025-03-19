@@ -16,11 +16,11 @@ public class TypingActivity : Activity
     [JsonPropertyOrder(31)]
     public string? Text { get; set; }
 
-    public TypingActivity() : base("typing")
+    public TypingActivity() : base(ActivityType.Typing)
     {
     }
 
-    public TypingActivity(string text) : base("typing")
+    public TypingActivity(string text) : base(ActivityType.Typing)
     {
         Text = text;
     }
