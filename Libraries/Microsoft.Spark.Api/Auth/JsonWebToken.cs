@@ -1,24 +1,29 @@
 using System.IdentityModel.Tokens.Jwt;
+using System.Text.Json.Serialization;
 
 namespace Microsoft.Spark.Api.Auth;
 
 public class JsonWebToken : IToken
 {
+    [JsonPropertyName("appid")]
     public string? AppId
     {
         get => (string?)_token.Payload.GetValueOrDefault("appid");
     }
 
+    [JsonPropertyName("app_displayname")]
     public string? AppDisplayName
     {
         get => (string?)_token.Payload.GetValueOrDefault("app_displayname");
     }
 
+    [JsonPropertyName("tid")]
     public string? TenantId
     {
         get => (string?)_token.Payload.GetValueOrDefault("tid");
     }
 
+    [JsonPropertyName("serviceurl")]
     public string ServiceUrl
     {
         get
@@ -34,11 +39,13 @@ public class JsonWebToken : IToken
         }
     }
 
+    [JsonPropertyName("from")]
     public CallerType From
     {
         get => AppId == null ? CallerType.Azure : CallerType.Bot;
     }
 
+    [JsonPropertyName("fromId")]
     public string FromId
     {
         get => From.IsBot ? $"urn:botframework:aadappid:{AppId}" : "urn:botframework:azure";
