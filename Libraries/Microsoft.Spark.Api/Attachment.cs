@@ -55,7 +55,6 @@ public class Attachment
     /// <summary>
     /// Attachment Layout
     /// </summary>
-    /// <param name="value"></param>
     public class Layout(string value) : StringEnum(value)
     {
         public static readonly Layout List = new("list");
