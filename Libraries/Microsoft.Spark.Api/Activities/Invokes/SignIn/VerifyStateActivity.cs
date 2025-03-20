@@ -8,14 +8,14 @@ public partial class Name : StringEnum
 {
     public partial class SignIn : StringEnum
     {
-        public static readonly Name VerifyState = new("signin/verifyState");
+        public static readonly SignIn VerifyState = new("signin/verifyState");
         public bool IsVerifyState => VerifyState.Equals(Value);
     }
 }
 
 public static partial class SignIn
 {
-    public class VerifyStateActivity() : InvokeActivity(Name.SignIn.VerifyState)
+    public class VerifyStateActivity() : SignInInvokeActivity(Name.SignIn.VerifyState)
     {
         /// <summary>
         /// A value that is associated with the activity.

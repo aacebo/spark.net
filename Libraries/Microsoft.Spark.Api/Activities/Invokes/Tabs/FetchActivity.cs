@@ -8,14 +8,14 @@ public partial class Name : StringEnum
 {
     public partial class Tabs : StringEnum
     {
-        public static readonly Name Fetch = new("tab/fetch");
+        public static readonly Tabs Fetch = new("tab/fetch");
         public bool IsFetch => Fetch.Equals(Value);
     }
 }
 
 public static partial class Tabs
 {
-    public class FetchActivity() : InvokeActivity(Name.Tabs.Fetch)
+    public class FetchActivity() : TabInvokeActivity(Name.Tabs.Fetch)
     {
         /// <summary>
         /// A value that is associated with the activity.

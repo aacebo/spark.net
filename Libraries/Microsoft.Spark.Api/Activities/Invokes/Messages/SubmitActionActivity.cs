@@ -8,14 +8,14 @@ public partial class Name : StringEnum
 {
     public partial class Messages : StringEnum
     {
-        public static readonly Name SubmitAction = new("message/submitAction");
+        public static readonly Messages SubmitAction = new("message/submitAction");
         public bool IsSubmitAction => SubmitAction.Equals(Value);
     }
 }
 
 public static partial class Messages
 {
-    public class SubmitActionActivity() : InvokeActivity(Name.Messages.SubmitAction)
+    public class SubmitActionActivity() : MessageInvokeActivity(Name.Messages.SubmitAction)
     {
         /// <summary>
         /// A value that is associated with the activity.

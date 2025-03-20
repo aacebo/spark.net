@@ -6,13 +6,16 @@ namespace Microsoft.Spark.Api.Activities.Invokes;
 
 public partial class Name : StringEnum
 {
-    public static readonly Name AdaptiveCardAction = new("adaptiveCard/action");
-    public bool IsAdaptiveCardAction => AdaptiveCardAction.Equals(Value);
+    public partial class AdaptiveCards
+    {
+        public static readonly AdaptiveCards Action = new("adaptiveCard/action");
+        public bool IsAction => Action.Equals(Value);
+    }
 }
 
 public static partial class AdaptiveCards
 {
-    public class ActionActivity() : InvokeActivity(Name.AdaptiveCardAction)
+    public class ActionActivity() : AdaptiveCardInvokeActivity(Name.AdaptiveCards.Action)
     {
         /// <summary>
         /// A value that is associated with the activity.

@@ -8,14 +8,14 @@ public partial class Name : StringEnum
 {
     public partial class SignIn : StringEnum
     {
-        public static readonly Name TokenExchange = new("signin/tokenExchange");
+        public static readonly SignIn TokenExchange = new("signin/tokenExchange");
         public bool IsTokenExchange => TokenExchange.Equals(Value);
     }
 }
 
 public static partial class SignIn
 {
-    public class TokenExchangeActivity() : InvokeActivity(Name.SignIn.TokenExchange)
+    public class TokenExchangeActivity() : SignInInvokeActivity(Name.SignIn.TokenExchange)
     {
         /// <summary>
         /// A value that is associated with the activity.

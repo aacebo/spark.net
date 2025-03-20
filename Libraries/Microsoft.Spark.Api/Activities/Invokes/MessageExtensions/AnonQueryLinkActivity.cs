@@ -8,14 +8,14 @@ public partial class Name : StringEnum
 {
     public partial class MessageExtensions : StringEnum
     {
-        public static readonly Name AnonQueryLink = new("composeExtension/anonymousQueryLink");
+        public static readonly MessageExtensions AnonQueryLink = new("composeExtension/anonymousQueryLink");
         public bool IsAnonQueryLink => AnonQueryLink.Equals(Value);
     }
 }
 
 public static partial class MessageExtensions
 {
-    public class AnonQueryLinkActivity() : InvokeActivity(Name.MessageExtensions.AnonQueryLink)
+    public class AnonQueryLinkActivity() : MessageExtensionInvokeActivity(Name.MessageExtensions.AnonQueryLink)
     {
         /// <summary>
         /// A value that is associated with the activity.

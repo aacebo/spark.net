@@ -25,4 +25,39 @@ public class InvokeActivity(Invokes.Name name) : Activity(ActivityType.Invoke)
     [JsonPropertyName("value")]
     [JsonPropertyOrder(32)]
     public object? Value { get; set; }
+
+    public Invokes.AdaptiveCardInvokeActivity ToAdaptiveCard()
+    {
+        return (Invokes.AdaptiveCardInvokeActivity)this;
+    }
+
+    public Invokes.ConfigInvokeActivity ToConfig()
+    {
+        return (Invokes.ConfigInvokeActivity)this;
+    }
+
+    public Invokes.MessageExtensionInvokeActivity ToMessageExtension()
+    {
+        return (Invokes.MessageExtensionInvokeActivity)this;
+    }
+
+    public Invokes.MessageInvokeActivity ToMessage()
+    {
+        return (Invokes.MessageInvokeActivity)this;
+    }
+
+    public Invokes.SignInInvokeActivity ToSignIn()
+    {
+        return (Invokes.SignInInvokeActivity)this;
+    }
+
+    public Invokes.TabInvokeActivity ToTab()
+    {
+        return (Invokes.TabInvokeActivity)this;
+    }
+
+    public Invokes.TaskInvokeActivity ToTask()
+    {
+        return (Invokes.TaskInvokeActivity)this;
+    }
 }

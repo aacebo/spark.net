@@ -6,14 +6,14 @@ public partial class Name : StringEnum
 {
     public partial class MessageExtensions : StringEnum
     {
-        public static readonly Name CardButtonClicked = new("composeExtension/onCardButtonClicked");
+        public static readonly MessageExtensions CardButtonClicked = new("composeExtension/onCardButtonClicked");
         public bool IsCardButtonClicked => CardButtonClicked.Equals(Value);
     }
 }
 
 public static partial class MessageExtensions
 {
-    public class CardButtonClickedActivity() : InvokeActivity(Name.MessageExtensions.CardButtonClicked)
+    public class CardButtonClickedActivity() : MessageExtensionInvokeActivity(Name.MessageExtensions.CardButtonClicked)
     {
 
     }

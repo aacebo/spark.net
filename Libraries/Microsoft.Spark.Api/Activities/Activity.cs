@@ -40,7 +40,7 @@ public class Activity(ActivityType type)
 
     [JsonPropertyName("conversation")]
     [JsonPropertyOrder(60)]
-    public required Api.Conversation Conversation { get; set; }
+    public required Conversation Conversation { get; set; }
 
     [JsonPropertyName("relatesTo")]
     [JsonPropertyOrder(70)]
@@ -104,6 +104,16 @@ public class Activity(ActivityType type)
         });
     }
 
+    public CommandActivity ToCommand()
+    {
+        return (CommandActivity)this;
+    }
+
+    public CommandResultActivity ToCommandResult()
+    {
+        return (CommandResultActivity)this;
+    }
+
     public TypingActivity ToTyping()
     {
         return (TypingActivity)this;
@@ -142,6 +152,16 @@ public class Activity(ActivityType type)
     public EndOfConversationActivity ToEndOfConversation()
     {
         return (EndOfConversationActivity)this;
+    }
+
+    public EventActivity ToEvent()
+    {
+        return (EventActivity)this;
+    }
+
+    public InvokeActivity ToInvoke()
+    {
+        return (InvokeActivity)this;
     }
 
     public override string ToString()

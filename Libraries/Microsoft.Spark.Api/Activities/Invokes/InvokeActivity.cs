@@ -7,6 +7,12 @@ namespace Microsoft.Spark.Api.Activities.Invokes;
 [JsonConverter(typeof(JsonConverter<Name>))]
 public partial class Name(string value) : StringEnum(value)
 {
+    [JsonConverter(typeof(JsonConverter<AdaptiveCards>))]
+    public partial class AdaptiveCards(string value) : StringEnum(value)
+    {
+
+    }
+
     [JsonConverter(typeof(JsonConverter<Configs>))]
     public partial class Configs(string value) : StringEnum(value)
     {

@@ -6,14 +6,14 @@ public partial class Name : StringEnum
 {
     public partial class Configs
     {
-        public static readonly Name Submit = new("config/submit");
+        public static readonly Configs Submit = new("config/submit");
         public bool IsSubmit => Submit.Equals(Value);
     }
 }
 
 public static partial class Configs
 {
-    public class SubmitActivity : InvokeActivity
+    public class SubmitActivity : ConfigInvokeActivity
     {
         public SubmitActivity(object? value) : base(Name.Configs.Submit)
         {
