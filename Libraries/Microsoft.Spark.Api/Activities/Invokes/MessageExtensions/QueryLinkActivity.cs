@@ -8,20 +8,20 @@ public partial class Name : StringEnum
 {
     public partial class MessageExtensions : StringEnum
     {
-        public static readonly Name FetchTask = new("composeExtension/fetchTask");
-        public bool IsFetchTask => FetchTask.Equals(Value);
+        public static readonly Name QueryLink = new("composeExtension/queryLink");
+        public bool IsQueryLink => QueryLink.Equals(Value);
     }
 }
 
 public static partial class MessageExtensions
 {
-    public class FetchTaskActivity() : InvokeActivity(Name.MessageExtensions.FetchTask)
+    public class QueryLinkActivity() : InvokeActivity(Name.MessageExtensions.QueryLink)
     {
         /// <summary>
         /// A value that is associated with the activity.
         /// </summary>
         [JsonPropertyName("value")]
         [JsonPropertyOrder(32)]
-        public new required Api.MessageExtensions.Action Value { get; set; }
+        public new required AppBasedQueryLink Value { get; set; }
     }
 }
