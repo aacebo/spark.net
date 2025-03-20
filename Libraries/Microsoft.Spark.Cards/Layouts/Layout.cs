@@ -2,6 +2,9 @@ using System.Text.Json.Serialization;
 
 namespace Microsoft.Spark.Cards;
 
+/// <summary>
+/// controls how elements are displayed
+/// </summary>
 public abstract class Layout(CardType type)
 {
     /// <summary>
