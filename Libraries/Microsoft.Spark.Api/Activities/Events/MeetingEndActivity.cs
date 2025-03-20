@@ -2,28 +2,28 @@ using System.Text.Json.Serialization;
 
 using Microsoft.Spark.Common;
 
-namespace Microsoft.Spark.Api.Activities;
+namespace Microsoft.Spark.Api.Activities.Events;
 
-public partial class EventName : StringEnum
+public partial class Name : StringEnum
 {
-    public static readonly EventName MeetingStart = new("application/vnd.microsoft.meetingStart");
-    public bool IsMeetingStart => MeetingStart.Equals(Value);
+    public static readonly Name MeetingEnd = new("application/vnd.microsoft.meetingEnd");
+    public bool IsMeetingEnd => MeetingEnd.Equals(Value);
 }
 
-public class MeetingStartActivity() : EventActivity(EventName.MeetingStart)
+public class MeetingEndActivity() : EventActivity(Name.MeetingEnd)
 {
     /// <summary>
     /// A value that is associated with the activity.
     /// </summary>
     [JsonPropertyName("value")]
     [JsonPropertyOrder(32)]
-    public required MeetingStartActivityValue Value { get; set; }
+    public required MeetingEndActivityValue Value { get; set; }
 }
 
 /// <summary>
 /// A value that is associated with the activity.
 /// </summary>
-public class MeetingStartActivityValue
+public class MeetingEndActivityValue
 {
     /// <summary>
     /// The meeting's Id, encoded as a BASE64 string.
@@ -54,9 +54,9 @@ public class MeetingStartActivityValue
     public required string Title { get; set; }
 
     /// <summary>
-    /// Timestamp for meeting start, in UTC.
+    /// Timestamp for meeting end, in UTC.
     /// </summary>
-    [JsonPropertyName("startTime")]
+    [JsonPropertyName("endTime")]
     [JsonPropertyOrder(4)]
-    public required DateTime StartTime { get; set; }
+    public required DateTime EndTime { get; set; }
 }

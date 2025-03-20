@@ -8,10 +8,13 @@ public partial class Name : StringEnum
     public bool IsConfigFetch => ConfigFetch.Equals(Value);
 }
 
-public class ConfigFetchActivity : InvokeActivity
+public static partial class Configs
 {
-    public ConfigFetchActivity(object? value) : base(Name.ConfigFetch)
+    public class FetchActivity : InvokeActivity
     {
-        Value = value;
+        public FetchActivity(object? value) : base(Name.ConfigFetch)
+        {
+            Value = value;
+        }
     }
 }

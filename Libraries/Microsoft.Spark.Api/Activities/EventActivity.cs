@@ -10,17 +10,12 @@ public partial class ActivityType : StringEnum
     public bool IsEvent => Event.Equals(Value);
 }
 
-[JsonConverter(typeof(JsonConverter<EventName>))]
-public partial class EventName(string value) : StringEnum(value)
-{
-}
-
-public class EventActivity(EventName name) : Activity(ActivityType.Event)
+public class EventActivity(Events.Name name) : Activity(ActivityType.Event)
 {
     /// <summary>
     /// The name of the operation associated with an invoke or event activity.
     /// </summary>
     [JsonPropertyName("name")]
     [JsonPropertyOrder(31)]
-    public EventName Name { get; set; } = name;
+    public Events.Name Name { get; set; } = name;
 }

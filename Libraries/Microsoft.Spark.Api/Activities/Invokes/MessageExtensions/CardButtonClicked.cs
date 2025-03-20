@@ -8,7 +8,10 @@ public partial class Name : StringEnum
     public bool IsCardButtonClicked => CardButtonClicked.Equals(Value);
 }
 
-public class CardButtonClickedActivity() : InvokeActivity(Name.CardButtonClicked)
+public static partial class MessageExtensions
 {
+    public class CardButtonClickedActivity() : InvokeActivity(Name.CardButtonClicked)
+    {
 
+    }
 }

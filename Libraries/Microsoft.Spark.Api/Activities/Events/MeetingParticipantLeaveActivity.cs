@@ -2,28 +2,28 @@ using System.Text.Json.Serialization;
 
 using Microsoft.Spark.Common;
 
-namespace Microsoft.Spark.Api.Activities;
+namespace Microsoft.Spark.Api.Activities.Events;
 
-public partial class EventName : StringEnum
+public partial class Name : StringEnum
 {
-    public static readonly EventName MeetingParticipantJoin = new("application/vnd.microsoft.meetingParticipantJoin");
-    public bool IsMeetingParticipantJoin => MeetingParticipantJoin.Equals(Value);
+    public static readonly Name MeetingParticipantLeave = new("application/vnd.microsoft.meetingParticipantLeave");
+    public bool IsMeetingParticipantLeave => MeetingParticipantLeave.Equals(Value);
 }
 
-public class MeetingParticipantJoinActivity() : EventActivity(EventName.MeetingParticipantJoin)
+public class MeetingParticipantLeaveActivity() : EventActivity(Name.MeetingParticipantLeave)
 {
     /// <summary>
     /// A value that is associated with the activity.
     /// </summary>
     [JsonPropertyName("value")]
     [JsonPropertyOrder(32)]
-    public required MeetingParticipantJoinActivityValue Value { get; set; }
+    public required MeetingParticipantLeaveActivityValue Value { get; set; }
 }
 
 /// <summary>
 /// A value that is associated with the activity.
 /// </summary>
-public class MeetingParticipantJoinActivityValue
+public class MeetingParticipantLeaveActivityValue
 {
     /// <summary>
     /// The participants info.

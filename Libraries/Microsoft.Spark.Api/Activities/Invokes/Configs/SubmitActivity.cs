@@ -8,10 +8,13 @@ public partial class Name : StringEnum
     public bool IsConfigSubmit => ConfigSubmit.Equals(Value);
 }
 
-public class ConfigSubmitActivity : InvokeActivity
+public static partial class Configs
 {
-    public ConfigSubmitActivity(object? value) : base(Name.ConfigFetch)
+    public class SubmitActivity : InvokeActivity
     {
-        Value = value;
+        public SubmitActivity(object? value) : base(Name.ConfigFetch)
+        {
+            Value = value;
+        }
     }
 }
