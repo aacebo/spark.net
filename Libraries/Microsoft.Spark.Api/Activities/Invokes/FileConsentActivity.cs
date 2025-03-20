@@ -2,15 +2,15 @@ using System.Text.Json.Serialization;
 
 using Microsoft.Spark.Common;
 
-namespace Microsoft.Spark.Api.Activities;
+namespace Microsoft.Spark.Api.Activities.Invokes;
 
-public partial class InvokeName : StringEnum
+public partial class Name : StringEnum
 {
-    public static readonly InvokeName FileConsent = new("fileConsent/invoke");
+    public static readonly Name FileConsent = new("fileConsent/invoke");
     public bool IsFileConsent => FileConsent.Equals(Value);
 }
 
-public class FileConsentActivity() : InvokeActivity(InvokeName.FileConsent)
+public class FileConsentActivity() : InvokeActivity(Name.FileConsent)
 {
     /// <summary>
     /// A value that is associated with the activity.

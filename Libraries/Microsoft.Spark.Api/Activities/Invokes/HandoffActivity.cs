@@ -2,15 +2,15 @@ using System.Text.Json.Serialization;
 
 using Microsoft.Spark.Common;
 
-namespace Microsoft.Spark.Api.Activities;
+namespace Microsoft.Spark.Api.Activities.Invokes;
 
-public partial class InvokeName : StringEnum
+public partial class Name : StringEnum
 {
-    public static readonly InvokeName Handoff = new("handoff/action");
+    public static readonly Name Handoff = new("handoff/action");
     public bool IsHandoff => Handoff.Equals(Value);
 }
 
-public class HandoffActivity() : InvokeActivity(InvokeName.Handoff)
+public class HandoffActivity() : InvokeActivity(Name.Handoff)
 {
     /// <summary>
     /// A value that is associated with the activity.

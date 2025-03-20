@@ -1,12 +1,12 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Microsoft.Spark.Api;
+namespace Microsoft.Spark.Api.TokenExchange;
 
 /// <summary>
 /// Defines information required to enable on-behalf-of single sign-on user authentication. Maps to the TokenExchangeResource type defined by the Bot Framework (https://docs.microsoft.com/dotnet/api/microsoft.bot.schema.tokenexchangeresource)
 /// </summary>
-public class TokenExchangeResource
+public class Resource
 {
     /// <summary>
     /// The unique identified of this token exchange instance.

@@ -1,11 +1,11 @@
 using System.Text.Json.Serialization;
 
-namespace Microsoft.Spark.Api;
+namespace Microsoft.Spark.Api.Token;
 
 /// <summary>
 /// A request to receive a user token
 /// </summary>
-public class TokenRequest
+public class Request
 {
     /// <summary>
     /// The provider to request a user token from

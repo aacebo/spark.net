@@ -6,14 +6,14 @@ namespace Microsoft.Spark.Api;
 /// Defines the structure that arrives in the Activity.Value.Action for Invoke
 /// activity with Name of 'adaptiveCard/action'.
 /// </summary>
-public class AdaptiveCardInvokeAction
+public class InvokeAction
 {
     /// <summary>
     /// The Type of this Adaptive Card Invoke Action.
     /// </summary>
     [JsonPropertyName("type")]
     [JsonPropertyOrder(0)]
-    public required AdaptiveCardActionType Type { get; set; }
+    public required ActionType Type { get; set; }
 
     /// <summary>
     /// The id of this Adaptive Card Invoke Action.

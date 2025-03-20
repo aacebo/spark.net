@@ -1,11 +1,11 @@
 using System.Text.Json.Serialization;
 
-namespace Microsoft.Spark.Api;
+namespace Microsoft.Spark.Api.Token;
 
 /// <summary>
 /// The status of a particular token.
 /// </summary>
-public class TokenStatus
+public class Status
 {
     /// <summary>
     /// The channel ID.

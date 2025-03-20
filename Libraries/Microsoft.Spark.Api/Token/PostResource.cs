@@ -1,11 +1,11 @@
 using System.Text.Json.Serialization;
 
-namespace Microsoft.Spark.Api;
+namespace Microsoft.Spark.Api.Token;
 
 /// <summary>
 /// An interface representing TokenPostResource.
 /// </summary>
-public class TokenPostResource
+public class PostResource
 {
     [JsonPropertyName("sasUrl")]
     [JsonPropertyOrder(0)]

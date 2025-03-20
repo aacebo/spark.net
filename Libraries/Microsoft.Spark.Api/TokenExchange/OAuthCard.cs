@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace Microsoft.Spark.Api;
+namespace Microsoft.Spark.Api.TokenExchange;
 
 /// <summary>
 /// A card representing a request to perform a sign in via OAuth
@@ -26,14 +26,14 @@ public class OAuthCard
     /// </summary>
     [JsonPropertyName("tokenExchangeResource")]
     [JsonPropertyOrder(2)]
-    public TokenExchangeResource? TokenExchangeResource { get; set; }
+    public Resource? TokenExchangeResource { get; set; }
 
     /// <summary>
     /// The token for directly post a token to token service
     /// </summary>
     [JsonPropertyName("tokenPostResource")]
     [JsonPropertyOrder(3)]
-    public TokenPostResource? TokenPostResource { get; set; }
+    public Token.PostResource? TokenPostResource { get; set; }
 
     /// <summary>
     /// Action to use to perform signin

@@ -1,12 +1,12 @@
 using System.Text.Json.Serialization;
 
-namespace Microsoft.Spark.Api;
+namespace Microsoft.Spark.Api.O365;
 
 /// <summary>
 /// An interface representing O365ConnectorCardActionQuery.
 /// O365 connector card HttpPOST invoke query
 /// </summary>
-public class O365ConnectorCardActionQuery
+public class ConnectorCardActionQuery
 {
     /// <summary>
     /// The results of body string defined in

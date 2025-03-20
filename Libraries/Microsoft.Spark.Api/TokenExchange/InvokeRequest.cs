@@ -1,11 +1,11 @@
 using System.Text.Json.Serialization;
 
-namespace Microsoft.Spark.Api;
+namespace Microsoft.Spark.Api.TokenExchange;
 
 /// <summary>
 /// A request to exchange a token.
 /// </summary>
-public class TokenExchangeInvokeRequest
+public class InvokeRequest
 {
     /// <summary>
     /// The id from the OAuthCard.

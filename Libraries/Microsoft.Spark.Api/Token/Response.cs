@@ -1,11 +1,11 @@
 using System.Text.Json.Serialization;
 
-namespace Microsoft.Spark.Api;
+namespace Microsoft.Spark.Api.Token;
 
 /// <summary>
 /// A response that includes a user token
 /// </summary>
-public class TokenResponse
+public class Response
 {
     /// <summary>
     /// the channel id

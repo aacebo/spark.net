@@ -1,12 +1,12 @@
 using System.Text.Json.Serialization;
 
-namespace Microsoft.Spark.Api;
+namespace Microsoft.Spark.Api.AdaptiveCard;
 
 /// <summary>
 /// Defines the structure that is returned as the result of an Invoke activity with
 /// Name of 'adaptiveCard/action'.
 /// </summary>
-public class AdaptiveCardActionResponse(ContentType contentType)
+public class ActionResponse(ContentType contentType)
 {
     /// <summary>
     /// The Card Action response status code.
@@ -33,7 +33,7 @@ public class AdaptiveCardActionResponse(ContentType contentType)
     /// The request was successfully processed, and the response includes
     /// an Adaptive Card that the client should display in place of the current one
     /// </summary>
-    public class Card : AdaptiveCardActionResponse
+    public class Card : ActionResponse
     {
         /// <summary>
         /// The card response object.
@@ -52,7 +52,7 @@ public class AdaptiveCardActionResponse(ContentType contentType)
     /// <summary>
     /// The request was successfully processed, and the response includes a message that the client should display
     /// </summary>
-    public class Message : AdaptiveCardActionResponse
+    public class Message : ActionResponse
     {
         /// <summary>
         /// the response message.
@@ -72,7 +72,7 @@ public class AdaptiveCardActionResponse(ContentType contentType)
     /// `400`: The incoming request was invalid
     /// `500`: An unexpected error occurred
     /// </summary>
-    public class Error : AdaptiveCardActionResponse
+    public class Error : ActionResponse
     {
         /// <summary>
         /// The error response object.
@@ -91,16 +91,16 @@ public class AdaptiveCardActionResponse(ContentType contentType)
     /// <summary>
     /// The client needs to prompt the user to authenticate
     /// </summary>
-    public class Login : AdaptiveCardActionResponse
+    public class Login : ActionResponse
     {
         /// <summary>
         /// The auth response object.
         /// </summary>
         [JsonPropertyName("value")]
         [JsonPropertyOrder(2)]
-        public new OAuthCard Value { get; set; }
+        public new TokenExchange.OAuthCard Value { get; set; }
 
-        public Login(OAuthCard value) : base(ContentType.LoginRequest)
+        public Login(TokenExchange.OAuthCard value) : base(ContentType.LoginRequest)
         {
             Value = value;
             StatusCode = 401;
@@ -110,7 +110,7 @@ public class AdaptiveCardActionResponse(ContentType contentType)
     /// <summary>
     /// The authentication state passed by the client was incorrect and authentication failed
     /// </summary>
-    public class IncorrectAuthCode : AdaptiveCardActionResponse
+    public class IncorrectAuthCode : ActionResponse
     {
         public IncorrectAuthCode() : base(ContentType.IncorrectAuthCode)
         {
@@ -121,7 +121,7 @@ public class AdaptiveCardActionResponse(ContentType contentType)
     /// <summary>
     /// The SSO authentication flow failed
     /// </summary>
-    public class PreConditionFailed : AdaptiveCardActionResponse
+    public class PreConditionFailed : ActionResponse
     {
         /// <summary>
         /// The auth response object.
