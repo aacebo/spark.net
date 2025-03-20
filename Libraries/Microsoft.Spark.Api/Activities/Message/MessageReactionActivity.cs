@@ -14,13 +14,13 @@ public class MessageReactionActivity() : Activity(ActivityType.MessageReaction)
 {
     [JsonPropertyName("reactionsAdded")]
     [JsonPropertyOrder(121)]
-    public IList<MessageReaction>? ReactionsAdded { get; set; }
+    public IList<Messages.Reaction>? ReactionsAdded { get; set; }
 
     [JsonPropertyName("reactionsRemoved")]
     [JsonPropertyOrder(122)]
-    public IList<MessageReaction>? ReactionsRemoved { get; set; }
+    public IList<Messages.Reaction>? ReactionsRemoved { get; set; }
 
-    public MessageReactionActivity AddReaction(MessageReaction reaction)
+    public MessageReactionActivity AddReaction(Messages.Reaction reaction)
     {
         if (ReactionsAdded == null)
         {
@@ -31,7 +31,7 @@ public class MessageReactionActivity() : Activity(ActivityType.MessageReaction)
         return this;
     }
 
-    public MessageReactionActivity RemoveReaction(MessageReaction reaction)
+    public MessageReactionActivity RemoveReaction(Messages.Reaction reaction)
     {
         if (ReactionsRemoved == null)
         {

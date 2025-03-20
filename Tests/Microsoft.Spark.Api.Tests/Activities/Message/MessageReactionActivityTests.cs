@@ -29,13 +29,13 @@ public class MessageReactionActivityTests
                 Name = "test-bot",
                 Role = Role.Bot
             }
-        }.AddReaction(new MessageReaction()
+        }.AddReaction(new Messages.Reaction()
         {
-            Type = MessageReactionType.Like,
-            User = new MessageUser()
+            Type = Messages.ReactionType.Like,
+            User = new Messages.User()
             {
                 Id = "100",
-                Type = UserIdentityType.AnonymousGuest
+                UserIdentityType = Messages.UserIdentityType.AnonymousGuest
             }
         });
 
@@ -74,13 +74,13 @@ public class MessageReactionActivityTests
                 Name = "test-bot",
                 Role = Role.Bot
             }
-        }.AddReaction(new MessageReaction()
+        }.AddReaction(new Messages.Reaction()
         {
-            Type = MessageReactionType.Like,
-            User = new MessageUser()
+            Type = Messages.ReactionType.Like,
+            User = new Messages.User()
             {
                 Id = "100",
-                Type = UserIdentityType.AnonymousGuest
+                UserIdentityType = Messages.UserIdentityType.AnonymousGuest
             }
         });
 
@@ -119,13 +119,13 @@ public class MessageReactionActivityTests
                 Name = "test-bot",
                 Role = Role.Bot
             }
-        }.AddReaction(new MessageReaction()
+        }.AddReaction(new Messages.Reaction()
         {
-            Type = MessageReactionType.Like,
-            User = new MessageUser()
+            Type = Messages.ReactionType.Like,
+            User = new Messages.User()
             {
                 Id = "100",
-                Type = UserIdentityType.AnonymousGuest
+                UserIdentityType = Messages.UserIdentityType.AnonymousGuest
             }
         });
 
@@ -166,13 +166,13 @@ public class MessageReactionActivityTests
                 Name = "test-bot",
                 Role = Role.Bot
             }
-        }.AddReaction(new MessageReaction()
+        }.AddReaction(new Messages.Reaction()
         {
-            Type = MessageReactionType.Like,
-            User = new MessageUser()
+            Type = Messages.ReactionType.Like,
+            User = new Messages.User()
             {
                 Id = "100",
-                Type = UserIdentityType.AnonymousGuest
+                UserIdentityType = Messages.UserIdentityType.AnonymousGuest
             }
         });
 
@@ -204,13 +204,13 @@ public class MessageReactionActivityTests
                 Name = "test-bot",
                 Role = Role.Bot
             }
-        }.AddReaction(new MessageReaction()
+        }.AddReaction(new Messages.Reaction()
         {
-            Type = MessageReactionType.Like,
-            User = new MessageUser()
+            Type = Messages.ReactionType.Like,
+            User = new Messages.User()
             {
                 Id = "100",
-                Type = UserIdentityType.AnonymousGuest
+                UserIdentityType = Messages.UserIdentityType.AnonymousGuest
             }
         });
 

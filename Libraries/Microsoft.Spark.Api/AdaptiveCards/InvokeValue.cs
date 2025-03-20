@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace Microsoft.Spark.Api.AdaptiveCard;
+namespace Microsoft.Spark.Api.AdaptiveCards;
 
 /// <summary>
 /// Defines the structure that arrives in the Activity.Value for Invoke activity with

@@ -38,5 +38,7 @@ public class OAuthCard
     /// <summary>
     /// Action to use to perform signin
     /// </summary>
+    [JsonPropertyName("buttons")]
+    [JsonPropertyOrder(4)]
     public IList<Cards.Action> Buttons { get; set; } = [];
 }

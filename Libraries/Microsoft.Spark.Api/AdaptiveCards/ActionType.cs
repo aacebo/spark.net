@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 using Microsoft.Spark.Common;
 
-namespace Microsoft.Spark.Api.AdaptiveCard;
+namespace Microsoft.Spark.Api.AdaptiveCards;
 
 [JsonConverter(typeof(JsonConverter<ActionType>))]
 public partial class ActionType(string value) : StringEnum(value)
