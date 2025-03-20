@@ -18,4 +18,28 @@ public partial class Name(string value) : StringEnum(value)
     {
 
     }
+
+    [JsonConverter(typeof(JsonConverter<Messages>))]
+    public partial class Messages(string value) : StringEnum(value)
+    {
+
+    }
+
+    [JsonConverter(typeof(JsonConverter<SignIn>))]
+    public partial class SignIn(string value) : StringEnum(value)
+    {
+
+    }
+
+    [JsonConverter(typeof(JsonConverter<Tabs>))]
+    public partial class Tabs(string value) : StringEnum(value)
+    {
+
+    }
+
+    [JsonConverter(typeof(JsonConverter<Tasks>))]
+    public partial class Tasks(string value) : StringEnum(value)
+    {
+
+    }
 }
