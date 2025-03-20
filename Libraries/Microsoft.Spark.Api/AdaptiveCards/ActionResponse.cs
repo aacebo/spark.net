@@ -98,9 +98,9 @@ public class ActionResponse(ContentType contentType)
         /// </summary>
         [JsonPropertyName("value")]
         [JsonPropertyOrder(2)]
-        public new TokenExchange.OAuthCard Value { get; set; }
+        public new Cards.OAuthCard Value { get; set; }
 
-        public Login(TokenExchange.OAuthCard value) : base(ContentType.LoginRequest)
+        public Login(Cards.OAuthCard value) : base(ContentType.LoginRequest)
         {
             Value = value;
             StatusCode = 401;

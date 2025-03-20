@@ -82,4 +82,137 @@ public class Attachment
             Content = content;
         }
     }
+
+    /// <summary>
+    /// AnimationCard Attachment
+    /// </summary>
+    public class AnimationCard : Attachment
+    {
+        /// <summary>
+        /// The Adaptive Card Content
+        /// </summary>
+        [JsonPropertyName("content")]
+        [JsonPropertyOrder(4)]
+        public new Cards.AnimationCard Content { get; set; }
+
+        public AnimationCard(Cards.AnimationCard content) : base()
+        {
+            ContentType = ContentType.AnimationCard;
+            Content = content;
+        }
+    }
+
+    /// <summary>
+    /// AudioCard Attachment
+    /// </summary>
+    public class AudioCard : Attachment
+    {
+        /// <summary>
+        /// The Adaptive Card Content
+        /// </summary>
+        [JsonPropertyName("content")]
+        [JsonPropertyOrder(4)]
+        public new Cards.AudioCard Content { get; set; }
+
+        public AudioCard(Cards.AudioCard content) : base()
+        {
+            ContentType = ContentType.AudioCard;
+            Content = content;
+        }
+    }
+
+    /// <summary>
+    /// HeroCard Attachment
+    /// </summary>
+    public class HeroCard : Attachment
+    {
+        /// <summary>
+        /// The Adaptive Card Content
+        /// </summary>
+        [JsonPropertyName("content")]
+        [JsonPropertyOrder(4)]
+        public new Cards.HeroCard Content { get; set; }
+
+        public HeroCard(Cards.HeroCard content) : base()
+        {
+            ContentType = ContentType.HeroCard;
+            Content = content;
+        }
+    }
+
+    /// <summary>
+    /// OAuthCard Attachment
+    /// </summary>
+    public class OAuthCard : Attachment
+    {
+        /// <summary>
+        /// The Adaptive Card Content
+        /// </summary>
+        [JsonPropertyName("content")]
+        [JsonPropertyOrder(4)]
+        public new Cards.OAuthCard Content { get; set; }
+
+        public OAuthCard(Cards.OAuthCard content) : base()
+        {
+            ContentType = ContentType.OAuthCard;
+            Content = content;
+        }
+    }
+
+    /// <summary>
+    /// SignInCard Attachment
+    /// </summary>
+    public class SignInCard : Attachment
+    {
+        /// <summary>
+        /// The Adaptive Card Content
+        /// </summary>
+        [JsonPropertyName("content")]
+        [JsonPropertyOrder(4)]
+        public new Cards.SignInCard Content { get; set; }
+
+        public SignInCard(Cards.SignInCard content) : base()
+        {
+            ContentType = ContentType.SignInCard;
+            Content = content;
+        }
+    }
+
+    /// <summary>
+    /// ThumbnailCard Attachment
+    /// </summary>
+    public class ThumbnailCard : Attachment
+    {
+        /// <summary>
+        /// The Adaptive Card Content
+        /// </summary>
+        [JsonPropertyName("content")]
+        [JsonPropertyOrder(4)]
+        public new Cards.ThumbnailCard Content { get; set; }
+
+        public ThumbnailCard(Cards.ThumbnailCard content) : base()
+        {
+            ContentType = ContentType.ThumbnailCard;
+            Content = content;
+        }
+    }
+
+    /// <summary>
+    /// VideoCard Attachment
+    /// </summary>
+    public class VideoCard : Attachment
+    {
+        /// <summary>
+        /// The Adaptive Card Content
+        /// </summary>
+        [JsonPropertyName("content")]
+        [JsonPropertyOrder(4)]
+        public new Cards.VideoCard Content { get; set; }
+
+        public VideoCard(Cards.VideoCard content) : base()
+        {
+            ContentType = ContentType.VideoCard;
+            Content = content;
+        }
+    }
 }
