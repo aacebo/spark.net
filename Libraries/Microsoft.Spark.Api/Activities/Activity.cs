@@ -162,6 +162,8 @@ public class ActivityJsonConverter : JsonConverter<Activity>
             "installationUpdate" => JsonSerializer.Deserialize<InstallUpdateActivity>(element.ToString(), options),
             "command" => JsonSerializer.Deserialize<CommandActivity>(element.ToString(), options),
             "commandResult" => JsonSerializer.Deserialize<CommandResultActivity>(element.ToString(), options),
+            "event" => JsonSerializer.Deserialize<EventActivity>(element.ToString(), options),
+            "invoke" => JsonSerializer.Deserialize<InvokeActivity>(element.ToString(), options),
             _ => JsonSerializer.Deserialize<Activity>(element.ToString(), options)
         };
     }
@@ -219,6 +221,18 @@ public class ActivityJsonConverter : JsonConverter<Activity>
         if (value is CommandResultActivity commandResult)
         {
             JsonSerializer.Serialize(writer, commandResult, options);
+            return;
+        }
+
+        if (value is EventActivity @event)
+        {
+            JsonSerializer.Serialize(writer, @event, options);
+            return;
+        }
+
+        if (value is InvokeActivity invoke)
+        {
+            JsonSerializer.Serialize(writer, invoke, options);
             return;
         }
 
