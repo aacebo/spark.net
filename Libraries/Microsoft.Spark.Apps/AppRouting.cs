@@ -5,9 +5,9 @@ using Microsoft.Spark.Apps.Routing;
 
 namespace Microsoft.Spark.Apps;
 
-public partial interface IApp : IAppRouting;
+public partial interface IApp : IRoutingModule;
 
-public partial class App : AppRouting
+public partial class App : RoutingModule
 {
     protected void RegisterAttributeRoutes()
     {

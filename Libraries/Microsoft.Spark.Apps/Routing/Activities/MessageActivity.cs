@@ -9,16 +9,16 @@ public class MessageAttribute() : ActivityAttribute<MessageActivity>(ActivityTyp
 {
 }
 
-public partial interface IAppRouting
+public partial interface IRoutingModule
 {
-    public IAppRouting OnMessage(Func<IContext<MessageActivity>, Task> handler);
-    public IAppRouting OnMessage(string pattern, Func<IContext<MessageActivity>, Task> handler);
-    public IAppRouting OnMessage(Regex pattern, Func<IContext<MessageActivity>, Task> handler);
+    public IRoutingModule OnMessage(Func<IContext<MessageActivity>, Task> handler);
+    public IRoutingModule OnMessage(string pattern, Func<IContext<MessageActivity>, Task> handler);
+    public IRoutingModule OnMessage(Regex pattern, Func<IContext<MessageActivity>, Task> handler);
 }
 
-public partial class AppRouting : IAppRouting
+public partial class RoutingModule : IRoutingModule
 {
-    public IAppRouting OnMessage(Func<IContext<MessageActivity>, Task> handler)
+    public IRoutingModule OnMessage(Func<IContext<MessageActivity>, Task> handler)
     {
         Router.Register(new Route()
         {
@@ -37,7 +37,7 @@ public partial class AppRouting : IAppRouting
         return this;
     }
 
-    public IAppRouting OnMessage(string pattern, Func<IContext<MessageActivity>, Task> handler)
+    public IRoutingModule OnMessage(string pattern, Func<IContext<MessageActivity>, Task> handler)
     {
         Router.Register(new Route()
         {
@@ -56,7 +56,7 @@ public partial class AppRouting : IAppRouting
         return this;
     }
 
-    public IAppRouting OnMessage(Regex regex, Func<IContext<MessageActivity>, Task> handler)
+    public IRoutingModule OnMessage(Regex regex, Func<IContext<MessageActivity>, Task> handler)
     {
         Router.Register(new Route()
         {

@@ -7,14 +7,14 @@ public class MessageUpdateAttribute() : ActivityAttribute<MessageUpdateActivity>
 {
 }
 
-public partial interface IAppRouting
+public partial interface IRoutingModule
 {
-    public IAppRouting OnMessageUpdate(Func<IContext<MessageUpdateActivity>, Task> handler);
+    public IRoutingModule OnMessageUpdate(Func<IContext<MessageUpdateActivity>, Task> handler);
 }
 
-public partial class AppRouting : IAppRouting
+public partial class RoutingModule : IRoutingModule
 {
-    public IAppRouting OnMessageUpdate(Func<IContext<MessageUpdateActivity>, Task> handler)
+    public IRoutingModule OnMessageUpdate(Func<IContext<MessageUpdateActivity>, Task> handler)
     {
         Router.Register(new Route()
         {

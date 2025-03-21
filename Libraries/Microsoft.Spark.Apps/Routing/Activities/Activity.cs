@@ -16,23 +16,23 @@ public partial class ActivityAttribute<TActivity>(string name = "activity") : At
     public readonly Type Type = typeof(TActivity);
 }
 
-public partial interface IAppRouting
+public partial interface IRoutingModule
 {
-    public IAppRouting OnActivity(Func<IContext<Activity>, Task> handler);
-    public IAppRouting OnActivity(Func<Activity, bool> select, Func<IContext<Activity>, Task> handler);
+    public IRoutingModule OnActivity(Func<IContext<Activity>, Task> handler);
+    public IRoutingModule OnActivity(Func<Activity, bool> select, Func<IContext<Activity>, Task> handler);
 }
 
-public partial class AppRouting : IAppRouting
+public partial class RoutingModule : IRoutingModule
 {
     protected IRouter Router { get; } = new Router();
 
-    public IAppRouting OnActivity(Func<IContext<Activity>, Task> handler)
+    public IRoutingModule OnActivity(Func<IContext<Activity>, Task> handler)
     {
         Router.Register(handler);
         return this;
     }
 
-    public IAppRouting OnActivity(Func<Activity, bool> select, Func<IContext<Activity>, Task> handler)
+    public IRoutingModule OnActivity(Func<Activity, bool> select, Func<IContext<Activity>, Task> handler)
     {
         Router.Register(new Route()
         {
