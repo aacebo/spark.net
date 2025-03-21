@@ -19,6 +19,8 @@ public partial class ActivityAttribute<TActivity>(string name = "activity") : At
 public partial interface IRoutingModule
 {
     public IRoutingModule OnActivity(Func<IContext<Activity>, Task> handler);
+    public IRoutingModule OnActivity(ActivityType type, Func<IContext<Activity>, Task> handler);
+    public IRoutingModule OnActivity<TActivity>(Func<IContext<TActivity>, Task> handler) where TActivity : Activity;
     public IRoutingModule OnActivity(Func<Activity, bool> select, Func<IContext<Activity>, Task> handler);
 }
 
@@ -29,6 +31,28 @@ public partial class RoutingModule : IRoutingModule
     public IRoutingModule OnActivity(Func<IContext<Activity>, Task> handler)
     {
         Router.Register(handler);
+        return this;
+    }
+
+    public IRoutingModule OnActivity(ActivityType type, Func<IContext<Activity>, Task> handler)
+    {
+        Router.Register(new Route()
+        {
+            Handler = handler,
+            Select = (activity) => activity.Type.Equals(type),
+        });
+
+        return this;
+    }
+
+    public IRoutingModule OnActivity<TActivity>(Func<IContext<TActivity>, Task> handler) where TActivity : Activity
+    {
+        Router.Register(new Route()
+        {
+            Handler = (context) => handler(context.ToActivityType<TActivity>()),
+            Select = (activity) => activity.GetType() == typeof(TActivity),
+        });
+
         return this;
     }
 
