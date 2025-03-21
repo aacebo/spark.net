@@ -80,22 +80,22 @@ public class HttpClient : IHttpClient
         {
             if (key.StartsWith("Content-"))
             {
-                httpRequest.Content?.Headers.Add(key, value);
+                httpRequest.Content?.Headers.TryAddWithoutValidation(key, value);
                 continue;
             }
 
-            httpRequest.Headers.Add(key, value);
+            httpRequest.Headers.TryAddWithoutValidation(key, value);
         }
 
         foreach (var (key, value) in request.Headers)
         {
             if (key.StartsWith("Content-"))
             {
-                httpRequest.Content?.Headers.Add(key, value);
+                httpRequest.Content?.Headers.TryAddWithoutValidation(key, value);
                 continue;
             }
 
-            httpRequest.Headers.Add(key, value);
+            httpRequest.Headers.TryAddWithoutValidation(key, value);
         }
 
         if (request.Body != null)

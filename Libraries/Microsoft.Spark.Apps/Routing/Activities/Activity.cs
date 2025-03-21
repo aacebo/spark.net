@@ -9,13 +9,6 @@ public partial class ActivityAttribute(string name = "activity", Type? type = nu
     public readonly Type Type = type ?? typeof(Activity);
 }
 
-[AttributeUsage(AttributeTargets.Method, Inherited = true)]
-public partial class ActivityAttribute<TActivity>(string name = "activity") : Attribute where TActivity : Activity
-{
-    public readonly string Name = name;
-    public readonly Type Type = typeof(TActivity);
-}
-
 public partial interface IRoutingModule
 {
     public IRoutingModule OnActivity(Func<IContext<Activity>, Task> handler);

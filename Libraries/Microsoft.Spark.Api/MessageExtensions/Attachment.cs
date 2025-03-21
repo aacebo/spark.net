@@ -14,6 +14,11 @@ public class Attachment : Api.Attachment
     [JsonPropertyOrder(6)]
     public Api.Attachment? Preview { get; set; }
 
+    public Attachment() : base()
+    {
+
+    }
+
     public Attachment(string contentType) : base(contentType)
     {
     }

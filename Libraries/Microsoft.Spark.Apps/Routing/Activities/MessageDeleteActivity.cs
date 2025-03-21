@@ -3,7 +3,7 @@ using Microsoft.Spark.Api.Activities;
 namespace Microsoft.Spark.Apps.Routing;
 
 [AttributeUsage(AttributeTargets.Method, Inherited = true)]
-public class MessageDeleteAttribute() : ActivityAttribute<MessageDeleteActivity>(ActivityType.MessageDelete.Value)
+public class MessageDeleteAttribute() : ActivityAttribute(ActivityType.MessageDelete.Value, typeof(MessageDeleteActivity))
 {
 }
 

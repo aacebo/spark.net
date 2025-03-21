@@ -88,7 +88,7 @@ public partial class App
 
             if (dependency == null)
             {
-                if (attribute.Optional == true) continue;
+                if (attribute.Optional) continue;
                 throw new InvalidOperationException($"dependency '{property.PropertyType.Name}' of property '{property.Name}' not found, but plugin '{metadata.Name}' depends on it");
             }
 

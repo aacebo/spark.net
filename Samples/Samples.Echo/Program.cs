@@ -30,13 +30,6 @@ public static partial class Program
         app.Run();
     }
 
-    [Activity]
-    public static void OnActivity(IContext<Activity> context)
-    {
-        context.Log.Info("on activity...");
-        context.Log.Info(context.Activity);
-    }
-
     [Message]
     public static void OnMessage(IContext<MessageActivity> context)
     {

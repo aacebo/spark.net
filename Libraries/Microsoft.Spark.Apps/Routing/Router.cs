@@ -50,7 +50,6 @@ public class Router : IRouter
             {
                 if (name == null || name == "activity") return true;
                 if (activity.Type.Equals(name)) return true;
-
                 return false;
             }
         });

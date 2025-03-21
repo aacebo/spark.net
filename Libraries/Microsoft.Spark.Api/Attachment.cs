@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 
 using Microsoft.Spark.Cards;
@@ -27,6 +28,7 @@ public class Attachment
     /// <summary>
     /// mimetype/Contenttype for the file
     /// </summary>
+    [AllowNull]
     [JsonPropertyName("contentType")]
     [JsonPropertyOrder(2)]
     public ContentType ContentType { get; set; }
@@ -51,6 +53,11 @@ public class Attachment
     [JsonPropertyName("thumbnailUrl")]
     [JsonPropertyOrder(5)]
     public string? ThumbnailUrl { get; set; }
+
+    public Attachment()
+    {
+
+    }
 
     public Attachment(string contentType)
     {

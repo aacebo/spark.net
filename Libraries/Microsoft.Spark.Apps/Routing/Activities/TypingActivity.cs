@@ -3,7 +3,7 @@ using Microsoft.Spark.Api.Activities;
 namespace Microsoft.Spark.Apps.Routing;
 
 [AttributeUsage(AttributeTargets.Method, Inherited = true)]
-public class TypingAttribute() : ActivityAttribute<TypingActivity>(ActivityType.Typing.Value)
+public class TypingAttribute() : ActivityAttribute(ActivityType.Typing.Value, typeof(TypingActivity))
 {
 }
 

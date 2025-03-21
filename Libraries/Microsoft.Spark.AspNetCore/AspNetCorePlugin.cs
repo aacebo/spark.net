@@ -19,14 +19,14 @@ public class AspNetCorePlugin : ISender
 {
     [AllowNull]
     [Dependency]
-    public ILogger Logger { get; }
+    public ILogger Logger { get; set; }
 
     [AllowNull]
     [Dependency]
-    public IHttpClient Client { get; }
+    public IHttpClient Client { get; set; }
 
-    [Dependency]
-    public IToken? BotToken { get; }
+    [Dependency("BotToken", optional: true)]
+    public IToken? BotToken { get; set; }
 
     public event IPlugin.ErrorEventHandler ErrorEvent = (_, _) => Task.Run(() => { });
     public event IPlugin.ActivityEventHandler ActivityEvent = (_, _) => Task.Run(() => (object?)null);

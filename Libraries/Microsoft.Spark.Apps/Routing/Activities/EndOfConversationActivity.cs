@@ -3,7 +3,7 @@ using Microsoft.Spark.Api.Activities;
 namespace Microsoft.Spark.Apps.Routing;
 
 [AttributeUsage(AttributeTargets.Method, Inherited = true)]
-public class EndOfConversationAttribute() : ActivityAttribute<EndOfConversationActivity>(ActivityType.EndOfConversation.Value)
+public class EndOfConversationAttribute() : ActivityAttribute(ActivityType.EndOfConversation.Value, typeof(EndOfConversationActivity))
 {
 }
 

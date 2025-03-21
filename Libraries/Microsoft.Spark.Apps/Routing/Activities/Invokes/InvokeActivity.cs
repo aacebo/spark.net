@@ -3,7 +3,7 @@ using Microsoft.Spark.Api.Activities;
 namespace Microsoft.Spark.Apps.Routing;
 
 [AttributeUsage(AttributeTargets.Method, Inherited = true)]
-public class InvokeAttribute() : ActivityAttribute<InvokeActivity>(ActivityType.Invoke.Value)
+public class InvokeAttribute() : ActivityAttribute(ActivityType.Invoke.Value, typeof(InvokeActivity))
 {
 }
 
