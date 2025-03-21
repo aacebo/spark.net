@@ -31,7 +31,7 @@ public class InvokeActivity(Invokes.Name name) : Activity(ActivityType.Invoke)
     public Invokes.AdaptiveCardActivity ToAdaptiveCard() => (Invokes.AdaptiveCardActivity)this;
     public Invokes.ConfigActivity ToConfig() => (Invokes.ConfigActivity)this;
     public Invokes.MessageExtensionActivity ToMessageExtension() => (Invokes.MessageExtensionActivity)this;
-    public Invokes.MessageActivity ToMessage() => (Invokes.MessageActivity)this;
+    public new Invokes.MessageActivity ToMessage() => (Invokes.MessageActivity)this;
     public Invokes.SignInActivity ToSignIn() => (Invokes.SignInActivity)this;
     public Invokes.TabActivity ToTab() => (Invokes.TabActivity)this;
     public Invokes.TaskActivity ToTask() => (Invokes.TaskActivity)this;
