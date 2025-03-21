@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -14,9 +15,10 @@ public partial class ActivityType(string value) : StringEnum(value)
 [JsonConverter(typeof(ActivityJsonConverter))]
 public class Activity(ActivityType type)
 {
+    [AllowNull]
     [JsonPropertyName("id")]
     [JsonPropertyOrder(0)]
-    public string Id { get; set; } = "";
+    public string Id { get; set; }
 
     [JsonPropertyName("type")]
     [JsonPropertyOrder(10)]
@@ -34,9 +36,10 @@ public class Activity(ActivityType type)
     [JsonPropertyOrder(40)]
     public required Account From { get; set; }
 
+    [AllowNull]
     [JsonPropertyName("recipient")]
     [JsonPropertyOrder(50)]
-    public required Account Recipient { get; set; }
+    public Account Recipient { get; set; }
 
     [JsonPropertyName("conversation")]
     [JsonPropertyOrder(60)]

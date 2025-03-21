@@ -23,7 +23,7 @@ public static partial class Program
         }
 
         var spark = app.Services.GetService<IApp>();
-        spark!.OnMessage(context => Task.Run(() => context.Logger.Info("message delegate...")));
+        spark!.OnMessage(context => Task.Run(() => context.Log.Info("message delegate...")));
 
         app.UseHttpsRedirection();
         app.UseSpark();
@@ -33,15 +33,15 @@ public static partial class Program
     [Activity]
     public static void OnActivity(IContext<Activity> context)
     {
-        context.Logger.Info("on activity...");
-        context.Logger.Info(context.Activity);
+        context.Log.Info("on activity...");
+        context.Log.Info(context.Activity);
     }
 
     [Message]
     public static void OnMessage(IContext<MessageActivity> context)
     {
-        context.Logger.Info("on message...");
-        context.Logger.Info(context.Activity);
+        context.Log.Info("on message...");
+        context.Log.Info(context.Activity);
     }
 
     [ErrorEvent]

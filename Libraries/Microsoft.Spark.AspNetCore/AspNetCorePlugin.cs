@@ -5,9 +5,11 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Spark.Api;
 using Microsoft.Spark.Api.Activities;
 using Microsoft.Spark.Api.Auth;
+using Microsoft.Spark.Api.Clients;
 using Microsoft.Spark.Apps;
 using Microsoft.Spark.Apps.Events;
 using Microsoft.Spark.Apps.Plugins;
+using Microsoft.Spark.Common.Http;
 using Microsoft.Spark.Common.Logging;
 
 namespace Microsoft.Spark.AspNetCore;
@@ -17,7 +19,14 @@ public class AspNetCorePlugin : ISender
 {
     [AllowNull]
     [Dependency]
-    public ILogger Logger { get; set; }
+    public ILogger Logger { get; }
+
+    [AllowNull]
+    [Dependency]
+    public IHttpClient Client { get; }
+
+    [Dependency]
+    public IToken? BotToken { get; }
 
     public event IPlugin.ErrorEventHandler ErrorEvent = (_, _) => Task.Run(() => { });
     public event IPlugin.ActivityEventHandler ActivityEvent = (_, _) => Task.Run(() => (object?)null);
@@ -52,9 +61,32 @@ public class AspNetCorePlugin : ISender
         return Task.Run(() => Logger.Debug("OnActivityResponse"));
     }
 
-    public Task<Activity> Send(Activity activity, ConversationReference reference)
+    public async Task<Activity> Send(Activity activity, ConversationReference reference)
     {
-        throw new NotImplementedException();
+        return await Send<Activity>(activity, reference);
+    }
+
+    public async Task<TActivity> Send<TActivity>(TActivity activity, ConversationReference reference) where TActivity : Activity
+    {
+        var client = new ApiClient(reference.ServiceUrl, Client);
+
+        if (activity.Id != null)
+        {
+            await client
+                .Conversations
+                .Activities
+                .UpdateAsync(reference.Conversation.Id, activity.Id, activity);
+
+            return activity;
+        }
+
+        var res = await client
+            .Conversations
+            .Activities
+            .CreateAsync(reference.Conversation.Id, activity);
+
+        activity.Id = res.Id;
+        return activity;
     }
 
     public IStreamer CreateStream(ConversationReference reference)

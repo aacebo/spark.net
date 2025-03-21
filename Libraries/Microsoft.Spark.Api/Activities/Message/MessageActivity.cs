@@ -82,6 +82,21 @@ public class MessageActivity : Activity
         return this;
     }
 
+    public MessageActivity AddAttachment(Spark.Cards.Card card)
+    {
+        return AddAttachment(new Attachment.AdaptiveCard(card));
+    }
+
+    public MessageActivity AddAttachment(Cards.OAuthCard card)
+    {
+        return AddAttachment(new Attachment.OAuthCard(card));
+    }
+
+    public MessageActivity AddAttachment(Cards.SignInCard card)
+    {
+        return AddAttachment(new Attachment.SignInCard(card));
+    }
+
     public MessageActivity AddMention(Account account)
     {
         return (MessageActivity)AddEntity(new MentionEntity()

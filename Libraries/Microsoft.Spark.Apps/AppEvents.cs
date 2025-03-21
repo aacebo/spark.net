@@ -49,17 +49,27 @@ public partial class App
         return Task.Run(() => args.Logger.Info("started"));
     }
 
-    protected async Task<object?> OnActivityEvent(ISender plugin, Events.ActivityEventArgs args)
+    protected async Task<object?> OnActivityEvent(ISender sender, Events.ActivityEventArgs args)
     {
         var routes = Router.Select(args.Activity);
 
         try
         {
-            IContext<Activity> context = new Context<Activity>()
+            IContext<Activity> context = new Context<Activity>(sender)
             {
                 Activity = args.Activity,
                 AppId = args.Token.AppId ?? "",
-                Logger = Logger,
+                Log = Logger,
+                Api = Api,
+                Ref = new()
+                {
+                    ServiceUrl = args.Token.ServiceUrl,
+                    ChannelId = args.Activity.ChannelId,
+                    Bot = args.Activity.Recipient,
+                    User = args.Activity.From,
+                    Locale = args.Activity.Locale,
+                    Conversation = args.Activity.Conversation,
+                }
             };
 
             foreach (var route in routes)
