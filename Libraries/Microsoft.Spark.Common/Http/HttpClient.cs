@@ -4,7 +4,7 @@ namespace Microsoft.Spark.Common.Http;
 
 public interface IHttpClient : IDisposable
 {
-    public IHttpRequestOptions RequestOptions { get; }
+    public IHttpClientOptions Options { get; }
 
     public Task<IHttpResponse<string>> SendAsync(IHttpRequest request);
     public Task<IHttpResponse<TResponseBody>> SendAsync<TResponseBody>(IHttpRequest request);
@@ -14,26 +14,29 @@ public interface IHttpClient : IDisposable
 
 public class HttpClient : IHttpClient
 {
-    public IHttpRequestOptions RequestOptions { get; }
+    public IHttpClientOptions Options { get; }
 
     protected System.Net.Http.HttpClient _client;
 
     public HttpClient()
     {
         _client = new System.Net.Http.HttpClient();
-        RequestOptions = new HttpRequestOptions();
+        Options = new HttpClientOptions();
+        Options.Apply(_client);
     }
 
-    public HttpClient(IHttpRequestOptions requestOptions)
+    public HttpClient(IHttpClientOptions options)
     {
         _client = new System.Net.Http.HttpClient();
-        RequestOptions = requestOptions;
+        Options = options;
+        Options.Apply(_client);
     }
 
     public HttpClient(System.Net.Http.HttpClient client)
     {
         _client = client;
-        RequestOptions = new HttpRequestOptions();
+        Options = new HttpClientOptions();
+        Options.Apply(_client);
     }
 
     public async Task<IHttpResponse<string>> SendAsync(IHttpRequest request)
@@ -76,16 +79,7 @@ public class HttpClient : IHttpClient
             request.Url
         );
 
-        foreach (var (key, value) in RequestOptions.Headers)
-        {
-            if (key.StartsWith("Content-"))
-            {
-                httpRequest.Content?.Headers.TryAddWithoutValidation(key, value);
-                continue;
-            }
-
-            httpRequest.Headers.TryAddWithoutValidation(key, value);
-        }
+        Options.Apply(httpRequest);
 
         foreach (var (key, value) in request.Headers)
         {

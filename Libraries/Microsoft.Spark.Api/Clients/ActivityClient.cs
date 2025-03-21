@@ -17,7 +17,7 @@ public class ActivityClient : Client
         ServiceUrl = serviceUrl;
     }
 
-    public ActivityClient(string serviceUrl, IHttpRequestOptions options) : base(options)
+    public ActivityClient(string serviceUrl, IHttpClientOptions options) : base(options)
     {
         ServiceUrl = serviceUrl;
     }
@@ -30,7 +30,7 @@ public class ActivityClient : Client
     public async Task<Resource> CreateAsync(string conversationId, Activity activity)
     {
         var req = HttpRequest.Post(
-            $"{ServiceUrl}/v3/conversations/{conversationId}/activities",
+            $"{ServiceUrl}v3/conversations/{conversationId}/activities",
             body: activity
         );
 
@@ -41,7 +41,7 @@ public class ActivityClient : Client
     public async Task<Resource> UpdateAsync(string conversationId, string id, Activity activity)
     {
         var req = HttpRequest.Put(
-            $"{ServiceUrl}/v3/conversations/{conversationId}/activities/{id}",
+            $"{ServiceUrl}v3/conversations/{conversationId}/activities/{id}",
             body: activity
         );
 
@@ -53,7 +53,7 @@ public class ActivityClient : Client
     {
         activity.ReplyToId = id;
         var req = HttpRequest.Post(
-            $"{ServiceUrl}/v3/conversations/{conversationId}/activities/{id}",
+            $"{ServiceUrl}v3/conversations/{conversationId}/activities/{id}",
             body: activity
         );
 
@@ -64,7 +64,7 @@ public class ActivityClient : Client
     public async Task DeleteAsync(string conversationId, string id)
     {
         var req = HttpRequest.Delete(
-            $"{ServiceUrl}/v3/conversations/{conversationId}/activities/{id}"
+            $"{ServiceUrl}v3/conversations/{conversationId}/activities/{id}"
         );
 
         await _http.SendAsync(req);

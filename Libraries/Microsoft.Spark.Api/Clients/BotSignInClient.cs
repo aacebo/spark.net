@@ -14,7 +14,7 @@ public class BotSignInClient : Client
 
     }
 
-    public BotSignInClient(IHttpRequestOptions options) : base(options)
+    public BotSignInClient(IHttpClientOptions options) : base(options)
     {
 
     }

@@ -14,7 +14,7 @@ public class BotTokenClient : Client
 
     }
 
-    public BotTokenClient(IHttpRequestOptions options) : base(options)
+    public BotTokenClient(IHttpClientOptions options) : base(options)
     {
 
     }

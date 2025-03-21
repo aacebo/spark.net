@@ -63,7 +63,7 @@ public partial class App
                 Api = Api,
                 Ref = new()
                 {
-                    ServiceUrl = args.Token.ServiceUrl,
+                    ServiceUrl = args.Activity.ServiceUrl ?? args.Token.ServiceUrl,
                     ChannelId = args.Activity.ChannelId,
                     Bot = args.Activity.Recipient,
                     User = args.Activity.From,

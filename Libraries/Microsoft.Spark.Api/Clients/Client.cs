@@ -16,7 +16,7 @@ public abstract class Client
         _http = client;
     }
 
-    public Client(IHttpRequestOptions options)
+    public Client(IHttpClientOptions options)
     {
         _http = new Common.Http.HttpClient(options);
     }

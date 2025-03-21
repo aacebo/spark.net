@@ -45,7 +45,8 @@ public partial class App : IApp
     {
         Logger = options?.Logger ?? new ConsoleLogger(Assembly.GetEntryAssembly()?.GetName().Name ?? "@Spark");
         Client = options?.Client ?? options?.ClientFactory?.CreateClient() ?? new Common.Http.HttpClient();
-        Client.RequestOptions.AddUserAgent(UserAgent);
+        Client.Options.TokenFactory = () => BotToken;
+        Client.Options.AddUserAgent(UserAgent);
         Credentials = options?.Credentials;
         Api = new ApiClient("https://smba.trafficmanager.net/teams", Client);
         Plugins = options?.Plugins ?? [];
@@ -89,10 +90,7 @@ public partial class App : IApp
 
             foreach (var plugin in Plugins)
             {
-                await plugin.OnStart(this, new()
-                {
-                    Logger = Logger
-                });
+                await plugin.OnStart(this, new() { Logger = Logger });
             }
 
             await StartEvent(this, new() { Logger = Logger });

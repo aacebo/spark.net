@@ -31,10 +31,11 @@ public static partial class Program
     }
 
     [Message]
-    public static void OnMessage(IContext<MessageActivity> context)
+    public static async Task OnMessage(IContext<MessageActivity> context)
     {
         context.Log.Info("on message...");
         context.Log.Info(context.Activity);
+        await context.Send($"you said '{context.Activity.Text}'");
     }
 
     [ErrorEvent]

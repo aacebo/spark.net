@@ -22,6 +22,13 @@ public class ApiClient : Client
         Conversations = new ConversationClient(serviceUrl, _http);
     }
 
+    public ApiClient(string serviceUrl, IHttpClientOptions options) : base(options)
+    {
+        ServiceUrl = serviceUrl;
+        Bots = new BotClient(_http);
+        Conversations = new ConversationClient(serviceUrl, _http);
+    }
+
     public ApiClient(string serviceUrl, IHttpClientFactory factory) : base(factory)
     {
         ServiceUrl = serviceUrl;

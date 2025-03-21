@@ -19,7 +19,7 @@ public class BotClient : Client
         SignIn = new BotSignInClient(_http);
     }
 
-    public BotClient(IHttpRequestOptions options) : base(options)
+    public BotClient(IHttpClientOptions options) : base(options)
     {
         Token = new BotTokenClient(_http);
         SignIn = new BotSignInClient(_http);

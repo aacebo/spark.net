@@ -103,7 +103,6 @@ public class AspNetCorePlugin : ISender
         {
             var authHeader = context.Request.Headers.Authorization.FirstOrDefault() ?? throw new UnauthorizedAccessException();
             var token = new JsonWebToken(authHeader.Replace("Bearer ", ""));
-
             var activity = await JsonSerializer.DeserializeAsync<Activity>(context.Request.Body) ?? throw new BadHttpRequestException("could not read json activity payload");
             var res = await ActivityEvent(this, new()
             {

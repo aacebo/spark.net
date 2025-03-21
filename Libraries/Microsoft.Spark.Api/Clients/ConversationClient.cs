@@ -19,7 +19,7 @@ public class ConversationClient : Client
         Activities = new ActivityClient(serviceUrl, _http);
     }
 
-    public ConversationClient(string serviceUrl, IHttpRequestOptions options) : base(options)
+    public ConversationClient(string serviceUrl, IHttpClientOptions options) : base(options)
     {
         ServiceUrl = serviceUrl;
         Activities = new ActivityClient(serviceUrl, _http);
