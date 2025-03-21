@@ -3,7 +3,7 @@ using Microsoft.Spark.Api.Activities;
 namespace Microsoft.Spark.Apps.Routing;
 
 [AttributeUsage(AttributeTargets.Method, Inherited = true)]
-public class MessageUpdateAttribute() : ActivityAttribute("messageUpdate", typeof(MessageUpdateActivity))
+public class MessageUpdateAttribute() : ActivityAttribute<MessageUpdateActivity>("messageUpdate")
 {
 }
 
