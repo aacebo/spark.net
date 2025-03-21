@@ -31,13 +31,23 @@ public partial class App : IApp
     public IToken? GraphToken { get; internal set; }
 
     internal IContainer Container { get; set; }
+    internal string UserAgent
+    {
+        get
+        {
+            var version = Assembly.GetExecutingAssembly().GetName().Version?.ToString();
+            version ??= "0.0.0";
+            return $"spark.net[apps]/{version}";
+        }
+    }
 
     public App(IAppOptions? options = null)
     {
         Logger = options?.Logger ?? new ConsoleLogger(Assembly.GetEntryAssembly()?.GetName().Name ?? "@Spark");
         Client = options?.Client ?? options?.ClientFactory?.CreateClient() ?? new Common.Http.HttpClient();
+        Client.RequestOptions.AddUserAgent(UserAgent);
         Credentials = options?.Credentials;
-        Api = new ApiClient(Client);
+        Api = new ApiClient("https://smba.trafficmanager.net/teams", Client);
         Plugins = options?.Plugins ?? [];
         ErrorEvent = (_, args) => OnErrorEvent(args);
         StartEvent = (_, args) => OnStartEvent(args);
@@ -65,8 +75,8 @@ public partial class App : IApp
 
             if (Credentials != null)
             {
-                var botToken = await Api.Bot.Token.GetAsync(Credentials);
-                var graphToken = await Api.Bot.Token.GetGraphAsync(Credentials);
+                var botToken = await Api.Bots.Token.GetAsync(Credentials);
+                var graphToken = await Api.Bots.Token.GetGraphAsync(Credentials);
 
                 BotToken = new JsonWebToken(botToken.AccessToken);
                 GraphToken = new JsonWebToken(graphToken.AccessToken);

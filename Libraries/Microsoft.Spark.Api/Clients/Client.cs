@@ -16,6 +16,11 @@ public abstract class Client
         _http = client;
     }
 
+    public Client(IHttpRequestOptions options)
+    {
+        _http = new Common.Http.HttpClient(options);
+    }
+
     public Client(IHttpClientFactory factory)
     {
         _http = factory.CreateClient("default");

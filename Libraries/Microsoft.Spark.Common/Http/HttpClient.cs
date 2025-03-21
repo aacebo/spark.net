@@ -4,6 +4,8 @@ namespace Microsoft.Spark.Common.Http;
 
 public interface IHttpClient : IDisposable
 {
+    public IHttpRequestOptions RequestOptions { get; }
+
     public Task<IHttpResponse<string>> SendAsync(IHttpRequest request);
     public Task<IHttpResponse<TResponseBody>> SendAsync<TResponseBody>(IHttpRequest request);
     public Task<IHttpResponse<string>> SendAsync(IHttpRequest request, CancellationToken cancellationToken);
@@ -12,25 +14,26 @@ public interface IHttpClient : IDisposable
 
 public class HttpClient : IHttpClient
 {
+    public IHttpRequestOptions RequestOptions { get; }
+
     protected System.Net.Http.HttpClient _client;
-    protected IHttpRequestOptions _requestOptions;
 
     public HttpClient()
     {
         _client = new System.Net.Http.HttpClient();
-        _requestOptions = new HttpRequestOptions();
+        RequestOptions = new HttpRequestOptions();
     }
 
     public HttpClient(IHttpRequestOptions requestOptions)
     {
         _client = new System.Net.Http.HttpClient();
-        _requestOptions = requestOptions;
+        RequestOptions = requestOptions;
     }
 
     public HttpClient(System.Net.Http.HttpClient client)
     {
         _client = client;
-        _requestOptions = new HttpRequestOptions();
+        RequestOptions = new HttpRequestOptions();
     }
 
     public async Task<IHttpResponse<string>> SendAsync(IHttpRequest request)
@@ -73,7 +76,7 @@ public class HttpClient : IHttpClient
             request.Url
         );
 
-        foreach (var (key, value) in _requestOptions.Headers)
+        foreach (var (key, value) in RequestOptions.Headers)
         {
             if (key.StartsWith("Content-"))
             {

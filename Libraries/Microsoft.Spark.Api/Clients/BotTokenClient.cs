@@ -14,6 +14,11 @@ public class BotTokenClient : Client
 
     }
 
+    public BotTokenClient(IHttpRequestOptions options) : base(options)
+    {
+
+    }
+
     public BotTokenClient(IHttpClientFactory factory) : base(factory)
     {
 

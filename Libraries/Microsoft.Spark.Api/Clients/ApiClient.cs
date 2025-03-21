@@ -4,20 +4,28 @@ namespace Microsoft.Spark.Api.Clients;
 
 public class ApiClient : Client
 {
-    public BotClient Bot { get; }
+    public readonly string ServiceUrl;
+    public readonly BotClient Bots;
+    public readonly ConversationClient Conversations;
 
-    public ApiClient() : base()
+    public ApiClient(string serviceUrl) : base()
     {
-        Bot = new BotClient(_http);
+        ServiceUrl = serviceUrl;
+        Bots = new BotClient(_http);
+        Conversations = new ConversationClient(serviceUrl, _http);
     }
 
-    public ApiClient(IHttpClient client) : base(client)
+    public ApiClient(string serviceUrl, IHttpClient client) : base(client)
     {
-        Bot = new BotClient(client);
+        ServiceUrl = serviceUrl;
+        Bots = new BotClient(_http);
+        Conversations = new ConversationClient(serviceUrl, _http);
     }
 
-    public ApiClient(IHttpClientFactory factory) : base(factory)
+    public ApiClient(string serviceUrl, IHttpClientFactory factory) : base(factory)
     {
-        Bot = new BotClient(factory);
+        ServiceUrl = serviceUrl;
+        Bots = new BotClient(_http);
+        Conversations = new ConversationClient(serviceUrl, _http);
     }
 }
