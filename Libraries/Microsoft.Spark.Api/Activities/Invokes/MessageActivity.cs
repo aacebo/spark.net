@@ -5,8 +5,5 @@ namespace Microsoft.Spark.Api.Activities.Invokes;
 /// </summary>
 public abstract class MessageActivity(Name.Messages name) : InvokeActivity(new(name.Value))
 {
-    public Messages.SubmitActionActivity ToSubmitAction()
-    {
-        return (Messages.SubmitActionActivity)this;
-    }
+    public Messages.SubmitActionActivity ToSubmitAction() => (Messages.SubmitActionActivity)this;
 }

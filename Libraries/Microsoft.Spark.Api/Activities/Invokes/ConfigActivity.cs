@@ -5,13 +5,6 @@ namespace Microsoft.Spark.Api.Activities.Invokes;
 /// </summary>
 public abstract class ConfigActivity(Name.Configs name) : InvokeActivity(new(name.Value))
 {
-    public Configs.FetchActivity ToFetch()
-    {
-        return (Configs.FetchActivity)this;
-    }
-
-    public Configs.SubmitActivity ToSubmit()
-    {
-        return (Configs.SubmitActivity)this;
-    }
+    public Configs.FetchActivity ToFetch() => (Configs.FetchActivity)this;
+    public Configs.SubmitActivity ToSubmit() => (Configs.SubmitActivity)this;
 }

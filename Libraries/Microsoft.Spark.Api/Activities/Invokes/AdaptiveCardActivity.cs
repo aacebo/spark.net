@@ -5,8 +5,5 @@ namespace Microsoft.Spark.Api.Activities.Invokes;
 /// </summary>
 public abstract class AdaptiveCardActivity(Name.AdaptiveCards name) : InvokeActivity(new(name.Value))
 {
-    public AdaptiveCards.ActionActivity ToAction()
-    {
-        return (AdaptiveCards.ActionActivity)this;
-    }
+    public AdaptiveCards.ActionActivity ToAction() => (AdaptiveCards.ActionActivity)this;
 }

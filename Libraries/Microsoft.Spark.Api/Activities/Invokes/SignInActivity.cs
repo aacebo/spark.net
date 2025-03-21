@@ -5,13 +5,6 @@ namespace Microsoft.Spark.Api.Activities.Invokes;
 /// </summary>
 public abstract class SignInActivity(Name.SignIn name) : InvokeActivity(new(name.Value))
 {
-    public SignIn.TokenExchangeActivity ToTokenExchange()
-    {
-        return (SignIn.TokenExchangeActivity)this;
-    }
-
-    public SignIn.VerifyStateActivity ToVerifyState()
-    {
-        return (SignIn.VerifyStateActivity)this;
-    }
+    public SignIn.TokenExchangeActivity ToTokenExchange() => (SignIn.TokenExchangeActivity)this;
+    public SignIn.VerifyStateActivity ToVerifyState() => (SignIn.VerifyStateActivity)this;
 }
