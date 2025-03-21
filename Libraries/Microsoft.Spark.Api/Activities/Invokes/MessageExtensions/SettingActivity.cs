@@ -15,7 +15,7 @@ public partial class Name : StringEnum
 
 public static partial class MessageExtensions
 {
-    public class SettingActivity() : MessageExtensionInvokeActivity(Name.MessageExtensions.Setting)
+    public class SettingActivity() : MessageExtensionActivity(Name.MessageExtensions.Setting)
     {
         /// <summary>
         /// A value that is associated with the activity.

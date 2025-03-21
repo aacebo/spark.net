@@ -15,7 +15,7 @@ public partial class Name : StringEnum
 
 public static partial class Messages
 {
-    public class SubmitActionActivity() : MessageInvokeActivity(Name.Messages.SubmitAction)
+    public class SubmitActionActivity() : MessageActivity(Name.Messages.SubmitAction)
     {
         /// <summary>
         /// A value that is associated with the activity.

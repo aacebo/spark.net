@@ -15,7 +15,7 @@ public partial class Name : StringEnum
 
 public static partial class Tabs
 {
-    public class SubmitActivity() : TabInvokeActivity(Name.Tabs.Submit)
+    public class SubmitActivity() : TabActivity(Name.Tabs.Submit)
     {
         /// <summary>
         /// A value that is associated with the activity.

@@ -15,7 +15,7 @@ public partial class Name : StringEnum
 
 public static partial class SignIn
 {
-    public class TokenExchangeActivity() : SignInInvokeActivity(Name.SignIn.TokenExchange)
+    public class TokenExchangeActivity() : SignInActivity(Name.SignIn.TokenExchange)
     {
         /// <summary>
         /// A value that is associated with the activity.

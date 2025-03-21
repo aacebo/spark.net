@@ -13,7 +13,7 @@ public partial class Name : StringEnum
 
 public static partial class MessageExtensions
 {
-    public class SelectItemActivity() : MessageExtensionInvokeActivity(Name.MessageExtensions.SelectItem)
+    public class SelectItemActivity() : MessageExtensionActivity(Name.MessageExtensions.SelectItem)
     {
     }
 }

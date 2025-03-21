@@ -15,7 +15,7 @@ public partial class Name : StringEnum
 
 public static partial class AdaptiveCards
 {
-    public class ActionActivity() : AdaptiveCardInvokeActivity(Name.AdaptiveCards.Action)
+    public class ActionActivity() : AdaptiveCardActivity(Name.AdaptiveCards.Action)
     {
         /// <summary>
         /// A value that is associated with the activity.

@@ -3,7 +3,7 @@ namespace Microsoft.Spark.Api.Activities.Invokes;
 /// <summary>
 /// Any Config Activity
 /// </summary>
-public abstract class ConfigInvokeActivity(Name.Configs name) : InvokeActivity(new(name.Value))
+public abstract class ConfigActivity(Name.Configs name) : InvokeActivity(new(name.Value))
 {
     public Configs.FetchActivity ToFetch()
     {

@@ -13,7 +13,7 @@ public partial class Name : StringEnum
 
 public static partial class MessageExtensions
 {
-    public class CardButtonClickedActivity() : MessageExtensionInvokeActivity(Name.MessageExtensions.CardButtonClicked)
+    public class CardButtonClickedActivity() : MessageExtensionActivity(Name.MessageExtensions.CardButtonClicked)
     {
 
     }

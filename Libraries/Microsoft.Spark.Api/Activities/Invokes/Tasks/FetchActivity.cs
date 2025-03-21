@@ -15,7 +15,7 @@ public partial class Name : StringEnum
 
 public static partial class Tasks
 {
-    public class FetchActivity() : TaskInvokeActivity(Name.Tasks.Fetch)
+    public class FetchActivity() : TaskActivity(Name.Tasks.Fetch)
     {
         /// <summary>
         /// A value that is associated with the activity.

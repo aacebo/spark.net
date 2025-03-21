@@ -15,7 +15,7 @@ public partial class Name : StringEnum
 
 public static partial class MessageExtensions
 {
-    public class FetchTaskActivity() : MessageExtensionInvokeActivity(Name.MessageExtensions.FetchTask)
+    public class FetchTaskActivity() : MessageExtensionActivity(Name.MessageExtensions.FetchTask)
     {
         /// <summary>
         /// A value that is associated with the activity.

@@ -13,7 +13,7 @@ public partial class Name : StringEnum
 
 public static partial class Configs
 {
-    public class SubmitActivity : ConfigInvokeActivity
+    public class SubmitActivity : ConfigActivity
     {
         public SubmitActivity(object? value) : base(Name.Configs.Submit)
         {

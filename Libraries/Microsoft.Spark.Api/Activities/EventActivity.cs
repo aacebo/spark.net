@@ -19,28 +19,9 @@ public class EventActivity(Events.Name name) : Activity(ActivityType.Event)
     [JsonPropertyOrder(31)]
     public Events.Name Name { get; set; } = name;
 
-    public Events.MeetingStartActivity ToMeetingStart()
-    {
-        return (Events.MeetingStartActivity)this;
-    }
-
-    public Events.MeetingEndActivity ToMeetingEnd()
-    {
-        return (Events.MeetingEndActivity)this;
-    }
-
-    public Events.MeetingParticipantJoinActivity ToMeetingParticipantJoin()
-    {
-        return (Events.MeetingParticipantJoinActivity)this;
-    }
-
-    public Events.MeetingParticipantLeaveActivity ToMeetingParticipantLeave()
-    {
-        return (Events.MeetingParticipantLeaveActivity)this;
-    }
-
-    public Events.ReadReceiptActivity ToReadReceipt()
-    {
-        return (Events.ReadReceiptActivity)this;
-    }
+    public Events.MeetingStartActivity ToMeetingStart() => (Events.MeetingStartActivity)this;
+    public Events.MeetingEndActivity ToMeetingEnd() => (Events.MeetingEndActivity)this;
+    public Events.MeetingParticipantJoinActivity ToMeetingParticipantJoin() => (Events.MeetingParticipantJoinActivity)this;
+    public Events.MeetingParticipantLeaveActivity ToMeetingParticipantLeave() => (Events.MeetingParticipantLeaveActivity)this;
+    public Events.ReadReceiptActivity ToReadReceipt() => (Events.ReadReceiptActivity)this;
 }

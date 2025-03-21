@@ -13,7 +13,7 @@ public partial class Name : StringEnum
 
 public static partial class Configs
 {
-    public class FetchActivity : ConfigInvokeActivity
+    public class FetchActivity : ConfigActivity
     {
         public FetchActivity(object? value) : base(Name.Configs.Fetch)
         {

@@ -104,65 +104,18 @@ public class Activity(ActivityType type)
         });
     }
 
-    public CommandActivity ToCommand()
-    {
-        return (CommandActivity)this;
-    }
-
-    public CommandResultActivity ToCommandResult()
-    {
-        return (CommandResultActivity)this;
-    }
-
-    public TypingActivity ToTyping()
-    {
-        return (TypingActivity)this;
-    }
-
-    public InstallUpdateActivity ToInstallUpdate()
-    {
-        return (InstallUpdateActivity)this;
-    }
-
-    public MessageActivity ToMessage()
-    {
-        return (MessageActivity)this;
-    }
-
-    public MessageUpdateActivity ToMessageUpdate()
-    {
-        return (MessageUpdateActivity)this;
-    }
-
-    public MessageDeleteActivity ToMessageDelete()
-    {
-        return (MessageDeleteActivity)this;
-    }
-
-    public MessageReactionActivity ToMessageReaction()
-    {
-        return (MessageReactionActivity)this;
-    }
-
-    public ConversationUpdateActivity ToConversationUpdate()
-    {
-        return (ConversationUpdateActivity)this;
-    }
-
-    public EndOfConversationActivity ToEndOfConversation()
-    {
-        return (EndOfConversationActivity)this;
-    }
-
-    public EventActivity ToEvent()
-    {
-        return (EventActivity)this;
-    }
-
-    public InvokeActivity ToInvoke()
-    {
-        return (InvokeActivity)this;
-    }
+    public CommandActivity ToCommand() => (CommandActivity)this;
+    public CommandResultActivity ToCommandResult() => (CommandResultActivity)this;
+    public TypingActivity ToTyping() => (TypingActivity)this;
+    public InstallUpdateActivity ToInstallUpdate() => (InstallUpdateActivity)this;
+    public MessageActivity ToMessage() => (MessageActivity)this;
+    public MessageUpdateActivity ToMessageUpdate() => (MessageUpdateActivity)this;
+    public MessageDeleteActivity ToMessageDelete() => (MessageDeleteActivity)this;
+    public MessageReactionActivity ToMessageReaction() => (MessageReactionActivity)this;
+    public ConversationUpdateActivity ToConversationUpdate() => (ConversationUpdateActivity)this;
+    public EndOfConversationActivity ToEndOfConversation() => (EndOfConversationActivity)this;
+    public EventActivity ToEvent() => (EventActivity)this;
+    public InvokeActivity ToInvoke() => (InvokeActivity)this;
 
     public override string ToString()
     {

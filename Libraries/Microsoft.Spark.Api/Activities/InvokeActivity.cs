@@ -26,38 +26,11 @@ public class InvokeActivity(Invokes.Name name) : Activity(ActivityType.Invoke)
     [JsonPropertyOrder(32)]
     public object? Value { get; set; }
 
-    public Invokes.AdaptiveCardInvokeActivity ToAdaptiveCard()
-    {
-        return (Invokes.AdaptiveCardInvokeActivity)this;
-    }
-
-    public Invokes.ConfigInvokeActivity ToConfig()
-    {
-        return (Invokes.ConfigInvokeActivity)this;
-    }
-
-    public Invokes.MessageExtensionInvokeActivity ToMessageExtension()
-    {
-        return (Invokes.MessageExtensionInvokeActivity)this;
-    }
-
-    public Invokes.MessageInvokeActivity ToMessage()
-    {
-        return (Invokes.MessageInvokeActivity)this;
-    }
-
-    public Invokes.SignInInvokeActivity ToSignIn()
-    {
-        return (Invokes.SignInInvokeActivity)this;
-    }
-
-    public Invokes.TabInvokeActivity ToTab()
-    {
-        return (Invokes.TabInvokeActivity)this;
-    }
-
-    public Invokes.TaskInvokeActivity ToTask()
-    {
-        return (Invokes.TaskInvokeActivity)this;
-    }
+    public Invokes.AdaptiveCardActivity ToAdaptiveCard() => (Invokes.AdaptiveCardActivity)this;
+    public Invokes.ConfigActivity ToConfig() => (Invokes.ConfigActivity)this;
+    public Invokes.MessageExtensionActivity ToMessageExtension() => (Invokes.MessageExtensionActivity)this;
+    public Invokes.MessageActivity ToMessage() => (Invokes.MessageActivity)this;
+    public Invokes.SignInActivity ToSignIn() => (Invokes.SignInActivity)this;
+    public Invokes.TabActivity ToTab() => (Invokes.TabActivity)this;
+    public Invokes.TaskActivity ToTask() => (Invokes.TaskActivity)this;
 }

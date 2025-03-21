@@ -15,7 +15,7 @@ public partial class Name : StringEnum
 
 public static partial class MessageExtensions
 {
-    public class QuerySettingsUrlActivity() : MessageExtensionInvokeActivity(Name.MessageExtensions.QuerySettingsUrl)
+    public class QuerySettingsUrlActivity() : MessageExtensionActivity(Name.MessageExtensions.QuerySettingsUrl)
     {
         /// <summary>
         /// A value that is associated with the activity.

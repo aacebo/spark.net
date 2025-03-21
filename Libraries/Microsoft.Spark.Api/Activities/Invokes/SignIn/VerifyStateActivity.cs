@@ -15,7 +15,7 @@ public partial class Name : StringEnum
 
 public static partial class SignIn
 {
-    public class VerifyStateActivity() : SignInInvokeActivity(Name.SignIn.VerifyState)
+    public class VerifyStateActivity() : SignInActivity(Name.SignIn.VerifyState)
     {
         /// <summary>
         /// A value that is associated with the activity.

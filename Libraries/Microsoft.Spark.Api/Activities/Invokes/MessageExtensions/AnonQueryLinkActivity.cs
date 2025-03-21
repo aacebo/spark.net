@@ -15,7 +15,7 @@ public partial class Name : StringEnum
 
 public static partial class MessageExtensions
 {
-    public class AnonQueryLinkActivity() : MessageExtensionInvokeActivity(Name.MessageExtensions.AnonQueryLink)
+    public class AnonQueryLinkActivity() : MessageExtensionActivity(Name.MessageExtensions.AnonQueryLink)
     {
         /// <summary>
         /// A value that is associated with the activity.
