@@ -19,7 +19,7 @@ public partial class RoutingModule : IRoutingModule
         Router.Register(new Route()
         {
             Handler = context => handler(context.ToActivityType<TypingActivity>()),
-            Select = activity =>
+            Selector = activity =>
             {
                 if (activity is TypingActivity typing)
                 {

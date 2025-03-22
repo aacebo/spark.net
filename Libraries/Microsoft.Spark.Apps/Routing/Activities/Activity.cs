@@ -32,7 +32,7 @@ public partial class RoutingModule : IRoutingModule
         Router.Register(new Route()
         {
             Handler = handler,
-            Select = (activity) => activity.Type.Equals(type),
+            Selector = (activity) => activity.Type.Equals(type),
         });
 
         return this;
@@ -43,7 +43,7 @@ public partial class RoutingModule : IRoutingModule
         Router.Register(new Route()
         {
             Handler = (context) => handler(context.ToActivityType<TActivity>()),
-            Select = (activity) => activity.GetType() == typeof(TActivity),
+            Selector = (activity) => activity.GetType() == typeof(TActivity),
         });
 
         return this;
@@ -53,7 +53,7 @@ public partial class RoutingModule : IRoutingModule
     {
         Router.Register(new Route()
         {
-            Select = select,
+            Selector = select,
             Handler = handler
         });
 

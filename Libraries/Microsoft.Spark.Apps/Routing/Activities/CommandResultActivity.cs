@@ -19,7 +19,7 @@ public partial class RoutingModule : IRoutingModule
         Router.Register(new Route()
         {
             Handler = context => handler(context.ToActivityType<CommandResultActivity>()),
-            Select = activity =>
+            Selector = activity =>
             {
                 if (activity is CommandResultActivity commandResult)
                 {

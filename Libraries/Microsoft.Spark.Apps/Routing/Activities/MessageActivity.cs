@@ -5,8 +5,24 @@ using Microsoft.Spark.Api.Activities;
 namespace Microsoft.Spark.Apps.Routing;
 
 [AttributeUsage(AttributeTargets.Method, Inherited = true)]
-public class MessageAttribute() : ActivityAttribute(ActivityType.Message, typeof(MessageActivity))
+public class MessageAttribute : ActivityAttribute
 {
+    public Regex? Pattern { get; }
+
+    public MessageAttribute() : base(ActivityType.Message, typeof(MessageActivity))
+    {
+
+    }
+
+    public MessageAttribute(string pattern) : base(ActivityType.Message, typeof(MessageActivity))
+    {
+        Pattern = new Regex(pattern);
+    }
+
+    public MessageAttribute(Regex pattern) : base(ActivityType.Message, typeof(MessageActivity))
+    {
+        Pattern = pattern;
+    }
 }
 
 public partial interface IRoutingModule
@@ -23,7 +39,7 @@ public partial class RoutingModule : IRoutingModule
         Router.Register(new Route()
         {
             Handler = context => handler(context.ToActivityType<MessageActivity>()),
-            Select = activity =>
+            Selector = activity =>
             {
                 if (activity is MessageActivity message)
                 {
@@ -42,7 +58,7 @@ public partial class RoutingModule : IRoutingModule
         Router.Register(new Route()
         {
             Handler = context => handler(context.ToActivityType<MessageActivity>()),
-            Select = activity =>
+            Selector = activity =>
             {
                 if (activity is MessageActivity message)
                 {
@@ -61,7 +77,7 @@ public partial class RoutingModule : IRoutingModule
         Router.Register(new Route()
         {
             Handler = context => handler(context.ToActivityType<MessageActivity>()),
-            Select = activity =>
+            Selector = activity =>
             {
                 if (activity is MessageActivity message)
                 {

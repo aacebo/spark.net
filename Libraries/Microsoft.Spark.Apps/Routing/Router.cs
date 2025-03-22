@@ -35,7 +35,7 @@ public class Router : IRouter
     {
         return Register(new Route()
         {
-            Select = _ => true,
+            Selector = _ => true,
             Handler = handler
         });
     }
@@ -46,7 +46,7 @@ public class Router : IRouter
         {
             Name = name,
             Handler = handler,
-            Select = (activity) =>
+            Selector = (activity) =>
             {
                 if (name == null || name == "activity") return true;
                 if (activity.Type.Equals(name)) return true;

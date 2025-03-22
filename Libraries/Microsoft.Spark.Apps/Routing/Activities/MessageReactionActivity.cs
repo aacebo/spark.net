@@ -19,7 +19,7 @@ public partial class RoutingModule : IRoutingModule
         Router.Register(new Route()
         {
             Handler = context => handler(context.ToActivityType<MessageReactionActivity>()),
-            Select = activity =>
+            Selector = activity =>
             {
                 if (activity is MessageReactionActivity messageReaction)
                 {
