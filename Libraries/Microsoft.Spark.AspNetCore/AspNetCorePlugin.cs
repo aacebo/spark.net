@@ -69,6 +69,7 @@ public class AspNetCorePlugin : ISender
     public async Task<TActivity> Send<TActivity>(TActivity activity, ConversationReference reference) where TActivity : Activity
     {
         var client = new ApiClient(reference.ServiceUrl, Client);
+        Logger.Info(activity);
 
         if (activity.Id != null)
         {
@@ -85,7 +86,7 @@ public class AspNetCorePlugin : ISender
             .Activities
             .CreateAsync(reference.Conversation.Id, activity);
 
-        activity.Id = res.Id;
+        activity.Id = res?.Id;
         return activity;
     }
 

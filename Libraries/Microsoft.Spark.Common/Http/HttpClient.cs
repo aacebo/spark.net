@@ -126,9 +126,7 @@ public class HttpClient : IHttpClient
             };
         }
 
-        var bytes = await response.Content.ReadAsByteArrayAsync(cancellationToken);
-        var body = bytes?.ToString();
-
+        var body = await response.Content.ReadAsStringAsync(cancellationToken);
         ArgumentNullException.ThrowIfNull(body);
 
         return new HttpResponse<string>()
@@ -154,7 +152,6 @@ public class HttpClient : IHttpClient
         }
 
         var body = await response.Content.ReadFromJsonAsync<TResponseBody>(cancellationToken);
-
         ArgumentNullException.ThrowIfNull(body);
 
         return new HttpResponse<TResponseBody>()

@@ -32,18 +32,20 @@ public class Activity(ActivityType type)
     [JsonPropertyOrder(30)]
     public ChannelId ChannelId { get; set; } = ChannelId.MsTeams;
 
+    [AllowNull]
     [JsonPropertyName("from")]
     [JsonPropertyOrder(40)]
-    public required Account From { get; set; }
+    public Account From { get; set; }
 
     [AllowNull]
     [JsonPropertyName("recipient")]
     [JsonPropertyOrder(50)]
     public Account Recipient { get; set; }
 
+    [AllowNull]
     [JsonPropertyName("conversation")]
     [JsonPropertyOrder(60)]
-    public required Conversation Conversation { get; set; }
+    public Conversation Conversation { get; set; }
 
     [JsonPropertyName("relatesTo")]
     [JsonPropertyOrder(70)]

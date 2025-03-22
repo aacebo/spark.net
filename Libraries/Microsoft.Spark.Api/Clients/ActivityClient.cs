@@ -1,3 +1,5 @@
+using System.Text.Json;
+
 using Microsoft.Spark.Api.Activities;
 using Microsoft.Spark.Common.Http;
 
@@ -27,29 +29,37 @@ public class ActivityClient : Client
         ServiceUrl = serviceUrl;
     }
 
-    public async Task<Resource> CreateAsync(string conversationId, Activity activity)
+    public async Task<Resource?> CreateAsync(string conversationId, Activity activity)
     {
         var req = HttpRequest.Post(
             $"{ServiceUrl}v3/conversations/{conversationId}/activities",
             body: activity
         );
 
-        var res = await _http.SendAsync<Resource>(req);
-        return res.Body;
+        var res = await _http.SendAsync(req);
+
+        if (res.Body == string.Empty) return null;
+
+        var body = JsonSerializer.Deserialize<Resource>(res.Body);
+        return body;
     }
 
-    public async Task<Resource> UpdateAsync(string conversationId, string id, Activity activity)
+    public async Task<Resource?> UpdateAsync(string conversationId, string id, Activity activity)
     {
         var req = HttpRequest.Put(
             $"{ServiceUrl}v3/conversations/{conversationId}/activities/{id}",
             body: activity
         );
 
-        var res = await _http.SendAsync<Resource>(req);
-        return res.Body;
+        var res = await _http.SendAsync(req);
+
+        if (res.Body == string.Empty) return null;
+
+        var body = JsonSerializer.Deserialize<Resource>(res.Body);
+        return body;
     }
 
-    public async Task<Resource> ReplyAsync(string conversationId, string id, Activity activity)
+    public async Task<Resource?> ReplyAsync(string conversationId, string id, Activity activity)
     {
         activity.ReplyToId = id;
         var req = HttpRequest.Post(
@@ -57,8 +67,12 @@ public class ActivityClient : Client
             body: activity
         );
 
-        var res = await _http.SendAsync<Resource>(req);
-        return res.Body;
+        var res = await _http.SendAsync(req);
+
+        if (res.Body == string.Empty) return null;
+
+        var body = JsonSerializer.Deserialize<Resource>(res.Body);
+        return body;
     }
 
     public async Task DeleteAsync(string conversationId, string id)

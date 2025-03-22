@@ -57,6 +57,11 @@ public interface IContext<TActivity> where TActivity : Activity
     public Task<MessageActivity> Send(Cards.Card card);
 
     /// <summary>
+    /// send a typing activity
+    /// </summary>
+    public Task<TypingActivity> Typing();
+
+    /// <summary>
     /// convert the context to that of another activity type
     /// </summary>
     public IContext<TToActivity> ToActivityType<TToActivity>() where TToActivity : TActivity;
@@ -102,6 +107,19 @@ public class Context<TActivity>(ISender sender) : IContext<TActivity> where TAct
         };
 
         activity = activity.AddAttachment(card);
+        var res = await Sender.Send(activity, Ref);
+        return res;
+    }
+
+    public async Task<TypingActivity> Typing()
+    {
+        var activity = new TypingActivity()
+        {
+            From = Ref.Bot,
+            Recipient = Ref.User,
+            Conversation = Ref.Conversation
+        };
+
         var res = await Sender.Send(activity, Ref);
         return res;
     }
