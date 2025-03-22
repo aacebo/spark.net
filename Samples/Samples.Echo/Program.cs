@@ -22,9 +22,6 @@ public static partial class Program
             app.MapOpenApi();
         }
 
-        var spark = app.Services.GetService<IApp>();
-        spark!.OnMessage(context => Task.Run(() => context.Log.Info("message delegate...")));
-
         app.UseHttpsRedirection();
         app.UseSpark();
         app.Run();
