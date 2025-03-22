@@ -5,7 +5,7 @@ using Microsoft.Spark.Api.Activities;
 namespace Microsoft.Spark.Apps.Routing;
 
 [AttributeUsage(AttributeTargets.Method, Inherited = true)]
-public class MessageAttribute() : ActivityAttribute(ActivityType.Message.Value, typeof(MessageActivity))
+public class MessageAttribute() : ActivityAttribute(ActivityType.Message, typeof(MessageActivity))
 {
 }
 

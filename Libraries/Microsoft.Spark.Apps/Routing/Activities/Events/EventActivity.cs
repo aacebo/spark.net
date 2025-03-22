@@ -3,7 +3,7 @@ using Microsoft.Spark.Api.Activities;
 namespace Microsoft.Spark.Apps.Routing;
 
 [AttributeUsage(AttributeTargets.Method, Inherited = true)]
-public class EventAttribute() : ActivityAttribute(ActivityType.Event.Value, typeof(EventActivity))
+public class EventAttribute() : ActivityAttribute(ActivityType.Event, typeof(EventActivity))
 {
 }
 

@@ -46,53 +46,53 @@ public partial class App : RoutingModule
                         throw new ArgumentException($"'{generic.Name}' is not assignable to '{attribute.Type.Name}'");
                     }
 
-                    Router.Register(attribute.Name, async (IContext<Activity> context) =>
+                    Router.Register(attribute.Name?.Value ?? "activity", async (IContext<Activity> context) =>
                     {
                         if (!attribute.Type.IsAssignableFrom(context.Activity.GetType())) return;
 
                         object? res = null;
 
-                        if (attribute.Name == "activity")
+                        if (attribute.Name == null)
                         {
                             res = method.Invoke(null, [context]);
                         }
-                        else if (ActivityType.Typing.Equals(attribute.Name))
+                        else if (attribute.Name.IsTyping)
                         {
                             res = method.Invoke(null, [context.ToActivityType<TypingActivity>()]);
                         }
-                        else if (ActivityType.InstallUpdate.Equals(attribute.Name))
+                        else if (attribute.Name.IsInstallUpdate)
                         {
                             res = method.Invoke(null, [context.ToActivityType<InstallUpdateActivity>()]);
                         }
-                        else if (ActivityType.Message.Equals(attribute.Name))
+                        else if (attribute.Name.IsMessage)
                         {
                             res = method.Invoke(null, [context.ToActivityType<MessageActivity>()]);
                         }
-                        else if (ActivityType.MessageUpdate.Equals(attribute.Name))
+                        else if (attribute.Name.IsMessageUpdate)
                         {
                             res = method.Invoke(null, [context.ToActivityType<MessageUpdateActivity>()]);
                         }
-                        else if (ActivityType.MessageReaction.Equals(attribute.Name))
+                        else if (attribute.Name.IsMessageReaction)
                         {
                             res = method.Invoke(null, [context.ToActivityType<MessageReactionActivity>()]);
                         }
-                        else if (ActivityType.MessageDelete.Equals(attribute.Name))
+                        else if (attribute.Name.IsMessageDelete)
                         {
                             res = method.Invoke(null, [context.ToActivityType<MessageDeleteActivity>()]);
                         }
-                        else if (ActivityType.ConversationUpdate.Equals(attribute.Name))
+                        else if (attribute.Name.IsConversationUpdate)
                         {
                             res = method.Invoke(null, [context.ToActivityType<ConversationUpdateActivity>()]);
                         }
-                        else if (ActivityType.EndOfConversation.Equals(attribute.Name))
+                        else if (attribute.Name.IsEndOfConversation)
                         {
                             res = method.Invoke(null, [context.ToActivityType<EndOfConversationActivity>()]);
                         }
-                        else if (ActivityType.Command.Equals(attribute.Name))
+                        else if (attribute.Name.IsCommand)
                         {
                             res = method.Invoke(null, [context.ToActivityType<CommandActivity>()]);
                         }
-                        else if (ActivityType.CommandResult.Equals(attribute.Name))
+                        else if (attribute.Name.IsCommandResult)
                         {
                             res = method.Invoke(null, [context.ToActivityType<CommandResultActivity>()]);
                         }

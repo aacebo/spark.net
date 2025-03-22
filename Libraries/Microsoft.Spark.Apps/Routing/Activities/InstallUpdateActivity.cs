@@ -3,7 +3,7 @@ using Microsoft.Spark.Api.Activities;
 namespace Microsoft.Spark.Apps.Routing;
 
 [AttributeUsage(AttributeTargets.Method, Inherited = true)]
-public class InstallUpdateAttribute() : ActivityAttribute(ActivityType.InstallUpdate.Value, typeof(InstallUpdateActivity))
+public class InstallUpdateAttribute() : ActivityAttribute(ActivityType.InstallUpdate, typeof(InstallUpdateActivity))
 {
 }
 

@@ -40,7 +40,7 @@ public class Router : IRouter
         });
     }
 
-    public IRouter Register(string name, Func<IContext<Activity>, Task> handler)
+    public IRouter Register(string? name, Func<IContext<Activity>, Task> handler)
     {
         return Register(new Route()
         {

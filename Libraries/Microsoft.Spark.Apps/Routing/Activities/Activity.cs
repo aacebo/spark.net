@@ -3,9 +3,9 @@
 namespace Microsoft.Spark.Apps.Routing;
 
 [AttributeUsage(AttributeTargets.Method, Inherited = true)]
-public partial class ActivityAttribute(string name = "activity", Type? type = null) : Attribute
+public partial class ActivityAttribute(ActivityType? name = null, Type? type = null) : Attribute
 {
-    public readonly string Name = name;
+    public readonly ActivityType? Name = name;
     public readonly Type Type = type ?? typeof(Activity);
 }
 

@@ -3,7 +3,7 @@ using Microsoft.Spark.Api.Activities;
 namespace Microsoft.Spark.Apps.Routing;
 
 [AttributeUsage(AttributeTargets.Method, Inherited = true)]
-public class CommandAttribute() : ActivityAttribute(ActivityType.Command.Value, typeof(CommandActivity))
+public class CommandAttribute() : ActivityAttribute(ActivityType.Command, typeof(CommandActivity))
 {
 }
 
