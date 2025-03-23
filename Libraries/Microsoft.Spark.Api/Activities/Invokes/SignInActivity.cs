@@ -1,63 +1,77 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
+using Microsoft.Spark.Common;
+
 namespace Microsoft.Spark.Api.Activities.Invokes;
+
+public partial class Name : StringEnum
+{
+    public bool IsSignIn => Value.StartsWith("signin/");
+}
 
 /// <summary>
 /// Any SignIn Activity
 /// </summary>
-[JsonConverter(typeof(SignInActivityJsonConverter))]
+[JsonConverter(typeof(JsonConverter))]
 public abstract class SignInActivity(Name.SignIn name) : InvokeActivity(new(name.Value))
 {
     public SignIn.TokenExchangeActivity ToTokenExchange() => (SignIn.TokenExchangeActivity)this;
     public SignIn.VerifyStateActivity ToVerifyState() => (SignIn.VerifyStateActivity)this;
-}
 
-public class SignInActivityJsonConverter : JsonConverter<SignInActivity>
-{
-    public override bool CanConvert(Type typeToConvert)
+    public override object ToType(Type type, IFormatProvider? provider)
     {
-        return base.CanConvert(typeToConvert);
+        if (type == typeof(SignIn.TokenExchangeActivity)) return ToTokenExchange();
+        if (type == typeof(SignIn.VerifyStateActivity)) return ToVerifyState();
+        return this;
     }
 
-    public override SignInActivity? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    public new class JsonConverter : JsonConverter<SignInActivity>
     {
-        var element = JsonSerializer.Deserialize<JsonElement>(ref reader, options);
-
-        if (!element.TryGetProperty("name", out JsonElement property))
+        public override bool CanConvert(Type typeToConvert)
         {
-            throw new JsonException("invoke activity must have a 'name' property");
+            return base.CanConvert(typeToConvert);
         }
 
-        var name = property.Deserialize<string>(options);
-
-        if (name == null)
+        public override SignInActivity? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            throw new JsonException("failed to deserialize invoke activity 'name' property");
+            var element = JsonSerializer.Deserialize<JsonElement>(ref reader, options);
+
+            if (!element.TryGetProperty("name", out JsonElement property))
+            {
+                throw new JsonException("invoke activity must have a 'name' property");
+            }
+
+            var name = property.Deserialize<string>(options);
+
+            if (name == null)
+            {
+                throw new JsonException("failed to deserialize invoke activity 'name' property");
+            }
+
+            return name switch
+            {
+                "signin/tokenExchange" => JsonSerializer.Deserialize<SignIn.TokenExchangeActivity>(element.ToString(), options),
+                "signin/verifyState" => JsonSerializer.Deserialize<SignIn.VerifyStateActivity>(element.ToString(), options),
+                _ => JsonSerializer.Deserialize<SignInActivity>(element.ToString(), options)
+            };
         }
 
-        return name switch
+        public override void Write(Utf8JsonWriter writer, SignInActivity value, JsonSerializerOptions options)
         {
-            "signin/tokenExchange" => JsonSerializer.Deserialize<SignIn.TokenExchangeActivity>(element.ToString(), options),
-            "signin/verifyState" => JsonSerializer.Deserialize<SignIn.VerifyStateActivity>(element.ToString(), options),
-            _ => JsonSerializer.Deserialize<SignInActivity>(element.ToString(), options)
-        };
-    }
+            if (value is SignIn.TokenExchangeActivity tokenExchange)
+            {
+                JsonSerializer.Serialize(writer, tokenExchange, options);
+                return;
+            }
 
-    public override void Write(Utf8JsonWriter writer, SignInActivity value, JsonSerializerOptions options)
-    {
-        if (value is SignIn.TokenExchangeActivity tokenExchange)
-        {
-            JsonSerializer.Serialize(writer, tokenExchange, options);
-            return;
+            if (value is SignIn.VerifyStateActivity verifyState)
+            {
+                JsonSerializer.Serialize(writer, verifyState, options);
+                return;
+            }
+
+            JsonSerializer.Serialize(writer, value, options);
         }
-
-        if (value is SignIn.VerifyStateActivity verifyState)
-        {
-            JsonSerializer.Serialize(writer, verifyState, options);
-            return;
-        }
-
-        JsonSerializer.Serialize(writer, value, options);
     }
 }

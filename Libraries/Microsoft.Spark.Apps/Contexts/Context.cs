@@ -4,9 +4,9 @@ using Microsoft.Spark.Api.Clients;
 using Microsoft.Spark.Apps.Plugins;
 using Microsoft.Spark.Common.Logging;
 
-namespace Microsoft.Spark.Apps.Routing;
+namespace Microsoft.Spark.Apps;
 
-public interface IContext<TActivity> where TActivity : Activity
+public interface IContext<TActivity> where TActivity : IActivity
 {
     /// <summary>
     /// the app id of the bot
@@ -64,19 +64,40 @@ public interface IContext<TActivity> where TActivity : Activity
     /// <summary>
     /// convert the context to that of another activity type
     /// </summary>
-    public IContext<TToActivity> ToActivityType<TToActivity>() where TToActivity : TActivity;
+    public IContext<TToActivity> ToActivityType<TToActivity>() where TToActivity : IActivity;
 }
 
-public class Context<TActivity>(ISender sender) : IContext<TActivity> where TActivity : Activity
+public partial class Context<TActivity> : IContext<TActivity> where TActivity : IActivity
 {
-    public required string AppId { get; set; }
-    public required ILogger Log { get; set; }
-    public required ApiClient Api { get; set; }
-    public required TActivity Activity { get; set; }
-    public required ConversationReference Ref { get; set; }
+    public string AppId { get; set; }
+    public ILogger Log { get; set; }
+    public ApiClient Api { get; set; }
+    public TActivity Activity { get; set; }
+    public ConversationReference Ref { get; set; }
     public IDictionary<string, object> Extra { get; set; } = new Dictionary<string, object>();
 
-    protected ISender Sender { get; } = sender;
+    protected ISender Sender { get; }
+
+    public Context(ISender sender, string appId, ILogger log, ApiClient api, TActivity activity, ConversationReference reference)
+    {
+        Sender = sender;
+        AppId = appId;
+        Log = log;
+        Api = api;
+        Activity = activity;
+        Ref = reference;
+    }
+
+    public Context(Context<IActivity> context)
+    {
+        AppId = context.AppId;
+        Log = context.Log;
+        Api = context.Api;
+        Activity = (TActivity)context.Activity;
+        Ref = context.Ref;
+        Extra = context.Extra;
+        Sender = context.Sender;
+    }
 
     public async Task<T> Send<T>(T activity) where T : Activity
     {
@@ -124,16 +145,8 @@ public class Context<TActivity>(ISender sender) : IContext<TActivity> where TAct
         return res;
     }
 
-    public IContext<TToActivity> ToActivityType<TToActivity>() where TToActivity : TActivity
+    public IContext<TToActivity> ToActivityType<TToActivity>() where TToActivity : IActivity
     {
-        return new Context<TToActivity>(Sender)
-        {
-            AppId = AppId,
-            Log = Log,
-            Api = Api,
-            Ref = Ref,
-            Extra = new Dictionary<string, object>(),
-            Activity = (TToActivity)Activity
-        };
+        return new Context<TToActivity>(Sender, AppId, Log, Api, (TToActivity)Activity.ToType(typeof(TToActivity), null), Ref);
     }
 }

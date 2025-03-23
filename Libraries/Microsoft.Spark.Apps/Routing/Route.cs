@@ -34,46 +34,52 @@ public class AttributeRoute : IRoute
         {
             res = Method.Invoke(null, [context]);
         }
-        else if (Type.IsTyping)
+        else
         {
-            res = Method.Invoke(null, [context.ToActivityType<TypingActivity>()]);
+            var contextType = Method.GetParameters().First().ParameterType;
+            var casted = Convert.ChangeType(context, contextType);
+            res = Method.Invoke(null, [casted]);
         }
-        else if (Type.IsInstallUpdate)
-        {
-            res = Method.Invoke(null, [context.ToActivityType<InstallUpdateActivity>()]);
-        }
-        else if (Type.IsMessage)
-        {
-            res = Method.Invoke(null, [context.ToActivityType<MessageActivity>()]);
-        }
-        else if (Type.IsMessageUpdate)
-        {
-            res = Method.Invoke(null, [context.ToActivityType<MessageUpdateActivity>()]);
-        }
-        else if (Type.IsMessageReaction)
-        {
-            res = Method.Invoke(null, [context.ToActivityType<MessageReactionActivity>()]);
-        }
-        else if (Type.IsMessageDelete)
-        {
-            res = Method.Invoke(null, [context.ToActivityType<MessageDeleteActivity>()]);
-        }
-        else if (Type.IsConversationUpdate)
-        {
-            res = Method.Invoke(null, [context.ToActivityType<ConversationUpdateActivity>()]);
-        }
-        else if (Type.IsEndOfConversation)
-        {
-            res = Method.Invoke(null, [context.ToActivityType<EndOfConversationActivity>()]);
-        }
-        else if (Type.IsCommand)
-        {
-            res = Method.Invoke(null, [context.ToActivityType<CommandActivity>()]);
-        }
-        else if (Type.IsCommandResult)
-        {
-            res = Method.Invoke(null, [context.ToActivityType<CommandResultActivity>()]);
-        }
+        // else if (Type.IsTyping)
+        // {
+        //     res = Method.Invoke(null, [context.ToActivityType<TypingActivity>()]);
+        // }
+        // else if (Type.IsInstallUpdate)
+        // {
+        //     res = Method.Invoke(null, [context.ToActivityType<InstallUpdateActivity>()]);
+        // }
+        // else if (Type.IsMessage)
+        // {
+        //     res = Method.Invoke(null, [context.ToActivityType<MessageActivity>()]);
+        // }
+        // else if (Type.IsMessageUpdate)
+        // {
+        //     res = Method.Invoke(null, [context.ToActivityType<MessageUpdateActivity>()]);
+        // }
+        // else if (Type.IsMessageReaction)
+        // {
+        //     res = Method.Invoke(null, [context.ToActivityType<MessageReactionActivity>()]);
+        // }
+        // else if (Type.IsMessageDelete)
+        // {
+        //     res = Method.Invoke(null, [context.ToActivityType<MessageDeleteActivity>()]);
+        // }
+        // else if (Type.IsConversationUpdate)
+        // {
+        //     res = Method.Invoke(null, [context.ToActivityType<ConversationUpdateActivity>()]);
+        // }
+        // else if (Type.IsEndOfConversation)
+        // {
+        //     res = Method.Invoke(null, [context.ToActivityType<EndOfConversationActivity>()]);
+        // }
+        // else if (Type.IsCommand)
+        // {
+        //     res = Method.Invoke(null, [context.ToActivityType<CommandActivity>()]);
+        // }
+        // else if (Type.IsCommandResult)
+        // {
+        //     res = Method.Invoke(null, [context.ToActivityType<CommandResultActivity>()]);
+        // }
 
         if (res is Task task)
             await task;

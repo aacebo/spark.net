@@ -45,7 +45,7 @@ public partial class ConsoleLogger : ILogger
 
     public ILogger Child(string name)
     {
-        return new ConsoleLogger($"{Name} > {name}", Level);
+        return new ConsoleLogger($"{Name}.{name}", Level);
     }
 
     public bool IsEnabled(LogLevel level)

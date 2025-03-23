@@ -1,6 +1,6 @@
+using Microsoft.Spark.Api;
 using Microsoft.Spark.Api.Activities;
 using Microsoft.Spark.Apps.Plugins;
-using Microsoft.Spark.Apps.Routing;
 
 namespace Microsoft.Spark.Apps;
 
@@ -55,22 +55,27 @@ public partial class App
 
         try
         {
-            IContext<Activity> context = new Context<Activity>(sender)
+            var path = args.Activity.GetPath();
+            Logger.Debug(path);
+
+            var reference = new ConversationReference()
             {
-                Activity = args.Activity,
-                AppId = args.Token.AppId ?? "",
-                Log = Logger,
-                Api = Api,
-                Ref = new()
-                {
-                    ServiceUrl = args.Activity.ServiceUrl ?? args.Token.ServiceUrl,
-                    ChannelId = args.Activity.ChannelId,
-                    Bot = args.Activity.Recipient,
-                    User = args.Activity.From,
-                    Locale = args.Activity.Locale,
-                    Conversation = args.Activity.Conversation,
-                }
+                ServiceUrl = args.Activity.ServiceUrl ?? args.Token.ServiceUrl,
+                ChannelId = args.Activity.ChannelId,
+                Bot = args.Activity.Recipient,
+                User = args.Activity.From,
+                Locale = args.Activity.Locale,
+                Conversation = args.Activity.Conversation,
             };
+
+            IContext<Activity> context = new Context<Activity>(
+                sender,
+                args.Token.AppId ?? "",
+                Logger.Child(path),
+                Api,
+                args.Activity,
+                reference
+            );
 
             foreach (var route in routes)
             {

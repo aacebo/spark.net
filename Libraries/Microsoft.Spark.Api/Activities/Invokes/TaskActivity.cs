@@ -1,63 +1,77 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
+using Microsoft.Spark.Common;
+
 namespace Microsoft.Spark.Api.Activities.Invokes;
+
+public partial class Name : StringEnum
+{
+    public bool IsTask => Value.StartsWith("task/");
+}
 
 /// <summary>
 /// Any Task Activity
 /// </summary>
-[JsonConverter(typeof(TaskActivityJsonConverter))]
+[JsonConverter(typeof(JsonConverter))]
 public abstract class TaskActivity(Name.Tasks name) : InvokeActivity(new(name.Value))
 {
     public Tasks.FetchActivity ToFetch() => (Tasks.FetchActivity)this;
     public Tasks.SubmitActivity ToSubmit() => (Tasks.SubmitActivity)this;
-}
 
-public class TaskActivityJsonConverter : JsonConverter<TaskActivity>
-{
-    public override bool CanConvert(Type typeToConvert)
+    public override object ToType(Type type, IFormatProvider? provider)
     {
-        return base.CanConvert(typeToConvert);
+        if (type == typeof(Tasks.FetchActivity)) return ToFetch();
+        if (type == typeof(Tasks.SubmitActivity)) return ToSubmit();
+        return this;
     }
 
-    public override TaskActivity? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    public new class JsonConverter : JsonConverter<TaskActivity>
     {
-        var element = JsonSerializer.Deserialize<JsonElement>(ref reader, options);
-
-        if (!element.TryGetProperty("name", out JsonElement property))
+        public override bool CanConvert(Type typeToConvert)
         {
-            throw new JsonException("invoke activity must have a 'name' property");
+            return base.CanConvert(typeToConvert);
         }
 
-        var name = property.Deserialize<string>(options);
-
-        if (name == null)
+        public override TaskActivity? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            throw new JsonException("failed to deserialize invoke activity 'name' property");
+            var element = JsonSerializer.Deserialize<JsonElement>(ref reader, options);
+
+            if (!element.TryGetProperty("name", out JsonElement property))
+            {
+                throw new JsonException("invoke activity must have a 'name' property");
+            }
+
+            var name = property.Deserialize<string>(options);
+
+            if (name == null)
+            {
+                throw new JsonException("failed to deserialize invoke activity 'name' property");
+            }
+
+            return name switch
+            {
+                "task/fetch" => JsonSerializer.Deserialize<Tasks.FetchActivity>(element.ToString(), options),
+                "task/submit" => JsonSerializer.Deserialize<Tasks.SubmitActivity>(element.ToString(), options),
+                _ => JsonSerializer.Deserialize<TaskActivity>(element.ToString(), options)
+            };
         }
 
-        return name switch
+        public override void Write(Utf8JsonWriter writer, TaskActivity value, JsonSerializerOptions options)
         {
-            "task/fetch" => JsonSerializer.Deserialize<Tasks.FetchActivity>(element.ToString(), options),
-            "task/submit" => JsonSerializer.Deserialize<Tasks.SubmitActivity>(element.ToString(), options),
-            _ => JsonSerializer.Deserialize<TaskActivity>(element.ToString(), options)
-        };
-    }
+            if (value is Tasks.FetchActivity fetch)
+            {
+                JsonSerializer.Serialize(writer, fetch, options);
+                return;
+            }
 
-    public override void Write(Utf8JsonWriter writer, TaskActivity value, JsonSerializerOptions options)
-    {
-        if (value is Tasks.FetchActivity fetch)
-        {
-            JsonSerializer.Serialize(writer, fetch, options);
-            return;
+            if (value is Tasks.SubmitActivity submit)
+            {
+                JsonSerializer.Serialize(writer, submit, options);
+                return;
+            }
+
+            JsonSerializer.Serialize(writer, value, options);
         }
-
-        if (value is Tasks.SubmitActivity submit)
-        {
-            JsonSerializer.Serialize(writer, submit, options);
-            return;
-        }
-
-        JsonSerializer.Serialize(writer, value, options);
     }
 }

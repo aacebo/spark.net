@@ -1,55 +1,68 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
+using Microsoft.Spark.Common;
+
 namespace Microsoft.Spark.Api.Activities.Invokes;
+
+public partial class Name : StringEnum
+{
+    public bool IsAdaptiveCard => Value.StartsWith("adaptiveCard/");
+}
 
 /// <summary>
 /// Any AdaptiveCard Activity
 /// </summary>
-[JsonConverter(typeof(AdaptiveCardActivityJsonConverter))]
+[JsonConverter(typeof(JsonConverter))]
 public class AdaptiveCardActivity(Name.AdaptiveCards name) : InvokeActivity(new(name.Value))
 {
     public AdaptiveCards.ActionActivity ToAction() => (AdaptiveCards.ActionActivity)this;
-}
 
-public class AdaptiveCardActivityJsonConverter : JsonConverter<AdaptiveCardActivity>
-{
-    public override bool CanConvert(Type typeToConvert)
+    public override object ToType(Type type, IFormatProvider? provider)
     {
-        return base.CanConvert(typeToConvert);
+        if (type == typeof(AdaptiveCards.ActionActivity)) return ToAction();
+        return this;
     }
 
-    public override AdaptiveCardActivity? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    public new class JsonConverter : JsonConverter<AdaptiveCardActivity>
     {
-        var element = JsonSerializer.Deserialize<JsonElement>(ref reader, options);
-
-        if (!element.TryGetProperty("name", out JsonElement property))
+        public override bool CanConvert(Type typeToConvert)
         {
-            throw new JsonException("invoke activity must have a 'name' property");
+            return base.CanConvert(typeToConvert);
         }
 
-        var name = property.Deserialize<string>(options);
-
-        if (name == null)
+        public override AdaptiveCardActivity? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            throw new JsonException("failed to deserialize invoke activity 'name' property");
+            var element = JsonSerializer.Deserialize<JsonElement>(ref reader, options);
+
+            if (!element.TryGetProperty("name", out JsonElement property))
+            {
+                throw new JsonException("invoke activity must have a 'name' property");
+            }
+
+            var name = property.Deserialize<string>(options);
+
+            if (name == null)
+            {
+                throw new JsonException("failed to deserialize invoke activity 'name' property");
+            }
+
+            return name switch
+            {
+                "adaptiveCard/action" => JsonSerializer.Deserialize<AdaptiveCards.ActionActivity>(element.ToString(), options),
+                _ => JsonSerializer.Deserialize<AdaptiveCardActivity>(element.ToString(), options)
+            };
         }
 
-        return name switch
+        public override void Write(Utf8JsonWriter writer, AdaptiveCardActivity value, JsonSerializerOptions options)
         {
-            "adaptiveCard/action" => JsonSerializer.Deserialize<AdaptiveCards.ActionActivity>(element.ToString(), options),
-            _ => JsonSerializer.Deserialize<AdaptiveCardActivity>(element.ToString(), options)
-        };
-    }
+            if (value is AdaptiveCards.ActionActivity action)
+            {
+                JsonSerializer.Serialize(writer, action, options);
+                return;
+            }
 
-    public override void Write(Utf8JsonWriter writer, AdaptiveCardActivity value, JsonSerializerOptions options)
-    {
-        if (value is AdaptiveCards.ActionActivity action)
-        {
-            JsonSerializer.Serialize(writer, action, options);
-            return;
+            JsonSerializer.Serialize(writer, value, options);
         }
-
-        JsonSerializer.Serialize(writer, value, options);
     }
 }

@@ -30,8 +30,8 @@ public static partial class Program
     [Message]
     public static async Task OnMessage(IContext<MessageActivity> context)
     {
-        await context.Typing();
         context.Log.Info(context.Activity);
+        await context.Typing();
         await context.Send($"you said '{context.Activity.Text}'");
     }
 

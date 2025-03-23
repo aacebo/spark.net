@@ -7,6 +7,27 @@ namespace Microsoft.Spark.Api.Activities.Invokes;
 [JsonConverter(typeof(JsonConverter<Name>))]
 public partial class Name(string value) : StringEnum(value)
 {
+    public Type ToType()
+    {
+        if (IsExecuteAction) return typeof(ExecuteActionActivity);
+        if (IsFileConsent) return typeof(FileConsentActivity);
+        if (IsHandoff) return typeof(HandoffActivity);
+        if (IsAdaptiveCard) return typeof(AdaptiveCardActivity);
+        if (IsConfig) return typeof(ConfigActivity);
+        if (IsMessage) return typeof(MessageActivity);
+        if (IsMessageExtension) return typeof(MessageExtensionActivity);
+        if (IsSignIn) return typeof(SignInActivity);
+        if (IsTab) return typeof(TabActivity);
+        if (IsTask) return typeof(TaskActivity);
+        return typeof(InvokeActivity);
+    }
+
+    public string ToPrettyString()
+    {
+        var value = ToString();
+        return $"{value.First().ToString().ToUpper()}{value.AsSpan(1).ToString()}";
+    }
+
     [JsonConverter(typeof(JsonConverter<AdaptiveCards>))]
     public partial class AdaptiveCards(string value) : StringEnum(value)
     {
