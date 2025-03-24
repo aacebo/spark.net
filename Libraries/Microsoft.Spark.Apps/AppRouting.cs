@@ -25,13 +25,10 @@ public partial class App : RoutingModule
                 foreach (object attr in attrs)
                 {
                     var attribute = (ActivityAttribute)attr;
-                    var route = new AttributeRoute()
-                    {
-                        Attr = attribute,
-                        Method = method
-                    };
+                    var route = new AttributeRoute() { Attr = attribute, Method = method };
+                    var result = route.Validate();
 
-                    if (!route.Validate()) throw new InvalidOperationException("invalid activity handler");
+                    if (!result.Valid) throw new InvalidOperationException(result.ToString());
                     Router.Register(route);
                 }
             }

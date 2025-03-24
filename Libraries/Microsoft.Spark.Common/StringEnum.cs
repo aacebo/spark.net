@@ -28,6 +28,7 @@ public class StringEnum(string value, bool caseSensitive = true) : ICloneable, I
 
     public static bool operator ==(StringEnum? a, StringEnum? b) => a?.Value == b?.Value;
     public static bool operator !=(StringEnum? a, StringEnum? b) => a?.Value != b?.Value;
+    public static implicit operator string(StringEnum value) => value.Value;
 
     public class JsonConverter<TStringEnum> : System.Text.Json.Serialization.JsonConverter<TStringEnum>
         where TStringEnum : StringEnum

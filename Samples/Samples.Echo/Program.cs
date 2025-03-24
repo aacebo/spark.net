@@ -28,7 +28,7 @@ public static partial class Program
     }
 
     [Message]
-    public static async Task OnMessage([IContext.Logger] Microsoft.Spark.Common.Logging.ILogger logger, [IContext.Activity] MessageActivity activity)
+    public static void OnMessage([IContext.Logger] Microsoft.Spark.Common.Logging.ILogger logger, [IContext.Activity] MessageActivity activity)
     {
         logger.Info(activity);
         // await context.Typing();

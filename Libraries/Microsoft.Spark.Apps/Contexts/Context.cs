@@ -1,3 +1,6 @@
+using System.Text.Json;
+using System.Text.Json.Serialization;
+
 using Microsoft.Spark.Api;
 using Microsoft.Spark.Api.Activities;
 using Microsoft.Spark.Api.Clients;
@@ -153,5 +156,14 @@ public partial class Context<TActivity> : IContext<TActivity> where TActivity : 
     public IContext<TToActivity> ToActivityType<TToActivity>() where TToActivity : IActivity
     {
         return new Context<TToActivity>(Sender, AppId, Log, Api, (TToActivity)Activity.ToType(typeof(TToActivity), null), Ref);
+    }
+
+    public override string ToString()
+    {
+        return JsonSerializer.Serialize(this, new JsonSerializerOptions()
+        {
+            WriteIndented = true,
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+        });
     }
 }

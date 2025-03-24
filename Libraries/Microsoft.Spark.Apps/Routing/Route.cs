@@ -26,8 +26,10 @@ public class AttributeRoute : IRoute
     public required MethodInfo Method { get; set; }
 
     public bool Select(IActivity activity) => Attr.Select(activity);
-    public bool Validate()
+    public ValidationResult Validate()
     {
+        var result = new ValidationResult();
+
         foreach (var param in Method.GetParameters())
         {
             var logger = param.GetCustomAttribute<IContext.LoggerAttribute>();
@@ -37,15 +39,15 @@ public class AttributeRoute : IRoute
             var isContext = generic?.IsAssignableTo(Attr.Type) ?? false;
 
             if (logger == null && activity == null && !isContext)
-                return false;
+                result.AddError(param.Name ?? "??", "type must be `IContext<TActivity>` or an `IContext` property attribute");
         }
 
-        return true;
+        return result;
     }
 
     public async Task Invoke(IContext<IActivity> context)
     {
-        object? res = null;
+        context.Log = context.Log.Child(Method.Name);
 
         var args = Method.GetParameters().Select(param =>
         {
@@ -57,16 +59,51 @@ public class AttributeRoute : IRoute
             return Attr.Coerce(context);
         });
 
-        if (Attr.Name == null)
+        if (Attr.Log.HasFlag(IContext.Property.Context))
         {
-            res = Method.Invoke(null, args?.ToArray());
+            context.Log.Debug(context);
         }
         else
         {
-            res = Method.Invoke(null, args?.ToArray());
+            if (Attr.Log.HasFlag(IContext.Property.AppId))
+                context.Log.Debug(context.AppId);
+
+            if (Attr.Log.HasFlag(IContext.Property.Activity))
+                context.Log.Debug(context.Activity);
         }
+
+        var res = Method.Invoke(null, args?.ToArray());
 
         if (res is Task task)
             await task;
+    }
+
+    public class ValidationResult
+    {
+        /// <summary>
+        /// the errors that were found
+        /// </summary>
+        public IList<ParameterError> Errors { get; set; } = [];
+
+        /// <summary>
+        /// is the result valid
+        /// </summary>
+        public bool Valid => Errors.Count == 0;
+
+        /// <summary>
+        /// combine all the errors into
+        /// one message string
+        /// </summary>
+        public override string ToString() => string.Join('\n', Errors.Select(err => $"{err.Name} => {err.Message}"));
+
+        /// <summary>
+        /// add a parameter error to the result
+        /// </summary>
+        public void AddError(string name, string message)
+        {
+            Errors.Add(new(name, message));
+        }
+
+        public record ParameterError(string Name, string Message);
     }
 }
