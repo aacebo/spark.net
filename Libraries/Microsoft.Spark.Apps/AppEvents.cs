@@ -9,10 +9,12 @@ public partial interface IApp
     public IApp OnError(ErrorEventHandler handler);
     public IApp OnStart(StartEventHandler handler);
     public IApp OnActivity(ActivityEventHandler handler);
+    public IApp OnActivityResponse(ActivityResponseEventHandler handler);
 
     public delegate Task ErrorEventHandler(IApp app, Events.ErrorEventArgs args);
     public delegate Task StartEventHandler(IApp app, Events.StartEventArgs args);
-    public delegate Task<object?> ActivityEventHandler(IApp app, ISender plugin, Events.ActivityEventArgs args);
+    public delegate Task<Response?> ActivityEventHandler(IApp app, ISender plugin, Events.ActivityEventArgs args);
+    public delegate Task ActivityResponseEventHandler(IApp app, ISender plugin, Events.ActivityResponseEventArgs args);
 }
 
 public partial class App
@@ -20,6 +22,7 @@ public partial class App
     protected event IApp.ErrorEventHandler ErrorEvent;
     protected event IApp.StartEventHandler StartEvent;
     protected event IApp.ActivityEventHandler ActivityEvent;
+    protected event IApp.ActivityResponseEventHandler ActivityResponseEvent;
 
     public IApp OnError(IApp.ErrorEventHandler handler)
     {
@@ -39,6 +42,12 @@ public partial class App
         return this;
     }
 
+    public IApp OnActivityResponse(IApp.ActivityResponseEventHandler handler)
+    {
+        ActivityResponseEvent += handler;
+        return this;
+    }
+
     protected Task OnErrorEvent(Events.ErrorEventArgs args)
     {
         return Task.Run(() => args.Logger.Error(args.Error));
@@ -49,7 +58,12 @@ public partial class App
         return Task.Run(() => args.Logger.Info("started"));
     }
 
-    protected async Task<object?> OnActivityEvent(ISender sender, Events.ActivityEventArgs args)
+    protected Task OnActivityResponseEvent(ISender sender, Events.ActivityResponseEventArgs args)
+    {
+        return Task.Run(() => Logger.Info(args.Response));
+    }
+
+    protected async Task<Response?> OnActivityEvent(ISender sender, Events.ActivityEventArgs args)
     {
         var routes = Router.Select(args.Activity);
 
@@ -77,10 +91,33 @@ public partial class App
                 reference
             );
 
+            Response? response = null;
+
             foreach (var route in routes)
             {
-                await route.Invoke(context);
+                var res = await route.Invoke(context);
+
+                if (res != null)
+                {
+                    response = res is Response value ? value : new Response(System.Net.HttpStatusCode.OK, res);
+                    await ActivityResponseEvent(this, sender, new()
+                    {
+                        Activity = context.Activity,
+                        Response = response,
+                        Bot = reference.Bot,
+                        ChannelId = reference.ChannelId,
+                        Conversation = reference.Conversation,
+                        ServiceUrl = reference.ServiceUrl,
+                        ActivityId = reference.ActivityId,
+                        Locale = reference.Locale,
+                        User = reference.User
+                    });
+
+                    return response;
+                }
             }
+
+            return null;
         }
         catch (Exception err)
         {
@@ -89,8 +126,8 @@ public partial class App
                 Error = err,
                 Logger = Logger
             });
-        }
 
-        return null;
+            return new Response(System.Net.HttpStatusCode.InternalServerError);
+        }
     }
 }

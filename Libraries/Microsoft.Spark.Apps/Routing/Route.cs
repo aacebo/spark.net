@@ -52,7 +52,7 @@ public class AttributeRoute : IRoute
 
     public async Task<object?> Invoke(IContext<IActivity> context)
     {
-        context.Log = context.Log.Child(Method.Name);
+        var log = context.Log.Child(Method.Name);
 
         var args = Method.GetParameters().Select(param =>
         {
@@ -68,15 +68,15 @@ public class AttributeRoute : IRoute
 
         if (Attr.Log.HasFlag(IContext.Property.Context))
         {
-            context.Log.Debug(context);
+            log.Debug(context);
         }
         else
         {
             if (Attr.Log.HasFlag(IContext.Property.AppId))
-                context.Log.Debug(context.AppId);
+                log.Debug(context.AppId);
 
             if (Attr.Log.HasFlag(IContext.Property.Activity))
-                context.Log.Debug(context.Activity);
+                log.Debug(context.Activity);
         }
 
         var res = Method.Invoke(null, args?.ToArray());

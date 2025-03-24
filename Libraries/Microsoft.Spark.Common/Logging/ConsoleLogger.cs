@@ -59,6 +59,9 @@ public partial class ConsoleLogger : ILogger
         return this;
     }
 
+    public object Clone() => MemberwiseClone();
+    public ILogger Copy() => (ILogger)Clone();
+
     internal ANSI GetLevelColor(LogLevel level)
     {
         return level == LogLevel.Error ? ANSI.ForegroundRed

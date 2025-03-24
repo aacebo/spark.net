@@ -1,4 +1,6 @@
 using System.Net;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Microsoft.Spark.Apps;
 
@@ -10,7 +12,7 @@ public class Response
     /// <summary>
     /// The HTTP status code of the response.
     /// </summary>
-    public required HttpStatusCode Status { get; set; }
+    public HttpStatusCode Status { get; set; }
 
     /// <summary>
     /// Optional. The body of the response.
@@ -26,5 +28,14 @@ public class Response
     {
         Status = status;
         Body = body;
+    }
+
+    public override string ToString()
+    {
+        return JsonSerializer.Serialize(this, new JsonSerializerOptions()
+        {
+            WriteIndented = true,
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+        });
     }
 }

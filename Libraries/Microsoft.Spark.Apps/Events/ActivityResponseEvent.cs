@@ -5,7 +5,8 @@ namespace Microsoft.Spark.Apps.Events;
 
 public class ActivityResponseEventArgs : ConversationReference
 {
-    public required Activity Activity { get; set; }
+    public required IActivity Activity { get; set; }
+    public required Response Response { get; set; }
 }
 
 [AttributeUsage(AttributeTargets.Method, Inherited = true)]

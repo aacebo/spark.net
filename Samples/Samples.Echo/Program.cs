@@ -34,6 +34,12 @@ public static partial class Program
         await send.Text($"you said '{activity.Text}'");
     }
 
+    [Message]
+    public static async Task OnMessageTwo(IContext<MessageActivity> context)
+    {
+        await context.SignIn();
+    }
+
     [ErrorEvent]
     public static void OnEvent()
     {

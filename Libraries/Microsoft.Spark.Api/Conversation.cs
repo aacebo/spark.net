@@ -62,7 +62,7 @@ public class ConversationType(string value) : StringEnum(value)
 /// <summary>
 /// An object relating to a particular point in a conversation
 /// </summary>
-public class ConversationReference
+public class ConversationReference : ICloneable
 {
     /// <summary>
     /// (Optional) ID of the activity to refer to
@@ -116,6 +116,9 @@ public class ConversationReference
     [JsonPropertyName("serviceUrl")]
     [JsonPropertyOrder(6)]
     public required string ServiceUrl { get; set; }
+
+    public object Clone() => MemberwiseClone();
+    public ConversationReference Copy() => (ConversationReference)Clone();
 }
 
 /// <summary>

@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace Microsoft.Spark.Api.Entities;
 
-[JsonConverter(typeof(EntityJsonConverter))]
+[JsonConverter(typeof(Entity.JsonConverter))]
 public interface IEntity
 {
     [JsonPropertyName("type")]
@@ -22,6 +22,7 @@ public interface IEntity
     public Dictionary<string, object?> Properties { get; set; }
 }
 
+[JsonConverter(typeof(JsonConverter))]
 public class Entity : IEntity
 {
     [JsonPropertyName("type")]
@@ -49,67 +50,67 @@ public class Entity : IEntity
         Type = type;
         OType = otype;
     }
-}
 
-public class EntityJsonConverter : JsonConverter<IEntity>
-{
-    public override bool CanConvert(Type typeToConvert)
+    public class JsonConverter : JsonConverter<IEntity>
     {
-        return base.CanConvert(typeToConvert);
-    }
-
-    public override IEntity? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-    {
-        var element = JsonSerializer.Deserialize<JsonElement>(ref reader, options);
-
-        if (!element.TryGetProperty("type", out JsonElement property))
+        public override bool CanConvert(Type typeToConvert)
         {
-            throw new JsonException("entity must have a 'type' property");
+            return base.CanConvert(typeToConvert);
         }
 
-        var type = property.Deserialize<string>(options);
-
-        if (type == null)
+        public override IEntity? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            throw new JsonException("failed to deserialize entity 'type' property");
+            var element = JsonSerializer.Deserialize<JsonElement>(ref reader, options);
+
+            if (!element.TryGetProperty("type", out JsonElement property))
+            {
+                throw new JsonException("entity must have a 'type' property");
+            }
+
+            var type = property.Deserialize<string>(options);
+
+            if (type == null)
+            {
+                throw new JsonException("failed to deserialize entity 'type' property");
+            }
+
+            return type switch
+            {
+                "clientInfo" => JsonSerializer.Deserialize<ClientInfoEntity>(element.ToString(), options),
+                "mention" => JsonSerializer.Deserialize<MentionEntity>(element.ToString(), options),
+                "message" or "https://schema.org/Message" => JsonSerializer.Deserialize<IMessageEntity>(element.ToString(), options),
+                "streaminfo" => JsonSerializer.Deserialize<StreamInfoEntity>(element.ToString(), options),
+                _ => JsonSerializer.Deserialize<Entity>(element.ToString(), options)
+            };
         }
 
-        return type switch
+        public override void Write(Utf8JsonWriter writer, IEntity value, JsonSerializerOptions options)
         {
-            "clientInfo" => JsonSerializer.Deserialize<ClientInfoEntity>(element.ToString(), options),
-            "mention" => JsonSerializer.Deserialize<MentionEntity>(element.ToString(), options),
-            "message" or "https://schema.org/Message" => JsonSerializer.Deserialize<IMessageEntity>(element.ToString(), options),
-            "streaminfo" => JsonSerializer.Deserialize<StreamInfoEntity>(element.ToString(), options),
-            _ => JsonSerializer.Deserialize<Entity>(element.ToString(), options)
-        };
-    }
+            if (value is IClientInfoEntity clientInfo)
+            {
+                JsonSerializer.Serialize(writer, clientInfo, options);
+                return;
+            }
 
-    public override void Write(Utf8JsonWriter writer, IEntity value, JsonSerializerOptions options)
-    {
-        if (value is IClientInfoEntity clientInfo)
-        {
-            JsonSerializer.Serialize(writer, clientInfo, options);
-            return;
+            if (value is IMentionEntity mention)
+            {
+                JsonSerializer.Serialize(writer, mention, options);
+                return;
+            }
+
+            if (value is IMessageEntity message)
+            {
+                JsonSerializer.Serialize(writer, message, options);
+                return;
+            }
+
+            if (value is IStreamInfoEntity streamInfo)
+            {
+                JsonSerializer.Serialize(writer, streamInfo, options);
+                return;
+            }
+
+            JsonSerializer.Serialize(writer, value, options);
         }
-
-        if (value is IMentionEntity mention)
-        {
-            JsonSerializer.Serialize(writer, mention, options);
-            return;
-        }
-
-        if (value is IMessageEntity message)
-        {
-            JsonSerializer.Serialize(writer, message, options);
-            return;
-        }
-
-        if (value is IStreamInfoEntity streamInfo)
-        {
-            JsonSerializer.Serialize(writer, streamInfo, options);
-            return;
-        }
-
-        JsonSerializer.Serialize(writer, value, options);
     }
 }

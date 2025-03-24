@@ -66,6 +66,7 @@ public partial class App : IApp
         ErrorEvent = (_, args) => OnErrorEvent(args);
         StartEvent = (_, args) => OnStartEvent(args);
         ActivityEvent = (_, plugin, args) => OnActivityEvent(plugin, args);
+        ActivityResponseEvent = (_, plugin, args) => OnActivityResponseEvent(plugin, args);
 
         Container = new Container();
         Container.Register(Logger);
@@ -79,6 +80,8 @@ public partial class App : IApp
         Container.Register("GraphToken", new FactoryProvider(() => GraphToken));
 
         RegisterAttributeRoutes();
+        OnTokenExchange(OnTokenExchangeActivity);
+        OnVerifyState(OnVerifyStateActivity);
     }
 
     public async Task Start()

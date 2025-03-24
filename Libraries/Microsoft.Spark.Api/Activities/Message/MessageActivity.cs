@@ -84,17 +84,17 @@ public class MessageActivity : Activity
 
     public MessageActivity AddAttachment(Spark.Cards.Card card)
     {
-        return AddAttachment(new Attachment.AdaptiveCard(card));
+        return AddAttachment(new Attachment(card));
     }
 
     public MessageActivity AddAttachment(Cards.OAuthCard card)
     {
-        return AddAttachment(new Attachment.OAuthCard(card));
+        return AddAttachment(new Attachment(card));
     }
 
     public MessageActivity AddAttachment(Cards.SignInCard card)
     {
-        return AddAttachment(new Attachment.SignInCard(card));
+        return AddAttachment(new Attachment(card));
     }
 
     public MessageActivity AddMention(Account account)

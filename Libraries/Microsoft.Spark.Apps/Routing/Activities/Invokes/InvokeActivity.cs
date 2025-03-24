@@ -1,11 +1,23 @@
 using Microsoft.Spark.Api.Activities;
+using Microsoft.Spark.Api.Activities.Invokes;
 
 namespace Microsoft.Spark.Apps.Routing;
 
 [AttributeUsage(AttributeTargets.Method, Inherited = true)]
-public class InvokeAttribute() : ActivityAttribute(ActivityType.Invoke, typeof(InvokeActivity))
+public class InvokeAttribute(string? name = null, Type? type = null, IContext.Property log = IContext.Property.None) : ActivityAttribute(ActivityType.Invoke, type ?? typeof(InvokeActivity), log)
 {
+    public readonly Name? InvokeName = name != null ? new(name) : null;
+
     public override object Coerce(IContext<IActivity> context) => context.ToActivityType<InvokeActivity>();
+    public override bool Select(IActivity activity)
+    {
+        if (activity is InvokeActivity invoke)
+        {
+            return invoke.Name.Equals(InvokeName);
+        }
+
+        return false;
+    }
 }
 
 public partial interface IRoutingModule

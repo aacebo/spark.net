@@ -34,7 +34,7 @@ public partial class ActivityType(string value) : StringEnum(value)
     }
 }
 
-public interface IActivity : IConvertible
+public interface IActivity : IConvertible, ICloneable
 {
     [AllowNull]
     public string Id { get; set; }
@@ -141,6 +141,9 @@ public partial class Activity(ActivityType type) : IActivity
 
     [JsonExtensionData]
     public Dictionary<string, object?> Properties { get; set; } = [];
+
+    public object Clone() => MemberwiseClone();
+    public virtual Activity Copy() => (Activity)Clone();
 
     public virtual string GetPath()
     {

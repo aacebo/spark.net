@@ -17,5 +17,5 @@ public interface IPlugin
     public Task OnActivityResponse(IApp app, ISender plugin, Events.ActivityResponseEventArgs args);
 
     public delegate Task ErrorEventHandler(IPlugin sender, Events.ErrorEventArgs args);
-    public delegate Task<object?> ActivityEventHandler(ISender sender, Events.ActivityEventArgs args);
+    public delegate Task<Response?> ActivityEventHandler(ISender sender, Events.ActivityEventArgs args);
 }

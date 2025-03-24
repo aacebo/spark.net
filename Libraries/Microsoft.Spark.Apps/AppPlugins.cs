@@ -33,6 +33,7 @@ public partial class App
         // subscribe plugin to app events
         ErrorEvent += plugin.OnError;
         StartEvent += plugin.OnStart;
+        ActivityResponseEvent += plugin.OnActivityResponse;
         ActivityEvent += async (app, sender, args) =>
         {
             await plugin.OnActivity(app, sender, args);
@@ -43,8 +44,7 @@ public partial class App
         plugin.ErrorEvent += (_, args) => ErrorEvent(this, args);
         plugin.ActivityEvent += async (plugin, args) =>
         {
-            await ActivityEvent(this, plugin, args);
-            return null;
+            return await ActivityEvent(this, plugin, args);
         };
 
         Plugins.Add(plugin);
