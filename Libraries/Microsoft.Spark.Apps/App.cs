@@ -4,6 +4,7 @@ using Microsoft.Spark.Api.Auth;
 using Microsoft.Spark.Api.Clients;
 using Microsoft.Spark.Common.Http;
 using Microsoft.Spark.Common.Logging;
+using Microsoft.Spark.Common.Storage;
 
 namespace Microsoft.Spark.Apps;
 
@@ -23,7 +24,18 @@ public partial class App : IApp
 {
     public static IAppBuilder Builder(IAppOptions? options = null) => new AppBuilder(options);
 
+    /// <summary>
+    /// the apps id
+    /// </summary>
+    public string? Id => BotToken?.AppId ?? GraphToken?.AppId;
+
+    /// <summary>
+    /// the apps name
+    /// </summary>
+    public string? Name => BotToken?.AppDisplayName ?? GraphToken?.AppDisplayName;
+
     public ILogger Logger { get; }
+    public IStorage<string, object> Storage { get; }
     public ApiClient Api { get; }
     public IHttpClient Client { get; }
     public IHttpCredentials? Credentials { get; }
@@ -44,6 +56,7 @@ public partial class App : IApp
     public App(IAppOptions? options = null)
     {
         Logger = options?.Logger ?? new ConsoleLogger(Assembly.GetEntryAssembly()?.GetName().Name ?? "@Spark");
+        Storage = options?.Storage ?? new LocalStorage<object>();
         Client = options?.Client ?? options?.ClientFactory?.CreateClient() ?? new Common.Http.HttpClient();
         Client.Options.TokenFactory = () => BotToken;
         Client.Options.AddUserAgent(UserAgent);
@@ -56,9 +69,12 @@ public partial class App : IApp
 
         Container = new Container();
         Container.Register(Logger);
+        Container.Register(Storage);
         Container.Register(Client);
         Container.Register(Api);
-        Container.Register(new FactoryProvider(() => Credentials));
+        Container.Register<IHttpCredentials>(new FactoryProvider(() => Credentials));
+        Container.Register("AppId", new FactoryProvider(() => Id));
+        Container.Register("AppName", new FactoryProvider(() => Name));
         Container.Register("BotToken", new FactoryProvider(() => BotToken));
         Container.Register("GraphToken", new FactoryProvider(() => GraphToken));
 

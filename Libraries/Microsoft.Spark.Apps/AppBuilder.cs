@@ -9,6 +9,8 @@ public interface IAppBuilder
     public IAppBuilder AddLogger(Common.Logging.ILogger logger);
     public IAppBuilder AddLogger(string? name = null, Common.Logging.LogLevel level = Common.Logging.LogLevel.Info);
 
+    public IAppBuilder AddStorage<TStorage>(TStorage storage) where TStorage : Common.Storage.IStorage<string, object>;
+
     public IAppBuilder AddClient(Common.Http.IHttpClient client);
     public IAppBuilder AddClient(Common.Http.IHttpClientFactory factory);
     public IAppBuilder AddClient(Func<Common.Http.IHttpClient> @delegate);
@@ -44,6 +46,12 @@ public partial class AppBuilder : IAppBuilder
     {
         name ??= Assembly.GetEntryAssembly()?.GetName().Name ?? "@Spark";
         _options.Logger = new Common.Logging.ConsoleLogger(name, level);
+        return this;
+    }
+
+    public IAppBuilder AddStorage<TStorage>(TStorage storage) where TStorage : Common.Storage.IStorage<string, object>
+    {
+        _options.Storage = storage;
         return this;
     }
 

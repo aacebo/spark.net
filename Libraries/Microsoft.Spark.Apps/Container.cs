@@ -18,6 +18,13 @@ internal interface IContainer
     /// <summary>
     /// register a singleton
     /// </summary>
+    /// <typeparam name="T">the type</typeparam>
+    /// <param name="provider">the provider</param>
+    public void Register<T>(IProvider provider) where T : notnull;
+
+    /// <summary>
+    /// register a singleton
+    /// </summary>
     public void Register<T>(T value) where T : notnull;
 
     /// <summary>
@@ -41,6 +48,18 @@ internal class Container : IContainer
 
     public void Register(string key, IProvider provider)
     {
+        if (Has(key))
+        {
+            throw new InvalidOperationException($"key '{key}' already exists");
+        }
+
+        _providers.Add(key, provider);
+    }
+
+    public void Register<T>(IProvider provider) where T : notnull
+    {
+        var key = typeof(T).Name;
+
         if (Has(key))
         {
             throw new InvalidOperationException($"key '{key}' already exists");
