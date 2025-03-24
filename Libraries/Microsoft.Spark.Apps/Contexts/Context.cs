@@ -6,7 +6,7 @@ using Microsoft.Spark.Common.Logging;
 
 namespace Microsoft.Spark.Apps;
 
-public interface IContext<TActivity> where TActivity : IActivity
+public partial interface IContext<TActivity> where TActivity : IActivity
 {
     /// <summary>
     /// the app id of the bot

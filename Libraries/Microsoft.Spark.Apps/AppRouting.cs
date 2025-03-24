@@ -22,34 +22,17 @@ public partial class App : RoutingModule
 
                 if (attrs.Length == 0) continue;
 
-                var param = method.GetParameters().FirstOrDefault();
-
-                if (param == null)
-                {
-                    throw new ArgumentException("Activity handlers must have 1 parameter of type `ActivityContext`");
-                }
-
-                var generic = param.ParameterType.GenericTypeArguments.FirstOrDefault();
-
-                if (generic == null)
-                {
-                    throw new ArgumentException("Activity handlers must have 1 parameter of type `ActivityContext`");
-                }
-
                 foreach (object attr in attrs)
                 {
                     var attribute = (ActivityAttribute)attr;
-
-                    if (!attribute.Type.IsAssignableTo(generic))
-                    {
-                        throw new ArgumentException($"'{generic.Name}' is not assignable to '{attribute.Type.Name}'");
-                    }
-
-                    Router.Register(new AttributeRoute()
+                    var route = new AttributeRoute()
                     {
                         Attr = attribute,
                         Method = method
-                    });
+                    };
+
+                    if (!route.Validate()) throw new InvalidOperationException("invalid activity handler");
+                    Router.Register(route);
                 }
             }
         }
