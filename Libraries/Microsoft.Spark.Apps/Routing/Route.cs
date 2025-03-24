@@ -25,7 +25,7 @@ public class AttributeRoute : IRoute
     public required ActivityAttribute Attr { get; set; }
     public required MethodInfo Method { get; set; }
 
-    public bool Select(IActivity activity) => Attr.Name == null || Attr.Name.Equals(activity.Type);
+    public bool Select(IActivity activity) => Attr.Select(activity);
     public async Task Invoke(IContext<IActivity> context)
     {
         object? res = null;

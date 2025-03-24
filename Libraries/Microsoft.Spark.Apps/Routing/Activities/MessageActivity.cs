@@ -25,6 +25,15 @@ public class MessageAttribute : ActivityAttribute
     }
 
     public override object Coerce(IContext<IActivity> context) => context.ToActivityType<MessageActivity>();
+    public override bool Select(IActivity activity)
+    {
+        if (activity is MessageActivity message)
+        {
+            return Pattern == null || Pattern.IsMatch(message.Text);
+        }
+
+        return false;
+    }
 }
 
 public partial interface IRoutingModule
