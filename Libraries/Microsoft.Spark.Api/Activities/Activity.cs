@@ -36,20 +36,38 @@ public partial class ActivityType(string value) : StringEnum(value)
 
 public interface IActivity : IConvertible
 {
+    [AllowNull]
     public string Id { get; set; }
+
     public ActivityType Type { get; init; }
+
     public string? ReplyToId { get; set; }
+
     public ChannelId ChannelId { get; set; }
+
+    [AllowNull]
     public Account From { get; set; }
+
+    [AllowNull]
     public Account Recipient { get; set; }
+
+    [AllowNull]
     public Conversation Conversation { get; set; }
+
     public ConversationReference? RelatesTo { get; set; }
+
     public string? ServiceUrl { get; set; }
+
     public string? Locale { get; set; }
+
     public DateTime? Timestamp { get; set; }
+
     public DateTime? LocalTimestamp { get; set; }
+
     public IList<IEntity>? Entities { get; set; }
+
     public ChannelData? ChannelData { get; set; }
+
     public Dictionary<string, object?> Properties { get; set; }
 
     public string GetPath();

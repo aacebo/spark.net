@@ -45,7 +45,7 @@ public partial interface IContext<TActivity> where TActivity : IActivity
     /// send an activity to the conversation
     /// </summary>
     /// <param name="activity">activity activity to send</param>
-    public Task<T> Send<T>(T activity) where T : Activity;
+    public Task<T> Send<T>(T activity) where T : IActivity;
 
     /// <summary>
     /// send a message activity to the conversation
@@ -102,7 +102,7 @@ public partial class Context<TActivity> : IContext<TActivity> where TActivity : 
         Sender = context.Sender;
     }
 
-    public async Task<T> Send<T>(T activity) where T : Activity
+    public async Task<T> Send<T>(T activity) where T : IActivity
     {
         var res = await Sender.Send(activity, Ref);
         return res;

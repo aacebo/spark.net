@@ -15,7 +15,7 @@ public interface ISender : IPlugin
     /// <param name="activity">the activity to send</param>
     /// <param name="reference">the conversation reference</param>
     /// <returns>the sent activity</returns>
-    public Task<Activity> Send(Activity activity, ConversationReference reference);
+    public Task<IActivity> Send(IActivity activity, ConversationReference reference);
 
     /// <summary>
     /// called by the `App`
@@ -25,7 +25,7 @@ public interface ISender : IPlugin
     /// <param name="activity">the activity to send</param>
     /// <param name="reference">the conversation reference</param>
     /// <returns>the sent activity</returns>
-    public Task<TActivity> Send<TActivity>(TActivity activity, ConversationReference reference) where TActivity : Activity;
+    public Task<TActivity> Send<TActivity>(TActivity activity, ConversationReference reference) where TActivity : IActivity;
 
     /// <summary>
     /// called by the `App`

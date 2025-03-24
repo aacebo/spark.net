@@ -61,12 +61,12 @@ public class AspNetCorePlugin : ISender
         return Task.Run(() => Logger.Debug("OnActivityResponse"));
     }
 
-    public async Task<Activity> Send(Activity activity, ConversationReference reference)
+    public async Task<IActivity> Send(IActivity activity, ConversationReference reference)
     {
-        return await Send<Activity>(activity, reference);
+        return await Send<IActivity>(activity, reference);
     }
 
-    public async Task<TActivity> Send<TActivity>(TActivity activity, ConversationReference reference) where TActivity : Activity
+    public async Task<TActivity> Send<TActivity>(TActivity activity, ConversationReference reference) where TActivity : IActivity
     {
         var client = new ApiClient(reference.ServiceUrl, Client);
 

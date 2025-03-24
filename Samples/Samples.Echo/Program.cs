@@ -28,11 +28,10 @@ public static partial class Program
     }
 
     [Message]
-    public static void OnMessage([IContext.Logger] Microsoft.Spark.Common.Logging.ILogger logger, [IContext.Activity] MessageActivity activity)
+    public static async Task OnMessage([IContext.Activity] MessageActivity activity, [IContext.Send] IContext.Send send)
     {
-        logger.Info(activity);
-        // await context.Typing();
-        // await context.Send($"you said '{context.Activity.Text}'");
+        await send.Typing();
+        await send.Text($"you said '{activity.Text}'");
     }
 
     [ErrorEvent]

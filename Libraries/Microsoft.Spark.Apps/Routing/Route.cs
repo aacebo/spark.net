@@ -7,17 +7,21 @@ namespace Microsoft.Spark.Apps.Routing;
 public interface IRoute
 {
     public bool Select(IActivity activity);
-    public Task Invoke(IContext<IActivity> context);
+    public Task<object?> Invoke(IContext<IActivity> context);
 }
 
 public class Route : IRoute
 {
     public string? Name { get; set; }
     public required Func<IActivity, bool> Selector { get; set; }
-    public required Func<IContext<IActivity>, Task> Handler { get; set; }
+    public required Func<IContext<IActivity>, object?> Handler { get; set; }
 
     public bool Select(IActivity activity) => Selector(activity);
-    public Task Invoke(IContext<IActivity> context) => Handler(context);
+    public async Task<object?> Invoke(IContext<IActivity> context)
+    {
+        var res = Handler(context);
+        return res is Task<object?> task ? await task : res;
+    }
 }
 
 public class AttributeRoute : IRoute
@@ -34,18 +38,19 @@ public class AttributeRoute : IRoute
         {
             var logger = param.GetCustomAttribute<IContext.LoggerAttribute>();
             var activity = param.GetCustomAttribute<IContext.ActivityAttribute>();
+            var send = param.GetCustomAttribute<IContext.SendAttribute>();
 
             var generic = param.ParameterType.GenericTypeArguments.FirstOrDefault();
             var isContext = generic?.IsAssignableTo(Attr.Type) ?? false;
 
-            if (logger == null && activity == null && !isContext)
+            if (logger == null && activity == null && send == null && !isContext)
                 result.AddError(param.Name ?? "??", "type must be `IContext<TActivity>` or an `IContext` property attribute");
         }
 
         return result;
     }
 
-    public async Task Invoke(IContext<IActivity> context)
+    public async Task<object?> Invoke(IContext<IActivity> context)
     {
         context.Log = context.Log.Child(Method.Name);
 
@@ -53,9 +58,11 @@ public class AttributeRoute : IRoute
         {
             var logger = param.GetCustomAttribute<IContext.LoggerAttribute>();
             var activity = param.GetCustomAttribute<IContext.ActivityAttribute>();
+            var send = param.GetCustomAttribute<IContext.SendAttribute>();
 
             if (logger != null) return context.Log;
             if (activity != null) return context.Activity.ToType(param.ParameterType, null);
+            if (send != null) return new IContext.Send(context);
             return Attr.Coerce(context);
         });
 
@@ -73,9 +80,7 @@ public class AttributeRoute : IRoute
         }
 
         var res = Method.Invoke(null, args?.ToArray());
-
-        if (res is Task task)
-            await task;
+        return res is Task<object?> task ? await task : res;
     }
 
     public class ValidationResult
