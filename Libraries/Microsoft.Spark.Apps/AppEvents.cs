@@ -68,7 +68,7 @@ public partial class App
                 Conversation = args.Activity.Conversation,
             };
 
-            IContext<Activity> context = new Context<Activity>(
+            IContext<IActivity> context = new Context<IActivity>(
                 sender,
                 args.Token.AppId ?? "",
                 Logger.Child(path),

@@ -5,6 +5,7 @@ namespace Microsoft.Spark.Apps.Routing;
 [AttributeUsage(AttributeTargets.Method, Inherited = true)]
 public class TypingAttribute() : ActivityAttribute(ActivityType.Typing, typeof(TypingActivity))
 {
+    public override object Coerce(IContext<IActivity> context) => context.ToActivityType<TypingActivity>();
 }
 
 public partial interface IRoutingModule

@@ -5,6 +5,7 @@ namespace Microsoft.Spark.Apps.Routing;
 [AttributeUsage(AttributeTargets.Method, Inherited = true)]
 public class EndOfConversationAttribute() : ActivityAttribute(ActivityType.EndOfConversation, typeof(EndOfConversationActivity))
 {
+    public override object Coerce(IContext<IActivity> context) => context.ToActivityType<EndOfConversationActivity>();
 }
 
 public partial interface IRoutingModule

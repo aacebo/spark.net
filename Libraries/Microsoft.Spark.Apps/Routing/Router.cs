@@ -6,10 +6,10 @@ public interface IRouter
 {
     public int Length { get; }
 
-    public IList<IRoute> Select(Activity activity);
+    public IList<IRoute> Select(IActivity activity);
     public IRouter Register(IRoute route);
-    public IRouter Register(Func<IContext<Activity>, Task> handler);
-    public IRouter Register(string name, Func<IContext<Activity>, Task> handler);
+    public IRouter Register(Func<IContext<IActivity>, Task> handler);
+    public IRouter Register(string name, Func<IContext<IActivity>, Task> handler);
 }
 
 public class Router : IRouter
@@ -18,7 +18,7 @@ public class Router : IRouter
 
     protected readonly List<IRoute> _routes = [];
 
-    public IList<IRoute> Select(Activity activity)
+    public IList<IRoute> Select(IActivity activity)
     {
         return _routes
             .Where(route => route.Select(activity))
@@ -31,7 +31,7 @@ public class Router : IRouter
         return this;
     }
 
-    public IRouter Register(Func<IContext<Activity>, Task> handler)
+    public IRouter Register(Func<IContext<IActivity>, Task> handler)
     {
         return Register(new Route()
         {
@@ -40,7 +40,7 @@ public class Router : IRouter
         });
     }
 
-    public IRouter Register(string? name, Func<IContext<Activity>, Task> handler)
+    public IRouter Register(string? name, Func<IContext<IActivity>, Task> handler)
     {
         return Register(new Route()
         {

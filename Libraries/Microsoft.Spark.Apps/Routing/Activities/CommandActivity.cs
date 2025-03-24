@@ -5,6 +5,7 @@ namespace Microsoft.Spark.Apps.Routing;
 [AttributeUsage(AttributeTargets.Method, Inherited = true)]
 public class CommandAttribute() : ActivityAttribute(ActivityType.Command, typeof(CommandActivity))
 {
+    public override object Coerce(IContext<IActivity> context) => context.ToActivityType<CommandActivity>();
 }
 
 public partial interface IRoutingModule

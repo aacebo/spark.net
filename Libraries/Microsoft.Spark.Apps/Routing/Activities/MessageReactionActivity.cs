@@ -5,6 +5,7 @@ namespace Microsoft.Spark.Apps.Routing;
 [AttributeUsage(AttributeTargets.Method, Inherited = true)]
 public class MessageReactionAttribute() : ActivityAttribute(ActivityType.MessageReaction, typeof(MessageReactionActivity))
 {
+    public override object Coerce(IContext<IActivity> context) => context.ToActivityType<MessageReactionActivity>();
 }
 
 public partial interface IRoutingModule

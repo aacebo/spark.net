@@ -47,7 +47,7 @@ public partial class App : RoutingModule
 
                     Router.Register(new AttributeRoute()
                     {
-                        Type = attribute.Name,
+                        Attr = attribute,
                         Method = method
                     });
                 }

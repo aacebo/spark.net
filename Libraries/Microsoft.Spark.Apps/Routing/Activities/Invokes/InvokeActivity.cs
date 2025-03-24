@@ -5,6 +5,7 @@ namespace Microsoft.Spark.Apps.Routing;
 [AttributeUsage(AttributeTargets.Method, Inherited = true)]
 public class InvokeAttribute() : ActivityAttribute(ActivityType.Invoke, typeof(InvokeActivity))
 {
+    public override object Coerce(IContext<IActivity> context) => context.ToActivityType<InvokeActivity>();
 }
 
 public partial interface IRoutingModule

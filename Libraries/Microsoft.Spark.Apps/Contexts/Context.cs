@@ -88,12 +88,12 @@ public partial class Context<TActivity> : IContext<TActivity> where TActivity : 
         Ref = reference;
     }
 
-    public Context(Context<IActivity> context)
+    public Context(Context<TActivity> context)
     {
         AppId = context.AppId;
         Log = context.Log;
         Api = context.Api;
-        Activity = (TActivity)context.Activity;
+        Activity = context.Activity;
         Ref = context.Ref;
         Extra = context.Extra;
         Sender = context.Sender;
@@ -143,6 +143,11 @@ public partial class Context<TActivity> : IContext<TActivity> where TActivity : 
 
         var res = await Sender.Send(activity, Ref);
         return res;
+    }
+
+    public IContext<IActivity> ToActivityType()
+    {
+        return new Context<IActivity>(Sender, AppId, Log, Api, Activity, Ref);
     }
 
     public IContext<TToActivity> ToActivityType<TToActivity>() where TToActivity : IActivity

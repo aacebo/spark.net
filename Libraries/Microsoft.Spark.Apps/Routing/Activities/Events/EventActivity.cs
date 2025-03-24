@@ -5,6 +5,7 @@ namespace Microsoft.Spark.Apps.Routing;
 [AttributeUsage(AttributeTargets.Method, Inherited = true)]
 public class EventAttribute() : ActivityAttribute(ActivityType.Event, typeof(EventActivity))
 {
+    public override object Coerce(IContext<IActivity> context) => context.ToActivityType<EventActivity>();
 }
 
 public partial interface IRoutingModule

@@ -23,6 +23,8 @@ public class MessageAttribute : ActivityAttribute
     {
         Pattern = pattern;
     }
+
+    public override object Coerce(IContext<IActivity> context) => context.ToActivityType<MessageActivity>();
 }
 
 public partial interface IRoutingModule

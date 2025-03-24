@@ -5,6 +5,7 @@ namespace Microsoft.Spark.Apps.Routing;
 [AttributeUsage(AttributeTargets.Method, Inherited = true)]
 public class MessageUpdateAttribute() : ActivityAttribute(ActivityType.MessageUpdate, typeof(MessageUpdateActivity))
 {
+    public override object Coerce(IContext<IActivity> context) => context.ToActivityType<MessageUpdateActivity>();
 }
 
 public partial interface IRoutingModule
