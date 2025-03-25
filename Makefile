@@ -9,3 +9,6 @@ test:
 
 samples_echo_run:
 	dotnet run --project Samples/Samples.Echo
+
+samples_auth_run:
+	dotnet run --project Samples/Samples.Auth

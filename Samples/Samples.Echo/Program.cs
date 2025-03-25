@@ -27,37 +27,11 @@ public static partial class Program
         app.Run();
     }
 
-    // [Message("/signout", log: IContext.Property.Activity)]
-    // public static async Task OnSignOut([IContext.Activity] MessageActivity activity, [IContext.Send] IContext.Send send)
-    // {
-    //     await send.Typing();
-    //     await send.Text($"you said '{activity.Text}'");
-
-    // }
-
-    [Message("/signout", log: IContext.Property.Activity)]
-    public static async Task OnSignOut(IContext<MessageActivity> context)
-    {
-        if (!context.IsSignedIn)
-        {
-            await context.Send("you are not signed in!");
-            return;
-        }
-
-        await context.SignOut();
-        await context.Send("you have been signed out!");
-    }
-
     [Message(log: IContext.Property.Activity)]
-    public static async Task OnMessage(IContext<MessageActivity> context)
+    public static async Task OnMessage([IContext.Activity] MessageActivity activity, [IContext.Send] IContext.Send send)
     {
-        if (!context.IsSignedIn)
-        {
-            await context.SignIn();
-            return;
-        }
-
-        await context.Send("you are signed in!");
+        await send.Typing();
+        await send.Text($"you said '{activity.Text}'");
     }
 
     [ErrorEvent]
