@@ -183,11 +183,11 @@ public partial class Context<TActivity> : IContext<TActivity> where TActivity : 
 
         try
         {
-            var res = await Api.Users.Token.GetAsync(new UserTokenClient.GetTokenRequest()
+            var res = await Api.Users.Token.GetAsync(new()
             {
                 UserId = Activity.From.Id,
                 ChannelId = Activity.ChannelId,
-                ConnectionName = connectionName
+                ConnectionName = connectionName,
             });
 
             return res.AccessToken;
@@ -198,7 +198,7 @@ public partial class Context<TActivity> : IContext<TActivity> where TActivity : 
         // because groupchats don't support it.
         if (Activity.Conversation.IsGroup == true)
         {
-            var res = await Api.Conversations.CreateAsync(new ConversationClient.CreateRequest()
+            var res = await Api.Conversations.CreateAsync(new()
             {
                 TenantId = Ref.Conversation.TenantId,
                 IsGroup = false,
@@ -220,7 +220,7 @@ public partial class Context<TActivity> : IContext<TActivity> where TActivity : 
         };
 
         var state = Convert.ToBase64String(JsonSerializer.SerializeToUtf8Bytes(tokenExchangeState));
-        var resource = await Api.Bots.SignIn.GetResourceAsync(new BotSignInClient.GetResourceRequest()
+        var resource = await Api.Bots.SignIn.GetResourceAsync(new()
         {
             State = state
         });

@@ -10,12 +10,12 @@ public class EventAttribute() : ActivityAttribute(ActivityType.Event, typeof(Eve
 
 public partial interface IRoutingModule
 {
-    public IRoutingModule OnEvent(Func<IContext<EventActivity>, Task> handler);
+    public IRoutingModule OnEvent(Func<IContext<EventActivity>, Task<object?>> handler);
 }
 
 public partial class RoutingModule : IRoutingModule
 {
-    public IRoutingModule OnEvent(Func<IContext<EventActivity>, Task> handler)
+    public IRoutingModule OnEvent(Func<IContext<EventActivity>, Task<object?>> handler)
     {
         Router.Register(new Route()
         {

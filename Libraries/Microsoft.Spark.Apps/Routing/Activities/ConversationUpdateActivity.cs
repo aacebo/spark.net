@@ -10,12 +10,12 @@ public class ConversationUpdateAttribute() : ActivityAttribute(ActivityType.Conv
 
 public partial interface IRoutingModule
 {
-    public IRoutingModule OnConversationUpdate(Func<IContext<ConversationUpdateActivity>, Task> handler);
+    public IRoutingModule OnConversationUpdate(Func<IContext<ConversationUpdateActivity>, Task<object?>> handler);
 }
 
 public partial class RoutingModule : IRoutingModule
 {
-    public IRoutingModule OnConversationUpdate(Func<IContext<ConversationUpdateActivity>, Task> handler)
+    public IRoutingModule OnConversationUpdate(Func<IContext<ConversationUpdateActivity>, Task<object?>> handler)
     {
         Router.Register(new Route()
         {

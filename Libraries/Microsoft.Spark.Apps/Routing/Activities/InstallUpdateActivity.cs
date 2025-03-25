@@ -10,12 +10,12 @@ public class InstallUpdateAttribute() : ActivityAttribute(ActivityType.InstallUp
 
 public partial interface IRoutingModule
 {
-    public IRoutingModule OnInstallUpdate(Func<IContext<InstallUpdateActivity>, Task> handler);
+    public IRoutingModule OnInstallUpdate(Func<IContext<InstallUpdateActivity>, Task<object?>> handler);
 }
 
 public partial class RoutingModule : IRoutingModule
 {
-    public IRoutingModule OnInstallUpdate(Func<IContext<InstallUpdateActivity>, Task> handler)
+    public IRoutingModule OnInstallUpdate(Func<IContext<InstallUpdateActivity>, Task<object?>> handler)
     {
         Router.Register(new Route()
         {

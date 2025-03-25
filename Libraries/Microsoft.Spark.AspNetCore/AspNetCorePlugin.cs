@@ -29,7 +29,7 @@ public class AspNetCorePlugin : ISender
     public IToken? BotToken { get; set; }
 
     public event IPlugin.ErrorEventHandler ErrorEvent = (_, _) => Task.Run(() => { });
-    public event IPlugin.ActivityEventHandler ActivityEvent = (_, _) => Task.Run(() => (Response?)null);
+    public event IPlugin.ActivityEventHandler ActivityEvent = (_, _) => Task.FromResult<Response?>(null);
 
     public Task OnInit(IApp app)
     {
@@ -112,7 +112,7 @@ public class AspNetCorePlugin : ISender
             });
 
             Logger.Debug(res);
-            return res == null ? Results.Ok() : new SparkResult(res);
+            return new SparkResult(res ?? new Response(System.Net.HttpStatusCode.OK));
         }
         catch (Exception err)
         {

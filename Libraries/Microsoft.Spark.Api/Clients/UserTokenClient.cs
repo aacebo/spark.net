@@ -60,16 +60,16 @@ public class UserTokenClient : Client
 
     public async Task<ITokenResponse> ExchangeAsync(ExchangeTokenRequest request)
     {
-        var query = QueryString.Serialize(new Dictionary<string, object>()
+        var query = QueryString.Serialize(new
         {
-            { "userId", request.UserId },
-            { "connectionName", request.ConnectionName },
-            { "channelId", request.ChannelId }
+            userId = request.UserId,
+            connectionName = request.ConnectionName,
+            channelId = request.ChannelId
         });
 
-        var req = HttpRequest.Post($"https://token.botframework.com/api/usertoken/exchange?{query}", body: new Dictionary<string, object>()
+        var req = HttpRequest.Post($"https://token.botframework.com/api/usertoken/exchange?{query}", new
         {
-            { "exchangeRequest", request.ExchangeRequest }
+            exchangeRequest = new { token = request.ExchangeRequest.Token }
         });
 
         var res = await _http.SendAsync<TokenResponse>(req);

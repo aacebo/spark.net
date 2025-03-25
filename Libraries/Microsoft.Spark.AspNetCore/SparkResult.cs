@@ -1,3 +1,5 @@
+using System.Text.Json;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.Spark.Apps;
 
@@ -12,9 +14,10 @@ public class SparkResult : IResult
         _response = response;
     }
 
-    public Task ExecuteAsync(HttpContext context)
+    public async Task ExecuteAsync(HttpContext context)
     {
         context.Response.StatusCode = (int)_response.Status;
-        return context.Response.WriteAsJsonAsync(_response.Body);
+        var body = JsonSerializer.Serialize(_response.Body);
+        await context.Response.WriteAsync(body);
     }
 }

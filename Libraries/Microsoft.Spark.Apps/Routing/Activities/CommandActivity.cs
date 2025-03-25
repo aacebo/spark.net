@@ -10,12 +10,12 @@ public class CommandAttribute() : ActivityAttribute(ActivityType.Command, type: 
 
 public partial interface IRoutingModule
 {
-    public IRoutingModule OnCommand(Func<IContext<CommandActivity>, Task> handler);
+    public IRoutingModule OnCommand(Func<IContext<CommandActivity>, Task<object?>> handler);
 }
 
 public partial class RoutingModule : IRoutingModule
 {
-    public IRoutingModule OnCommand(Func<IContext<CommandActivity>, Task> handler)
+    public IRoutingModule OnCommand(Func<IContext<CommandActivity>, Task<object?>> handler)
     {
         Router.Register(new Route()
         {

@@ -22,12 +22,12 @@ public class InvokeAttribute(string? name = null, Type? type = null, IContext.Pr
 
 public partial interface IRoutingModule
 {
-    public IRoutingModule OnInvoke(Func<IContext<InvokeActivity>, Task> handler);
+    public IRoutingModule OnInvoke(Func<IContext<InvokeActivity>, Task<object?>> handler);
 }
 
 public partial class RoutingModule : IRoutingModule
 {
-    public IRoutingModule OnInvoke(Func<IContext<InvokeActivity>, Task> handler)
+    public IRoutingModule OnInvoke(Func<IContext<InvokeActivity>, Task<object?>> handler)
     {
         Router.Register(new Route()
         {

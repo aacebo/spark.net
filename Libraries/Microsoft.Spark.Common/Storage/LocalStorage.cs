@@ -59,7 +59,7 @@ public class LocalStorage<TValue> : IStorage<string, TValue>
             }
         }
 
-        _store.Add(key, value);
+        _store[key] = value;
     }
 
     public Task SetAsync(string key, TValue value)

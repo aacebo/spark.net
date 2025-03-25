@@ -27,15 +27,22 @@ public static partial class Program
         app.Run();
     }
 
-    [Message]
-    public static async Task OnMessage([IContext.Activity] MessageActivity activity, [IContext.Send] IContext.Send send)
+    // [Message("/signout", log: IContext.Property.Activity)]
+    // public static async Task OnSignOut([IContext.Activity] MessageActivity activity, [IContext.Send] IContext.Send send)
+    // {
+    //     await send.Typing();
+    //     await send.Text($"you said '{activity.Text}'");
+
+    // }
+
+    [Message("/signout", log: IContext.Property.Activity)]
+    public static async Task OnSignOut(IContext<MessageActivity> context)
     {
-        await send.Typing();
-        await send.Text($"you said '{activity.Text}'");
+        await context.SignOut();
     }
 
-    [Message]
-    public static async Task OnMessageTwo(IContext<MessageActivity> context)
+    [Message("/signin", log: IContext.Property.Activity)]
+    public static async Task OnMessage(IContext<MessageActivity> context)
     {
         await context.SignIn();
     }

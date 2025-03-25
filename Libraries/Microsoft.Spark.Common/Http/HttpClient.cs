@@ -1,4 +1,9 @@
 using System.Net.Http.Json;
+using System.Reflection;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+
+using Microsoft.Spark.Common.Logging;
 
 namespace Microsoft.Spark.Common.Http;
 
@@ -17,10 +22,12 @@ public class HttpClient : IHttpClient
     public IHttpClientOptions Options { get; }
 
     protected System.Net.Http.HttpClient _client;
+    protected ILogger _logger;
 
     public HttpClient()
     {
         _client = new System.Net.Http.HttpClient();
+        _logger = new ConsoleLogger(Assembly.GetEntryAssembly()?.GetName().Name ?? "@Spark").Child("Http.Client");
         Options = new HttpClientOptions();
         Options.Apply(_client);
     }
@@ -28,6 +35,7 @@ public class HttpClient : IHttpClient
     public HttpClient(IHttpClientOptions options)
     {
         _client = new System.Net.Http.HttpClient();
+        _logger = options.Logger?.Child("Http.Client") ?? new ConsoleLogger(Assembly.GetEntryAssembly()?.GetName().Name ?? "@Spark").Child("Http.Client");
         Options = options;
         Options.Apply(_client);
     }
@@ -35,6 +43,7 @@ public class HttpClient : IHttpClient
     public HttpClient(System.Net.Http.HttpClient client)
     {
         _client = client;
+        _logger = new ConsoleLogger(Assembly.GetEntryAssembly()?.GetName().Name ?? "@Spark").Child("Http.Client");
         Options = new HttpClientOptions();
         Options.Apply(_client);
     }
@@ -106,7 +115,10 @@ public class HttpClient : IHttpClient
                 return httpRequest;
             }
 
-            httpRequest.Content = JsonContent.Create(request.Body);
+            httpRequest.Content = JsonContent.Create(request.Body, options: new JsonSerializerOptions()
+            {
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+            });
         }
 
         return httpRequest;
@@ -147,7 +159,8 @@ public class HttpClient : IHttpClient
             {
                 Headers = response.Headers,
                 StatusCode = response.StatusCode,
-                Body = errorBody
+                Body = errorBody,
+                Request = response.RequestMessage,
             };
         }
 

@@ -8,8 +8,8 @@ public interface IRouter
 
     public IList<IRoute> Select(IActivity activity);
     public IRouter Register(IRoute route);
-    public IRouter Register(Func<IContext<IActivity>, Task> handler);
-    public IRouter Register(string name, Func<IContext<IActivity>, Task> handler);
+    public IRouter Register(Func<IContext<IActivity>, Task<object?>> handler);
+    public IRouter Register(string name, Func<IContext<IActivity>, Task<object?>> handler);
 }
 
 public class Router : IRouter
@@ -31,7 +31,7 @@ public class Router : IRouter
         return this;
     }
 
-    public IRouter Register(Func<IContext<IActivity>, Task> handler)
+    public IRouter Register(Func<IContext<IActivity>, Task<object?>> handler)
     {
         return Register(new Route()
         {
@@ -40,7 +40,7 @@ public class Router : IRouter
         });
     }
 
-    public IRouter Register(string? name, Func<IContext<IActivity>, Task> handler)
+    public IRouter Register(string? name, Func<IContext<IActivity>, Task<object?>> handler)
     {
         return Register(new Route()
         {

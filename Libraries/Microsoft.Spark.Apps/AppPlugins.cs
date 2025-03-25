@@ -30,22 +30,9 @@ public partial class App
     {
         var attr = GetPluginAttribute(plugin);
 
-        // subscribe plugin to app events
-        ErrorEvent += plugin.OnError;
-        StartEvent += plugin.OnStart;
-        ActivityResponseEvent += plugin.OnActivityResponse;
-        ActivityEvent += async (app, sender, args) =>
-        {
-            await plugin.OnActivity(app, sender, args);
-            return null;
-        };
-
         // broadcast plugin events
         plugin.ErrorEvent += (_, args) => ErrorEvent(this, args);
-        plugin.ActivityEvent += async (plugin, args) =>
-        {
-            return await ActivityEvent(this, plugin, args);
-        };
+        plugin.ActivityEvent += async (plugin, args) => await ActivityEvent(this, plugin, args);
 
         Plugins.Add(plugin);
         Container.Register(attr.Name, new ValueProvider(plugin));

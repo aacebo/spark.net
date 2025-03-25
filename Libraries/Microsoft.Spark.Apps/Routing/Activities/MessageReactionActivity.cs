@@ -10,12 +10,12 @@ public class MessageReactionAttribute() : ActivityAttribute(ActivityType.Message
 
 public partial interface IRoutingModule
 {
-    public IRoutingModule OnMessageReaction(Func<IContext<MessageReactionActivity>, Task> handler);
+    public IRoutingModule OnMessageReaction(Func<IContext<MessageReactionActivity>, Task<object?>> handler);
 }
 
 public partial class RoutingModule : IRoutingModule
 {
-    public IRoutingModule OnMessageReaction(Func<IContext<MessageReactionActivity>, Task> handler)
+    public IRoutingModule OnMessageReaction(Func<IContext<MessageReactionActivity>, Task<object?>> handler)
     {
         Router.Register(new Route()
         {

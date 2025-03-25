@@ -1,4 +1,6 @@
+using System.Reflection;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Web;
 
 namespace Microsoft.Spark.Common.Http;
@@ -13,9 +15,12 @@ public static class QueryString
         foreach (var property in properties)
         {
             var builder = new StringBuilder();
-            builder.Append(HttpUtility.UrlEncode(property.Name));
+            var jsonAttribute = property.GetCustomAttribute<JsonPropertyNameAttribute>();
+            var name = jsonAttribute?.Name ?? property.Name;
+
+            builder.Append(HttpUtility.UrlEncode(name));
             builder.Append('=');
-            builder.Append(HttpUtility.UrlEncode(property.GetValue(value)?.ToString()));
+            builder.Append(HttpUtility.UrlEncode(property.GetValue(value, null)?.ToString()));
             parts.Add(builder.ToString());
         }
 

@@ -32,14 +32,14 @@ public class MessageAttribute : ActivityAttribute
 
 public partial interface IRoutingModule
 {
-    public IRoutingModule OnMessage(Func<IContext<MessageActivity>, Task> handler);
-    public IRoutingModule OnMessage(string pattern, Func<IContext<MessageActivity>, Task> handler);
-    public IRoutingModule OnMessage(Regex pattern, Func<IContext<MessageActivity>, Task> handler);
+    public IRoutingModule OnMessage(Func<IContext<MessageActivity>, Task<object?>> handler);
+    public IRoutingModule OnMessage(string pattern, Func<IContext<MessageActivity>, Task<object?>> handler);
+    public IRoutingModule OnMessage(Regex pattern, Func<IContext<MessageActivity>, Task<object?>> handler);
 }
 
 public partial class RoutingModule : IRoutingModule
 {
-    public IRoutingModule OnMessage(Func<IContext<MessageActivity>, Task> handler)
+    public IRoutingModule OnMessage(Func<IContext<MessageActivity>, Task<object?>> handler)
     {
         Router.Register(new Route()
         {
@@ -58,7 +58,7 @@ public partial class RoutingModule : IRoutingModule
         return this;
     }
 
-    public IRoutingModule OnMessage(string pattern, Func<IContext<MessageActivity>, Task> handler)
+    public IRoutingModule OnMessage(string pattern, Func<IContext<MessageActivity>, Task<object?>> handler)
     {
         Router.Register(new Route()
         {
@@ -77,7 +77,7 @@ public partial class RoutingModule : IRoutingModule
         return this;
     }
 
-    public IRoutingModule OnMessage(Regex regex, Func<IContext<MessageActivity>, Task> handler)
+    public IRoutingModule OnMessage(Regex regex, Func<IContext<MessageActivity>, Task<object?>> handler)
     {
         Router.Register(new Route()
         {

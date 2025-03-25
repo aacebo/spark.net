@@ -11,12 +11,12 @@ public class VerifyStateAttribute(IContext.Property log = IContext.Property.None
 
 public partial interface IRoutingModule
 {
-    public IRoutingModule OnVerifyState(Func<IContext<SignIn.VerifyStateActivity>, Task> handler);
+    public IRoutingModule OnVerifyState(Func<IContext<SignIn.VerifyStateActivity>, Task<object?>> handler);
 }
 
 public partial class RoutingModule : IRoutingModule
 {
-    public IRoutingModule OnVerifyState(Func<IContext<SignIn.VerifyStateActivity>, Task> handler)
+    public IRoutingModule OnVerifyState(Func<IContext<SignIn.VerifyStateActivity>, Task<object?>> handler)
     {
         Router.Register(new Route()
         {

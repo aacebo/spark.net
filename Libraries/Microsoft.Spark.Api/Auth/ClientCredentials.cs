@@ -29,7 +29,8 @@ public class ClientCredentials : IHttpCredentials
         );
 
         request.Headers.Add("Content-Type", ["application/x-www-form-urlencoded"]);
-        request.Body = new Dictionary<string, string>() {
+        request.Body = new Dictionary<string, string>()
+        {
             { "grant_type", "client_credentials" },
             { "client_id", ClientId },
             { "client_secret", ClientSecret },

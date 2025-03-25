@@ -1,6 +1,7 @@
 using Microsoft.Spark.Api;
 using Microsoft.Spark.Api.Activities;
 using Microsoft.Spark.Apps.Plugins;
+using Microsoft.Spark.Common.Http;
 
 namespace Microsoft.Spark.Apps;
 
@@ -48,9 +49,20 @@ public partial class App
         return this;
     }
 
-    protected Task OnErrorEvent(Events.ErrorEventArgs args)
+    protected async Task OnErrorEvent(Events.ErrorEventArgs args)
     {
-        return Task.Run(() => args.Logger.Error(args.Error));
+        foreach (var plugin in Plugins)
+        {
+            await plugin.OnError(this, args);
+        }
+
+        args.Logger.Error(args.Error);
+
+        if (args.Error is HttpException ex)
+        {
+            args.Logger.Error(ex.Request?.RequestUri?.ToString());
+            args.Logger.Error(await ex.Request!.Content!.ReadAsStringAsync());
+        }
     }
 
     protected Task OnStartEvent(Events.StartEventArgs args)
@@ -58,9 +70,14 @@ public partial class App
         return Task.Run(() => args.Logger.Info("started"));
     }
 
-    protected Task OnActivityResponseEvent(ISender sender, Events.ActivityResponseEventArgs args)
+    protected async Task OnActivityResponseEvent(ISender sender, Events.ActivityResponseEventArgs args)
     {
-        return Task.Run(() => Logger.Info(args.Response));
+        Logger.Debug(args.Response);
+
+        foreach (var plugin in Plugins)
+        {
+            await plugin.OnActivityResponse(this, sender, args);
+        }
     }
 
     protected async Task<Response?> OnActivityEvent(ISender sender, Events.ActivityEventArgs args)
@@ -69,6 +86,11 @@ public partial class App
 
         try
         {
+            foreach (var plugin in Plugins)
+            {
+                await plugin.OnActivity(this, sender, args);
+            }
+
             var path = args.Activity.GetPath();
             Logger.Debug(path);
 
@@ -82,7 +104,7 @@ public partial class App
                 Conversation = args.Activity.Conversation,
             };
 
-            IContext<IActivity> context = new Context<IActivity>(
+            var context = new Context<IActivity>(
                 sender,
                 args.Token.AppId ?? "",
                 Logger.Child(path),
@@ -91,15 +113,13 @@ public partial class App
                 reference
             );
 
-            Response? response = null;
-
             foreach (var route in routes)
             {
                 var res = await route.Invoke(context);
 
                 if (res != null)
                 {
-                    response = res is Response value ? value : new Response(System.Net.HttpStatusCode.OK, res);
+                    var response = res is Response value ? value : new Response(System.Net.HttpStatusCode.OK, res);
                     await ActivityResponseEvent(this, sender, new()
                     {
                         Activity = context.Activity,

@@ -14,14 +14,10 @@ public class Route : IRoute
 {
     public string? Name { get; set; }
     public required Func<IActivity, bool> Selector { get; set; }
-    public required Func<IContext<IActivity>, object?> Handler { get; set; }
+    public required Func<IContext<IActivity>, Task<object?>> Handler { get; set; }
 
     public bool Select(IActivity activity) => Selector(activity);
-    public async Task<object?> Invoke(IContext<IActivity> context)
-    {
-        var res = Handler(context);
-        return res is Task<object?> task ? await task : res;
-    }
+    public async Task<object?> Invoke(IContext<IActivity> context) => await Handler(context);
 }
 
 public class AttributeRoute : IRoute
@@ -39,7 +35,6 @@ public class AttributeRoute : IRoute
             var logger = param.GetCustomAttribute<IContext.LoggerAttribute>();
             var activity = param.GetCustomAttribute<IContext.ActivityAttribute>();
             var send = param.GetCustomAttribute<IContext.SendAttribute>();
-
             var generic = param.ParameterType.GenericTypeArguments.FirstOrDefault();
             var isContext = generic?.IsAssignableTo(Attr.Type) ?? false;
 
@@ -53,7 +48,6 @@ public class AttributeRoute : IRoute
     public async Task<object?> Invoke(IContext<IActivity> context)
     {
         var log = context.Log.Child(Method.Name);
-
         var args = Method.GetParameters().Select(param =>
         {
             var logger = param.GetCustomAttribute<IContext.LoggerAttribute>();
@@ -80,7 +74,8 @@ public class AttributeRoute : IRoute
         }
 
         var res = Method.Invoke(null, args?.ToArray());
-        return res is Task<object?> task ? await task : res;
+        var task = res as Task<object?>;
+        return task != null ? await task : null;
     }
 
     public class ValidationResult

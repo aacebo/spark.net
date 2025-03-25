@@ -11,12 +11,12 @@ public class TokenExchangeAttribute(IContext.Property log = IContext.Property.No
 
 public partial interface IRoutingModule
 {
-    public IRoutingModule OnTokenExchange(Func<IContext<SignIn.TokenExchangeActivity>, Task> handler);
+    public IRoutingModule OnTokenExchange(Func<IContext<SignIn.TokenExchangeActivity>, Task<object?>> handler);
 }
 
 public partial class RoutingModule : IRoutingModule
 {
-    public IRoutingModule OnTokenExchange(Func<IContext<SignIn.TokenExchangeActivity>, Task> handler)
+    public IRoutingModule OnTokenExchange(Func<IContext<SignIn.TokenExchangeActivity>, Task<object?>> handler)
     {
         Router.Register(new Route()
         {

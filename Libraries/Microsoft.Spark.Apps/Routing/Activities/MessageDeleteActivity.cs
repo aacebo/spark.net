@@ -10,12 +10,12 @@ public class MessageDeleteAttribute() : ActivityAttribute(ActivityType.MessageDe
 
 public partial interface IRoutingModule
 {
-    public IRoutingModule OnMessageDelete(Func<IContext<MessageDeleteActivity>, Task> handler);
+    public IRoutingModule OnMessageDelete(Func<IContext<MessageDeleteActivity>, Task<object?>> handler);
 }
 
 public partial class RoutingModule : IRoutingModule
 {
-    public IRoutingModule OnMessageDelete(Func<IContext<MessageDeleteActivity>, Task> handler)
+    public IRoutingModule OnMessageDelete(Func<IContext<MessageDeleteActivity>, Task<object?>> handler)
     {
         Router.Register(new Route()
         {

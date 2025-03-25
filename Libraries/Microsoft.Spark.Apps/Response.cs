@@ -12,11 +12,15 @@ public class Response
     /// <summary>
     /// The HTTP status code of the response.
     /// </summary>
+    [JsonPropertyName("status")]
+    [JsonPropertyOrder(0)]
     public HttpStatusCode Status { get; set; }
 
     /// <summary>
     /// Optional. The body of the response.
     /// </summary>
+    [JsonPropertyName("body")]
+    [JsonPropertyOrder(1)]
     public object? Body { get; set; }
 
     public Response(HttpStatusCode status)

@@ -10,12 +10,12 @@ public class MessageUpdateAttribute() : ActivityAttribute(ActivityType.MessageUp
 
 public partial interface IRoutingModule
 {
-    public IRoutingModule OnMessageUpdate(Func<IContext<MessageUpdateActivity>, Task> handler);
+    public IRoutingModule OnMessageUpdate(Func<IContext<MessageUpdateActivity>, Task<object?>> handler);
 }
 
 public partial class RoutingModule : IRoutingModule
 {
-    public IRoutingModule OnMessageUpdate(Func<IContext<MessageUpdateActivity>, Task> handler)
+    public IRoutingModule OnMessageUpdate(Func<IContext<MessageUpdateActivity>, Task<object?>> handler)
     {
         Router.Register(new Route()
         {
