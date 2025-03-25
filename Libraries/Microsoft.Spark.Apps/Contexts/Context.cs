@@ -68,25 +68,6 @@ public partial interface IContext<TActivity> where TActivity : IActivity
     /// convert the context to that of another activity type
     /// </summary>
     public IContext<TToActivity> ToActivityType<TToActivity>() where TToActivity : IActivity;
-
-    /// <summary>
-    /// trigger user signin flow for the activity sender
-    /// </summary>
-    /// <param name="connectionName">the connection name</param>
-    /// <param name="oauthCardText">the oauth card text</param>
-    /// <param name="signInButtonText">the signin button text</param>
-    /// <returns>the existing user token if found</returns>
-    public Task<string?> SignIn(
-        string connectionName = "graph",
-        string oauthCardText = "Please Sign In...",
-        string signInButtonText = "Sign In"
-    );
-
-    /// <summary>
-    /// trigger user signin flow for the activity sender
-    /// </summary>
-    /// <param name="connectionName">the connection name</param>
-    public Task SignOut(string connectionName = "graph");
 }
 
 public partial class Context<TActivity> : IContext<TActivity> where TActivity : IActivity
@@ -169,94 +150,18 @@ public partial class Context<TActivity> : IContext<TActivity> where TActivity : 
 
     public IContext<IActivity> ToActivityType()
     {
-        return new Context<IActivity>(Sender, AppId, Log, Api, Activity, Ref);
+        return new Context<IActivity>(Sender, AppId, Log, Api, Activity, Ref)
+        {
+            IsSignedIn = IsSignedIn
+        };
     }
 
     public IContext<TToActivity> ToActivityType<TToActivity>() where TToActivity : IActivity
     {
-        return new Context<TToActivity>(Sender, AppId, Log, Api, (TToActivity)Activity.ToType(typeof(TToActivity), null), Ref);
-    }
-
-    public async Task<string?> SignIn(string connectionName = "graph", string oauthCardText = "Please Sign In...", string signInButtonText = "Sign In")
-    {
-        var reference = Ref.Copy();
-
-        try
+        return new Context<TToActivity>(Sender, AppId, Log, Api, (TToActivity)Activity.ToType(typeof(TToActivity), null), Ref)
         {
-            var res = await Api.Users.Token.GetAsync(new()
-            {
-                UserId = Activity.From.Id,
-                ChannelId = Activity.ChannelId,
-                ConnectionName = connectionName,
-            });
-
-            return res.AccessToken;
-        }
-        catch { }
-
-        // create new 1:1 conversation with user to do SSO
-        // because groupchats don't support it.
-        if (Activity.Conversation.IsGroup == true)
-        {
-            var res = await Api.Conversations.CreateAsync(new()
-            {
-                TenantId = Ref.Conversation.TenantId,
-                IsGroup = false,
-                Bot = Ref.Bot,
-                Members = [Activity.From]
-            });
-
-            await Send(oauthCardText);
-            reference.Conversation.Id = res.Id;
-            reference.Conversation.IsGroup = false;
-        }
-
-        var tokenExchangeState = new Api.TokenExchange.State()
-        {
-            ConnectionName = connectionName,
-            Conversation = reference,
-            RelatesTo = Activity.RelatesTo,
-            MsAppId = AppId
+            IsSignedIn = IsSignedIn
         };
-
-        var state = Convert.ToBase64String(JsonSerializer.SerializeToUtf8Bytes(tokenExchangeState));
-        var resource = await Api.Bots.SignIn.GetResourceAsync(new()
-        {
-            State = state
-        });
-
-        var activity = new MessageActivity();
-        activity.InputHint = InputHint.AcceptingInput;
-        activity.Recipient = Activity.From;
-        activity.Conversation = reference.Conversation;
-        activity.AddAttachment(new Api.Cards.OAuthCard()
-        {
-            Text = oauthCardText,
-            ConnectionName = connectionName,
-            TokenExchangeResource = resource.TokenExchangeResource,
-            TokenPostResource = resource.TokenPostResource,
-            Buttons = [
-                new Api.Cards.Action(Spark.Api.Cards.ActionType.SignIn)
-                {
-                    Title = signInButtonText,
-                    Value = resource.SignInLink
-                }
-            ]
-        });
-
-        Log.Debug(activity);
-        await Send(activity);
-        return null;
-    }
-
-    public async Task SignOut(string connectionName = "graph")
-    {
-        await Api.Users.Token.SignOutAsync(new UserTokenClient.SignOutRequest()
-        {
-            ChannelId = Ref.ChannelId,
-            UserId = Activity.From.Id,
-            ConnectionName = connectionName,
-        });
     }
 
     public override string ToString()

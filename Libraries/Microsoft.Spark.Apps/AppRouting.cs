@@ -49,7 +49,7 @@ public partial class App : RoutingModule
                 ChannelId = context.Activity.ChannelId,
                 ConnectionName = context.Activity.Value.ConnectionName,
                 UserId = context.Activity.From.Id,
-                ExchangeRequest = new() { Token = context.Activity.Value.Token }
+                ExchangeRequest = new() { Token = context.Activity.Value.Token },
             });
 
             return new Response(HttpStatusCode.OK);

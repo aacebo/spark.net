@@ -10,7 +10,7 @@ public class HttpException : Exception
     public required HttpResponseHeaders Headers { get; set; }
     public required HttpStatusCode StatusCode { get; set; }
     public HttpRequestMessage? Request { get; set; }
-    public Dictionary<string, object>? Body { get; set; }
+    public object? Body { get; set; }
 
     public override string ToString()
     {

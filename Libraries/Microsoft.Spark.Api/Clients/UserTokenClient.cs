@@ -27,20 +27,20 @@ public class UserTokenClient : Client
 
     }
 
-    public async Task<ITokenResponse> GetAsync(GetTokenRequest request)
+    public async Task<Token.Response> GetAsync(GetTokenRequest request)
     {
         var query = QueryString.Serialize(request);
         var req = HttpRequest.Get($"https://token.botframework.com/api/usertoken/GetToken?{query}");
-        var res = await _http.SendAsync<TokenResponse>(req);
+        var res = await _http.SendAsync<Token.Response>(req);
         return res.Body;
     }
 
-    public async Task<IDictionary<string, ITokenResponse>> GetAadAsync(GetAadTokenRequest request)
+    public async Task<IDictionary<string, Token.Response>> GetAadAsync(GetAadTokenRequest request)
     {
         var query = QueryString.Serialize(request);
         var req = HttpRequest.Post($"https://token.botframework.com/api/usertoken/GetAadTokens?{query}", body: request);
         var res = await _http.SendAsync<IDictionary<string, TokenResponse>>(req);
-        return (IDictionary<string, ITokenResponse>)res.Body;
+        return (IDictionary<string, Token.Response>)res.Body;
     }
 
     public async Task<IList<Token.Status>> GetStatusAsync(GetTokenStatusRequest request)
@@ -58,7 +58,7 @@ public class UserTokenClient : Client
         await _http.SendAsync(req);
     }
 
-    public async Task<ITokenResponse> ExchangeAsync(ExchangeTokenRequest request)
+    public async Task<Token.Response> ExchangeAsync(ExchangeTokenRequest request)
     {
         var query = QueryString.Serialize(new
         {
@@ -67,12 +67,8 @@ public class UserTokenClient : Client
             channelId = request.ChannelId
         });
 
-        var req = HttpRequest.Post($"https://token.botframework.com/api/usertoken/exchange?{query}", new
-        {
-            exchangeRequest = new { token = request.ExchangeRequest.Token }
-        });
-
-        var res = await _http.SendAsync<TokenResponse>(req);
+        var req = HttpRequest.Post($"https://token.botframework.com/api/usertoken/exchange?{query}", request.GetBody());
+        var res = await _http.SendAsync<Token.Response>(req);
         return res.Body;
     }
 
@@ -161,5 +157,14 @@ public class UserTokenClient : Client
         [JsonPropertyName("exchangeRequest")]
         [JsonPropertyOrder(3)]
         public required TokenExchange.Request ExchangeRequest { get; set; }
+
+        internal Body GetBody() => new() { ExchangeRequest = ExchangeRequest };
+
+        internal class Body
+        {
+            [JsonPropertyName("exchangeRequest")]
+            [JsonPropertyOrder(0)]
+            public required TokenExchange.Request ExchangeRequest { get; set; }
+        }
     }
 }

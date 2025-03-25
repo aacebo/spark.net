@@ -109,15 +109,15 @@ public class AspNetCorePlugin : ISender
                 Token = token,
                 Activity = activity,
                 Logger = Logger
-            });
+            }) ?? new Response(System.Net.HttpStatusCode.OK);
 
             Logger.Debug(res);
-            return new SparkResult(res ?? new Response(System.Net.HttpStatusCode.OK));
+            return TypedResults.Json(res.Body, statusCode: (int)res.Status);
         }
         catch (Exception err)
         {
             Logger.Error(err);
-            return Results.InternalServerError(err);
+            return TypedResults.InternalServerError(err);
         }
     }
 }

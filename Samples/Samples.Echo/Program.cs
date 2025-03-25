@@ -38,13 +38,26 @@ public static partial class Program
     [Message("/signout", log: IContext.Property.Activity)]
     public static async Task OnSignOut(IContext<MessageActivity> context)
     {
+        if (!context.IsSignedIn)
+        {
+            await context.Send("you are not signed in!");
+            return;
+        }
+
         await context.SignOut();
+        await context.Send("you have been signed out!");
     }
 
-    [Message("/signin", log: IContext.Property.Activity)]
+    [Message(log: IContext.Property.Activity)]
     public static async Task OnMessage(IContext<MessageActivity> context)
     {
-        await context.SignIn();
+        if (!context.IsSignedIn)
+        {
+            await context.SignIn();
+            return;
+        }
+
+        await context.Send("you are signed in!");
     }
 
     [ErrorEvent]

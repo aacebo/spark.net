@@ -33,7 +33,7 @@ public class Response
     /// </summary>
     [JsonPropertyName("expiration")]
     [JsonPropertyOrder(3)]
-    public required string Expiration { get; set; }
+    public string? Expiration { get; set; }
 
     /// <summary>
     /// A collection of properties about this response, such as token polling parameters

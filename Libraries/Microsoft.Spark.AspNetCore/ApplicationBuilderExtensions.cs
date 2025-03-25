@@ -22,7 +22,11 @@ public static class ApplicationBuilderExtensions
         builder.UseRouting();
         builder.UseEndpoints(endpoints =>
         {
-            endpoints.MapPost("/api/messages", async (context) => await aspNetCore.OnMessage(context));
+            endpoints.MapPost("/api/messages", async (context) =>
+            {
+                var res = await aspNetCore.OnMessage(context);
+                await res.ExecuteAsync(context);
+            });
         });
 
         return builder;

@@ -102,6 +102,9 @@ public partial class App : IApp
                 GraphToken = new JsonWebToken(graphToken.AccessToken);
             }
 
+            Logger.Debug(Id);
+            Logger.Debug(Name);
+
             foreach (var plugin in Plugins)
             {
                 await plugin.OnInit(this);

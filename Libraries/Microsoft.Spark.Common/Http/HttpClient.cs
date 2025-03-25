@@ -153,7 +153,16 @@ public class HttpClient : IHttpClient
     {
         if (!response.IsSuccessStatusCode)
         {
-            var errorBody = await response.Content.ReadFromJsonAsync<Dictionary<string, object>>(cancellationToken);
+            var content = await response.Content.ReadAsStringAsync(cancellationToken);
+            object errorBody = content;
+
+            if (content != string.Empty)
+            {
+                var bodyAsJson = JsonSerializer.Deserialize<Dictionary<string, object>>(content);
+
+                if (bodyAsJson != null)
+                    errorBody = bodyAsJson;
+            }
 
             throw new HttpException()
             {

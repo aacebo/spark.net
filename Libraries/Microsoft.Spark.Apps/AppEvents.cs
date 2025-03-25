@@ -86,6 +86,21 @@ public partial class App
 
         try
         {
+            string? userToken = null;
+
+            try
+            {
+                var res = await Api.Users.Token.GetAsync(new()
+                {
+                    UserId = args.Activity.From.Id,
+                    ChannelId = args.Activity.ChannelId,
+                    ConnectionName = "graph"
+                });
+
+                userToken = res.Token;
+            }
+            catch { }
+
             foreach (var plugin in Plugins)
             {
                 await plugin.OnActivity(this, sender, args);
@@ -106,12 +121,14 @@ public partial class App
 
             var context = new Context<IActivity>(
                 sender,
-                args.Token.AppId ?? "",
+                args.Token.AppId ?? Id ?? string.Empty,
                 Logger.Child(path),
                 Api,
                 args.Activity,
                 reference
             );
+
+            context.IsSignedIn = userToken != null;
 
             foreach (var route in routes)
             {
