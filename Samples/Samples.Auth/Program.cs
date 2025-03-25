@@ -1,52 +1,36 @@
-using Microsoft.Spark.Api.Activities;
 using Microsoft.Spark.Apps;
-using Microsoft.Spark.Apps.Events;
-using Microsoft.Spark.Apps.Routing;
 using Microsoft.Spark.AspNetCore;
 
-namespace Samples.Auth;
+var builder = WebApplication.CreateBuilder(args);
+builder.AddSpark(App.Builder().AddLogger(level: Microsoft.Spark.Common.Logging.LogLevel.Debug));
 
-public static partial class Program
+var app = builder.Build();
+var spark = app.Services.GetService<IApp>()!;
+
+spark.OnMessage("/signout", async context =>
 {
-    public static void Main(string[] args)
+    if (!context.IsSignedIn)
     {
-        var builder = WebApplication.CreateBuilder(args);
-        builder.AddSpark(App.Builder().AddLogger(level: Microsoft.Spark.Common.Logging.LogLevel.Debug));
-
-        var app = builder.Build();
-        app.UseHttpsRedirection();
-        app.UseSpark();
-        app.Run();
+        await context.Send("you are not signed in!");
+        return null;
     }
 
-    [Message("/signout", log: IContext.Property.Activity)]
-    public static async Task OnSignOut(IContext<MessageActivity> context)
-    {
-        if (!context.IsSignedIn)
-        {
-            await context.Send("you are not signed in!");
-            return;
-        }
+    await context.SignOut();
+    await context.Send("you have been signed out!");
+    return null;
+});
 
-        await context.SignOut();
-        await context.Send("you have been signed out!");
+spark.OnMessage(async context =>
+{
+    if (!context.IsSignedIn)
+    {
+        await context.SignIn();
+        return null;
     }
 
-    [Message(log: IContext.Property.Activity)]
-    public static async Task OnMessage(IContext<MessageActivity> context)
-    {
-        if (!context.IsSignedIn)
-        {
-            await context.SignIn();
-            return;
-        }
+    await context.Send("you are signed in!");
+    return null;
+});
 
-        await context.Send("you are signed in!");
-    }
-
-    [ErrorEvent]
-    public static void OnEvent()
-    {
-
-    }
-}
+app.UseSpark();
+app.Run();
