@@ -58,7 +58,13 @@ public partial class App : RoutingModule
         {
             if (ex.StatusCode != HttpStatusCode.NotFound && ex.StatusCode != HttpStatusCode.BadRequest && ex.StatusCode != HttpStatusCode.PreconditionFailed)
             {
-                await ErrorEvent(this, new() { Error = ex, Logger = context.Log });
+                await ErrorEvent(this, new()
+                {
+                    Error = ex,
+                    Logger = context.Log,
+                    Activity = context.Activity
+                });
+
                 return new Response(ex.StatusCode);
             }
 
@@ -100,7 +106,13 @@ public partial class App : RoutingModule
         {
             if (ex.StatusCode != HttpStatusCode.NotFound && ex.StatusCode != HttpStatusCode.BadRequest && ex.StatusCode != HttpStatusCode.PreconditionFailed)
             {
-                await ErrorEvent(this, new() { Error = ex, Logger = context.Log });
+                await ErrorEvent(this, new()
+                {
+                    Error = ex,
+                    Logger = context.Log,
+                    Activity = context.Activity
+                });
+
                 return new Response(ex.StatusCode);
             }
 

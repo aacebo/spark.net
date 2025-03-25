@@ -10,11 +10,13 @@ public partial interface IApp
     public IApp OnError(ErrorEventHandler handler);
     public IApp OnStart(StartEventHandler handler);
     public IApp OnActivity(ActivityEventHandler handler);
+    public IApp OnActivitySent(ActivitySentEventHandler handler);
     public IApp OnActivityResponse(ActivityResponseEventHandler handler);
 
     public delegate Task ErrorEventHandler(IApp app, Events.ErrorEventArgs args);
     public delegate Task StartEventHandler(IApp app, Events.StartEventArgs args);
     public delegate Task<Response?> ActivityEventHandler(IApp app, ISender plugin, Events.ActivityEventArgs args);
+    public delegate Task ActivitySentEventHandler(IApp app, ISender plugin, Events.ActivitySentEventArgs args);
     public delegate Task ActivityResponseEventHandler(IApp app, ISender plugin, Events.ActivityResponseEventArgs args);
 }
 
@@ -23,6 +25,7 @@ public partial class App
     protected event IApp.ErrorEventHandler ErrorEvent;
     protected event IApp.StartEventHandler StartEvent;
     protected event IApp.ActivityEventHandler ActivityEvent;
+    protected event IApp.ActivitySentEventHandler ActivitySentEvent;
     protected event IApp.ActivityResponseEventHandler ActivityResponseEvent;
 
     public IApp OnError(IApp.ErrorEventHandler handler)
@@ -43,6 +46,12 @@ public partial class App
         return this;
     }
 
+    public IApp OnActivitySent(IApp.ActivitySentEventHandler handler)
+    {
+        ActivitySentEvent += handler;
+        return this;
+    }
+
     public IApp OnActivityResponse(IApp.ActivityResponseEventHandler handler)
     {
         ActivityResponseEvent += handler;
@@ -51,11 +60,6 @@ public partial class App
 
     protected async Task OnErrorEvent(Events.ErrorEventArgs args)
     {
-        foreach (var plugin in Plugins)
-        {
-            await plugin.OnError(this, args);
-        }
-
         args.Logger.Error(args.Error);
 
         if (args.Error is HttpException ex)
@@ -63,11 +67,26 @@ public partial class App
             args.Logger.Error(ex.Request?.RequestUri?.ToString());
             args.Logger.Error(await ex.Request!.Content!.ReadAsStringAsync());
         }
+
+        foreach (var plugin in Plugins)
+        {
+            await plugin.OnError(this, args);
+        }
     }
 
     protected Task OnStartEvent(Events.StartEventArgs args)
     {
         return Task.Run(() => args.Logger.Info("started"));
+    }
+
+    protected async Task OnActivitySentEvent(ISender sender, Events.ActivitySentEventArgs args)
+    {
+        Logger.Debug(args.Activity);
+
+        foreach (var plugin in Plugins)
+        {
+            await plugin.OnActivitySent(this, sender, args);
+        }
     }
 
     protected async Task OnActivityResponseEvent(ISender sender, Events.ActivityResponseEventArgs args)
@@ -161,7 +180,8 @@ public partial class App
             await ErrorEvent(this, new()
             {
                 Error = err,
-                Logger = Logger
+                Logger = Logger,
+                Activity = args.Activity
             });
 
             return new Response(System.Net.HttpStatusCode.InternalServerError);

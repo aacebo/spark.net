@@ -1,7 +1,10 @@
 using System.Reflection;
 
+using Microsoft.Spark.Api;
+using Microsoft.Spark.Api.Activities;
 using Microsoft.Spark.Api.Auth;
 using Microsoft.Spark.Api.Clients;
+using Microsoft.Spark.Apps.Plugins;
 using Microsoft.Spark.Common.Http;
 using Microsoft.Spark.Common.Logging;
 using Microsoft.Spark.Common.Storage;
@@ -17,7 +20,28 @@ public partial interface IApp
     public IToken? BotToken { get; }
     public IToken? GraphToken { get; }
 
+    /// <summary>
+    /// start the app
+    /// </summary>
     public Task Start();
+
+    /// <summary>
+    /// send an activity to the conversation
+    /// </summary>
+    /// <param name="activity">activity activity to send</param>
+    public Task<T> Send<T>(string conversationId, T activity) where T : IActivity;
+
+    /// <summary>
+    /// send a message activity to the conversation
+    /// </summary>
+    /// <param name="text">the text to send</param>
+    public Task<MessageActivity> Send(string conversationId, string text);
+
+    /// <summary>
+    /// send a message activity with a card attachment
+    /// </summary>
+    /// <param name="card">the card to send as an attachment</param>
+    public Task<MessageActivity> Send(string conversationId, Cards.Card card);
 }
 
 public partial class App : IApp
@@ -66,6 +90,7 @@ public partial class App : IApp
         ErrorEvent = (_, args) => OnErrorEvent(args);
         StartEvent = (_, args) => OnStartEvent(args);
         ActivityEvent = (_, plugin, args) => OnActivityEvent(plugin, args);
+        ActivitySentEvent = (_, plugin, args) => OnActivitySentEvent(plugin, args);
         ActivityResponseEvent = (_, plugin, args) => OnActivityResponseEvent(plugin, args);
 
         Container = new Container();
@@ -84,6 +109,9 @@ public partial class App : IApp
         OnVerifyState(OnVerifyStateActivity);
     }
 
+    /// <summary>
+    /// start the app
+    /// </summary>
     public async Task Start()
     {
         try
@@ -125,5 +153,62 @@ public partial class App : IApp
                 Logger = Logger
             });
         }
+    }
+
+    /// <summary>
+    /// send an activity to the conversation
+    /// </summary>
+    /// <param name="activity">activity activity to send</param>
+    public async Task<T> Send<T>(string conversationId, T activity) where T : IActivity
+    {
+        if (Id == null || Name == null)
+        {
+            throw new InvalidOperationException("app not started");
+        }
+
+        var reference = new ConversationReference()
+        {
+            ChannelId = ChannelId.MsTeams,
+            ServiceUrl = Api.ServiceUrl,
+            Bot = new()
+            {
+                Id = Id,
+                Name = Name,
+                Role = Role.Bot
+            },
+            Conversation = new()
+            {
+                Id = conversationId,
+                Type = ConversationType.Personal
+            }
+        };
+
+        var sender = Plugins.Where(plugin => plugin is ISender).Select(plugin => plugin as ISender).First();
+
+        if (sender == null)
+        {
+            throw new Exception("no plugin that can send activities was found");
+        }
+
+        var res = await sender.Send(activity, reference);
+        return res;
+    }
+
+    /// <summary>
+    /// send a message activity to the conversation
+    /// </summary>
+    /// <param name="text">the text to send</param>
+    public async Task<MessageActivity> Send(string conversationId, string text)
+    {
+        return await Send(conversationId, new MessageActivity(text));
+    }
+
+    /// <summary>
+    /// send a message activity with a card attachment
+    /// </summary>
+    /// <param name="card">the card to send as an attachment</param>
+    public async Task<MessageActivity> Send(string conversationId, Cards.Card card)
+    {
+        return await Send(conversationId, new MessageActivity().AddAttachment(card));
     }
 }
