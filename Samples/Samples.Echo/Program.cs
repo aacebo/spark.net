@@ -27,10 +27,10 @@ public static partial class Program
     }
 
     [Message(log: IContext.Property.Activity)]
-    public static async Task OnMessage([IContext.Activity] MessageActivity activity, [IContext.Send] IContext.Send send)
+    public static async Task OnMessage([IContext.Activity] MessageActivity activity, [IContext.Client] IContext.Client client)
     {
-        await send.Typing();
-        await send.Text($"you said '{activity.Text}'");
+        await client.Typing();
+        await client.Send($"you said '{activity.Text}'");
     }
 
     [ErrorEvent]

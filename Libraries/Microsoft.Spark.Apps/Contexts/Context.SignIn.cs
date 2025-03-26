@@ -15,25 +15,24 @@ public partial interface IContext<TActivity>
     /// <summary>
     /// trigger user signin flow for the activity sender
     /// </summary>
-    /// <param name="connectionName">the connection name</param>
-    /// <param name="oauthCardText">the oauth card text</param>
-    /// <param name="signInButtonText">the signin button text</param>
+    /// <param name="options">option overrides</param>
     /// <returns>the existing user token if found</returns>
-    public Task<string?> SignIn(string connectionName = "graph", string oauthCardText = "Please Sign In...", string signInButtonText = "Sign In");
+    public Task<string?> SignIn(SignInOptions? options = null);
 
     /// <summary>
     /// trigger user signin flow for the activity sender
     /// </summary>
     /// <param name="connectionName">the connection name</param>
-    public Task SignOut(string connectionName = "graph");
+    public Task SignOut(string? connectionName = null);
 }
 
 public partial class Context<TActivity> : IContext<TActivity>
 {
     public bool IsSignedIn { get; set; } = false;
 
-    public async Task<string?> SignIn(string connectionName = "graph", string oauthCardText = "Please Sign In...", string signInButtonText = "Sign In")
+    public async Task<string?> SignIn(SignInOptions? options = null)
     {
+        options ??= new SignInOptions();
         var reference = Ref.Copy();
 
         try
@@ -42,7 +41,7 @@ public partial class Context<TActivity> : IContext<TActivity>
             {
                 UserId = Activity.From.Id,
                 ChannelId = Activity.ChannelId,
-                ConnectionName = connectionName,
+                ConnectionName = options.ConnectionName,
             });
 
             return tokenResponse.Token;
@@ -64,7 +63,7 @@ public partial class Context<TActivity> : IContext<TActivity>
             reference.Conversation.Id = id;
             reference.Conversation.IsGroup = false;
 
-            var oauthCardActivity = await Sender.Send(new MessageActivity(oauthCardText), reference);
+            var oauthCardActivity = await Sender.Send(new MessageActivity(options.OAuthCardText), reference);
             await ActivitySentEvent(Sender, new()
             {
                 Activity = oauthCardActivity,
@@ -80,7 +79,7 @@ public partial class Context<TActivity> : IContext<TActivity>
 
         var tokenExchangeState = new Api.TokenExchange.State()
         {
-            ConnectionName = connectionName,
+            ConnectionName = options.ConnectionName,
             Conversation = reference,
             RelatesTo = Activity.RelatesTo,
             MsAppId = AppId
@@ -95,14 +94,14 @@ public partial class Context<TActivity> : IContext<TActivity>
         activity.Conversation = reference.Conversation;
         activity.AddAttachment(new Api.Cards.OAuthCard()
         {
-            Text = oauthCardText,
-            ConnectionName = connectionName,
+            Text = options.OAuthCardText,
+            ConnectionName = options.ConnectionName,
             TokenExchangeResource = resource.TokenExchangeResource,
             TokenPostResource = resource.TokenPostResource,
             Buttons = [
                 new(Spark.Api.Cards.ActionType.SignIn)
                 {
-                    Title = signInButtonText,
+                    Title = options.SignInButtonText,
                     Value = resource.SignInLink
                 }
             ]
@@ -124,13 +123,31 @@ public partial class Context<TActivity> : IContext<TActivity>
         return null;
     }
 
-    public async Task SignOut(string connectionName = "graph")
+    public async Task SignOut(string? connectionName = null)
     {
         await Api.Users.Token.SignOutAsync(new()
         {
             ChannelId = Ref.ChannelId,
             UserId = Activity.From.Id,
-            ConnectionName = connectionName,
+            ConnectionName = connectionName ?? "graph",
         });
     }
+}
+
+public class SignInOptions
+{
+    /// <summary>
+    /// the connection name
+    /// </summary>
+    public string ConnectionName { get; set; } = "graph";
+
+    /// <summary>
+    /// the oauth card text
+    /// </summary>
+    public string OAuthCardText { get; set; } = "Please Sign In...";
+
+    /// <summary>
+    /// the sign in button text
+    /// </summary>
+    public string SignInButtonText { get; set; } = "Sign In";
 }

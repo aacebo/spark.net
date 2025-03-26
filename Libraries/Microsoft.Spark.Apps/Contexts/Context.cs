@@ -63,7 +63,7 @@ public partial interface IContext<TActivity> where TActivity : IActivity
     /// <param name="api">the api client</param>
     /// <param name="activity">the inbound activity</param>
     /// <param name="send">the methods to send activities</param>
-    public void Deconstruct(out ILogger log, out ApiClient api, out TActivity activity, out IContext.Send send);
+    public void Deconstruct(out ILogger log, out ApiClient api, out TActivity activity, out IContext.Client client);
 
     /// <summary>
     /// destruct the context
@@ -74,7 +74,7 @@ public partial interface IContext<TActivity> where TActivity : IActivity
     /// <param name="activity">the inbound activity</param>
     /// <param name="reference">the inbound conversation reference</param>
     /// <param name="send">the methods to send activities</param>
-    public void Deconstruct(out string appId, out ILogger log, out ApiClient api, out TActivity activity, out ConversationReference reference, out IContext.Send send);
+    public void Deconstruct(out string appId, out ILogger log, out ApiClient api, out TActivity activity, out ConversationReference reference, out IContext.Client client);
 
     /// <summary>
     /// send an activity to the conversation
@@ -130,22 +130,22 @@ public partial class Context<TActivity> : IContext<TActivity> where TActivity : 
         activity = Activity;
     }
 
-    public void Deconstruct(out ILogger log, out ApiClient api, out TActivity activity, out IContext.Send send)
+    public void Deconstruct(out ILogger log, out ApiClient api, out TActivity activity, out IContext.Client client)
     {
         log = Log;
         api = Api;
         activity = Activity;
-        send = new IContext.Send(ToActivityType());
+        client = new IContext.Client(ToActivityType());
     }
 
-    public void Deconstruct(out string appId, out ILogger log, out ApiClient api, out TActivity activity, out ConversationReference reference, out IContext.Send send)
+    public void Deconstruct(out string appId, out ILogger log, out ApiClient api, out TActivity activity, out ConversationReference reference, out IContext.Client client)
     {
         appId = AppId;
         log = Log;
         api = Api;
         activity = Activity;
         reference = Ref;
-        send = new IContext.Send(ToActivityType());
+        client = new IContext.Client(ToActivityType());
     }
 
     public async Task<T> Send<T>(T activity) where T : IActivity

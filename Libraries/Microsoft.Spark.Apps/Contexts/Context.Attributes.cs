@@ -11,12 +11,11 @@ public partial interface IContext
         AppId = 1,
         Activity = 2,
         Ref = 4,
-        Send = 8,
-        Context = AppId | Activity | Ref | Send,
+        Context = AppId | Activity | Ref,
     }
 
     [AttributeUsage(AttributeTargets.Parameter, Inherited = true)]
-    public class ActivityAttribute() : Attribute
+    public class AppIdAttribute() : Attribute
     {
 
     }
@@ -28,7 +27,37 @@ public partial interface IContext
     }
 
     [AttributeUsage(AttributeTargets.Parameter, Inherited = true)]
-    public class SendAttribute() : Attribute
+    public class ApiAttribute() : Attribute
+    {
+
+    }
+
+    [AttributeUsage(AttributeTargets.Parameter, Inherited = true)]
+    public class ActivityAttribute() : Attribute
+    {
+
+    }
+
+    [AttributeUsage(AttributeTargets.Parameter, Inherited = true)]
+    public class RefAttribute() : Attribute
+    {
+
+    }
+
+    [AttributeUsage(AttributeTargets.Parameter, Inherited = true)]
+    public class UserGraphAttribute() : Attribute
+    {
+
+    }
+
+    [AttributeUsage(AttributeTargets.Parameter, Inherited = true)]
+    public class ClientAttribute() : Attribute
+    {
+
+    }
+
+    [AttributeUsage(AttributeTargets.Parameter, Inherited = true)]
+    public class IsSignedInAttribute() : Attribute
     {
 
     }
@@ -37,11 +66,44 @@ public partial interface IContext
     /// an object that can send activities
     /// </summary>
     /// <param name="context">the parent context</param>
-    public class Send(IContext<IActivity> context)
+    public class Client(IContext<IActivity> context)
     {
-        public Func<IActivity, Task<IActivity>> Activity { get; set; } = context.Send;
-        public Func<string, Task<MessageActivity>> Text { get; set; } = context.Send;
-        public Func<Cards.Card, Task<MessageActivity>> Card { get; set; } = context.Send;
-        public Func<Task<TypingActivity>> Typing { get; set; } = context.Typing;
+        protected IContext<IActivity> Context { get; set; } = context;
+
+        /// <summary>
+        /// send an activity to the conversation
+        /// </summary>
+        /// <param name="activity">activity activity to send</param>
+        public Task<T> Send<T>(T activity) where T : IActivity => Context.Send(activity);
+
+        /// <summary>
+        /// send a message activity to the conversation
+        /// </summary>
+        /// <param name="text">the text to send</param>
+        public Task<MessageActivity> Send(string text) => Context.Send(text);
+
+        /// <summary>
+        /// send a message activity with a card attachment
+        /// </summary>
+        /// <param name="card">the card to send as an attachment</param>
+        public Task<MessageActivity> Send(Cards.Card card) => Context.Send(card);
+
+        /// <summary>
+        /// send a typing activity
+        /// </summary>
+        public Task<TypingActivity> Typing() => Context.Typing();
+
+        /// <summary>
+        /// trigger user signin flow for the activity sender
+        /// </summary>
+        /// <param name="options">option overrides</param>
+        /// <returns>the existing user token if found</returns>
+        public Task<string?> SignIn(SignInOptions? options = null) => Context.SignIn(options);
+
+        /// <summary>
+        /// trigger user signin flow for the activity sender
+        /// </summary>
+        /// <param name="connectionName">the connection name</param>
+        public Task SignOut(string? connectionName = null) => Context.SignOut(connectionName);
     }
 }

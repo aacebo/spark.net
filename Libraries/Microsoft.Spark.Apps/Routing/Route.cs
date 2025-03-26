@@ -32,13 +32,28 @@ public class AttributeRoute : IRoute
 
         foreach (var param in Method.GetParameters())
         {
+            var appId = param.GetCustomAttribute<IContext.AppIdAttribute>();
             var logger = param.GetCustomAttribute<IContext.LoggerAttribute>();
+            var api = param.GetCustomAttribute<IContext.ApiAttribute>();
             var activity = param.GetCustomAttribute<IContext.ActivityAttribute>();
-            var send = param.GetCustomAttribute<IContext.SendAttribute>();
+            var reference = param.GetCustomAttribute<IContext.RefAttribute>();
+            var userGraph = param.GetCustomAttribute<IContext.UserGraphAttribute>();
+            var client = param.GetCustomAttribute<IContext.ClientAttribute>();
+            var isSignedIn = param.GetCustomAttribute<IContext.IsSignedInAttribute>();
             var generic = param.ParameterType.GenericTypeArguments.FirstOrDefault();
             var isContext = generic?.IsAssignableTo(Attr.Type) ?? false;
 
-            if (logger == null && activity == null && send == null && !isContext)
+            if (
+                appId == null &&
+                logger == null &&
+                api == null &&
+                activity == null &&
+                reference == null &&
+                userGraph == null &&
+                client == null &&
+                isSignedIn == null &&
+                !isContext
+            )
                 result.AddError(param.Name ?? "??", "type must be `IContext<TActivity>` or an `IContext` property attribute");
         }
 
@@ -48,15 +63,26 @@ public class AttributeRoute : IRoute
     public async Task<object?> Invoke(IContext<IActivity> context)
     {
         var log = context.Log.Child(Method.Name);
+        var contextClient = new IContext.Client(context);
         var args = Method.GetParameters().Select(param =>
         {
+            var appId = param.GetCustomAttribute<IContext.AppIdAttribute>();
             var logger = param.GetCustomAttribute<IContext.LoggerAttribute>();
+            var api = param.GetCustomAttribute<IContext.ApiAttribute>();
             var activity = param.GetCustomAttribute<IContext.ActivityAttribute>();
-            var send = param.GetCustomAttribute<IContext.SendAttribute>();
+            var reference = param.GetCustomAttribute<IContext.RefAttribute>();
+            var userGraph = param.GetCustomAttribute<IContext.UserGraphAttribute>();
+            var client = param.GetCustomAttribute<IContext.ClientAttribute>();
+            var isSignedIn = param.GetCustomAttribute<IContext.IsSignedInAttribute>();
 
+            if (appId != null) return context.AppId;
             if (logger != null) return context.Log;
+            if (api != null) return context.Api;
             if (activity != null) return context.Activity.ToType(param.ParameterType, null);
-            if (send != null) return new IContext.Send(context);
+            if (reference != null) return context.Ref;
+            if (userGraph != null) return context.UserGraph;
+            if (client != null) return contextClient;
+            if (isSignedIn != null) return context.IsSignedIn;
             return Attr.Coerce(context);
         });
 
