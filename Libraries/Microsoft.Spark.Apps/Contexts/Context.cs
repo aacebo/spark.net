@@ -9,6 +9,8 @@ using Microsoft.Spark.Common.Logging;
 
 namespace Microsoft.Spark.Apps;
 
+internal delegate Task ActivitySentEventHandler(ISender plugin, Events.ActivitySentEventArgs args);
+
 public partial interface IContext<TActivity> where TActivity : IActivity
 {
     /// <summary>
@@ -68,6 +70,50 @@ public partial interface IContext<TActivity> where TActivity : IActivity
     /// convert the context to that of another activity type
     /// </summary>
     public IContext<TToActivity> ToActivityType<TToActivity>() where TToActivity : IActivity;
+
+    /// <summary>
+    /// destruct the context
+    /// </summary>
+    /// <param name="log">the ILogger instance</param>
+    /// <param name="api">the api client</param>
+    /// <param name="activity">the inbound activity</param>
+    public void Deconstruct(
+        out ILogger log,
+        out ApiClient api,
+        out TActivity activity
+    );
+
+    /// <summary>
+    /// destruct the context
+    /// </summary>
+    /// <param name="log">the ILogger instance</param>
+    /// <param name="api">the api client</param>
+    /// <param name="activity">the inbound activity</param>
+    /// <param name="send">the methods to send activities</param>
+    public void Deconstruct(
+        out ILogger log,
+        out ApiClient api,
+        out TActivity activity,
+        out IContext.Send send
+    );
+
+    /// <summary>
+    /// destruct the context
+    /// </summary>
+    /// <param name="appId">the apps id</param>
+    /// <param name="log">the ILogger instance</param>
+    /// <param name="api">the api client</param>
+    /// <param name="activity">the inbound activity</param>
+    /// <param name="reference">the inbound conversation reference</param>
+    /// <param name="send">the methods to send activities</param>
+    public void Deconstruct(
+        out string appId,
+        out ILogger log,
+        out ApiClient api,
+        out TActivity activity,
+        out ConversationReference reference,
+        out IContext.Send send
+    );
 }
 
 public partial class Context<TActivity> : IContext<TActivity> where TActivity : IActivity
@@ -80,7 +126,7 @@ public partial class Context<TActivity> : IContext<TActivity> where TActivity : 
     public IDictionary<string, object> Extra { get; set; } = new Dictionary<string, object>();
 
     protected ISender Sender { get; }
-    internal event ActivitySentEventHandler ActivitySentEvent = (_, _) => Task.Run(() => {});
+    internal ActivitySentEventHandler ActivitySentEvent { get; set; } = (_, _) => Task.Run(() => { });
 
     public Context(ISender sender, string appId, ILogger log, ApiClient api, TActivity activity, ConversationReference reference)
     {
@@ -101,6 +147,33 @@ public partial class Context<TActivity> : IContext<TActivity> where TActivity : 
         Ref = context.Ref;
         Extra = context.Extra;
         Sender = context.Sender;
+        IsSignedIn = context.IsSignedIn;
+        ActivitySentEvent = context.ActivitySentEvent;
+    }
+
+    public void Deconstruct(out ILogger log, out ApiClient api, out TActivity activity)
+    {
+        log = Log;
+        api = Api;
+        activity = Activity;
+    }
+
+    public void Deconstruct(out ILogger log, out ApiClient api, out TActivity activity, out IContext.Send send)
+    {
+        log = Log;
+        api = Api;
+        activity = Activity;
+        send = new IContext.Send(ToActivityType());
+    }
+
+    public void Deconstruct(out string appId, out ILogger log, out ApiClient api, out TActivity activity, out ConversationReference reference, out IContext.Send send)
+    {
+        appId = AppId;
+        log = Log;
+        api = Api;
+        activity = Activity;
+        reference = Ref;
+        send = new IContext.Send(ToActivityType());
     }
 
     public async Task<T> Send<T>(T activity) where T : IActivity
@@ -144,7 +217,7 @@ public partial class Context<TActivity> : IContext<TActivity> where TActivity : 
         };
 
         activity = activity.AddAttachment(card);
-       return await Send(activity);
+        return await Send(activity);
     }
 
     public async Task<TypingActivity> Typing()
@@ -161,17 +234,16 @@ public partial class Context<TActivity> : IContext<TActivity> where TActivity : 
 
     public IContext<IActivity> ToActivityType()
     {
-        return new Context<IActivity>(Sender, AppId, Log, Api, Activity, Ref)
-        {
-            IsSignedIn = IsSignedIn
-        };
+        return ToActivityType<IActivity>();
     }
 
     public IContext<TToActivity> ToActivityType<TToActivity>() where TToActivity : IActivity
     {
         return new Context<TToActivity>(Sender, AppId, Log, Api, (TToActivity)Activity.ToType(typeof(TToActivity), null), Ref)
         {
-            IsSignedIn = IsSignedIn
+            IsSignedIn = IsSignedIn,
+            Extra = Extra,
+            ActivitySentEvent = ActivitySentEvent
         };
     }
 
@@ -183,6 +255,4 @@ public partial class Context<TActivity> : IContext<TActivity> where TActivity : 
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
         });
     }
-
-    public delegate Task ActivitySentEventHandler(ISender plugin, Events.ActivitySentEventArgs args);
 }

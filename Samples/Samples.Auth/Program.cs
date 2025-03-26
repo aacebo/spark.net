@@ -17,7 +17,6 @@ spark.OnMessage("/signout", async context =>
 
     await context.SignOut();
     await context.Send("you have been signed out!");
-    return;
 });
 
 spark.OnMessage(async context =>
@@ -29,7 +28,6 @@ spark.OnMessage(async context =>
     }
 
     await context.Send("you are signed in!");
-    return;
 });
 
 app.UseSpark();

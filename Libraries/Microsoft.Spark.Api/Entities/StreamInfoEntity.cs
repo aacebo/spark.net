@@ -2,22 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace Microsoft.Spark.Api.Entities;
 
-public interface IStreamInfoEntity : IEntity
-{
-    [JsonPropertyName("streamId")]
-    [JsonPropertyOrder(3)]
-    public string? StreamId { get; set; }
-
-    [JsonPropertyName("streamType")]
-    [JsonPropertyOrder(4)]
-    public StreamType? StreamType { get; set; }
-
-    [JsonPropertyName("streamSequence")]
-    [JsonPropertyOrder(5)]
-    public int? StreamSequence { get; set; }
-}
-
-public class StreamInfoEntity : Entity, IStreamInfoEntity
+public class StreamInfoEntity : Entity
 {
     [JsonPropertyName("streamId")]
     [JsonPropertyOrder(3)]

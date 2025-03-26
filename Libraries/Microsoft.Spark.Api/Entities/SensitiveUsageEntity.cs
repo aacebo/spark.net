@@ -2,22 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace Microsoft.Spark.Api.Entities;
 
-public interface ISensitiveUsageEntity : IMessageEntity
-{
-    [JsonPropertyName("name")]
-    [JsonPropertyOrder(3)]
-    public string Name { get; set; }
-
-    [JsonPropertyName("description")]
-    [JsonPropertyOrder(4)]
-    public string? Description { get; set; }
-
-    [JsonPropertyName("pattern")]
-    [JsonPropertyOrder(5)]
-    public DefinedTerm? Pattern { get; set; }
-}
-
-public class SensitiveUsageEntity : OMessageEntity, ISensitiveUsageEntity
+public class SensitiveUsageEntity : OMessageEntity, IMessageEntity
 {
     [JsonPropertyName("name")]
     [JsonPropertyOrder(3)]

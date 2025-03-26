@@ -148,7 +148,7 @@ public partial class App
             );
 
             context.IsSignedIn = userToken != null;
-            context.ActivitySentEvent += (sender, args) => ActivitySentEvent(this, sender, args);
+            context.ActivitySentEvent = (sender, args) => ActivitySentEvent(this, sender, args);
 
             foreach (var route in routes)
             {

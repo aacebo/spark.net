@@ -4,68 +4,7 @@ using Microsoft.Spark.Common;
 
 namespace Microsoft.Spark.Api.Entities;
 
-public interface ICitationEntity : IMessageEntity
-{
-    [JsonPropertyName("position")]
-    [JsonPropertyOrder(3)]
-    public int Position { get; set; }
-
-    [JsonPropertyName("appearance")]
-    [JsonPropertyOrder(4)]
-    public IAppearanceDocument Appearance { get; set; }
-
-    public interface IAppearanceDocument
-    {
-        [JsonPropertyName("@type")]
-        [JsonPropertyOrder(0)]
-        public string Type { get; set; }
-
-        [JsonPropertyName("name")]
-        [JsonPropertyOrder(1)]
-        public string Name { get; set; }
-
-        [JsonPropertyName("text")]
-        [JsonPropertyOrder(2)]
-        public string? Text { get; set; }
-
-        [JsonPropertyName("url")]
-        [JsonPropertyOrder(3)]
-        public string? Url { get; set; }
-
-        [JsonPropertyName("abstract")]
-        [JsonPropertyOrder(4)]
-        public string Abstract { get; set; }
-
-        [JsonPropertyName("encodingFormat")]
-        [JsonPropertyOrder(5)]
-        public ContentType? EncodingFormat { get; set; }
-
-        [JsonPropertyName("image")]
-        [JsonPropertyOrder(6)]
-        public IImageObject? Image { get; set; }
-
-        [JsonPropertyName("keywords")]
-        [JsonPropertyOrder(7)]
-        public List<string>? Keywords { get; set; }
-
-        [JsonPropertyName("usageInfo")]
-        [JsonPropertyOrder(8)]
-        public SensitiveUsageEntity? UsageInfo { get; set; }
-
-        public interface IImageObject
-        {
-            [JsonPropertyName("@type")]
-            [JsonPropertyOrder(0)]
-            public string Type { get; set; }
-
-            [JsonPropertyName("name")]
-            [JsonPropertyOrder(1)]
-            public CitationIcon Name { get; set; }
-        }
-    }
-}
-
-public class CitationEntity : OMessageEntity, ICitationEntity
+public class CitationEntity : OMessageEntity, IMessageEntity
 {
     [JsonPropertyName("position")]
     [JsonPropertyOrder(3)]
@@ -73,14 +12,14 @@ public class CitationEntity : OMessageEntity, ICitationEntity
 
     [JsonPropertyName("appearance")]
     [JsonPropertyOrder(4)]
-    public required ICitationEntity.IAppearanceDocument Appearance { get; set; }
+    public required AppearanceDocument Appearance { get; set; }
 
     public CitationEntity() : base()
     {
         OType = "Claim";
     }
 
-    public class AppearanceDocument : ICitationEntity.IAppearanceDocument
+    public class AppearanceDocument
     {
         [JsonPropertyName("@type")]
         [JsonPropertyOrder(0)]
@@ -108,7 +47,7 @@ public class CitationEntity : OMessageEntity, ICitationEntity
 
         [JsonPropertyName("image")]
         [JsonPropertyOrder(6)]
-        public ICitationEntity.IAppearanceDocument.IImageObject? Image { get; set; }
+        public ImageObject? Image { get; set; }
 
         [JsonPropertyName("keywords")]
         [JsonPropertyOrder(7)]
@@ -118,7 +57,7 @@ public class CitationEntity : OMessageEntity, ICitationEntity
         [JsonPropertyOrder(8)]
         public SensitiveUsageEntity? UsageInfo { get; set; }
 
-        public class ImageObject : ICitationEntity.IAppearanceDocument.IImageObject
+        public class ImageObject
         {
             [JsonPropertyName("@type")]
             [JsonPropertyOrder(0)]

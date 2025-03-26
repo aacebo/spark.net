@@ -33,6 +33,10 @@ public partial interface IContext
 
     }
 
+    /// <summary>
+    /// an object that can send activities
+    /// </summary>
+    /// <param name="context">the parent context</param>
     public class Send(IContext<IActivity> context)
     {
         public Func<IActivity, Task<IActivity>> Activity { get; set; } = context.Send;

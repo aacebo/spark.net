@@ -138,7 +138,7 @@ public class ConversationResource
     /// </summary>
     [JsonPropertyName("activityId")]
     [JsonPropertyOrder(1)]
-    public required string ActivityId { get; set; }
+    public string? ActivityId { get; set; }
 
     /// <summary>
     /// Service endpoint where operations concerning the conversation may be performed
@@ -146,4 +146,11 @@ public class ConversationResource
     [JsonPropertyName("serviceUrl")]
     [JsonPropertyOrder(2)]
     public required string ServiceUrl { get; set; }
+
+    public void Deconstruct(out string id, out string? activityId, out string serviceUrl)
+    {
+        id = Id;
+        activityId = ActivityId;
+        serviceUrl = ServiceUrl;
+    }
 }

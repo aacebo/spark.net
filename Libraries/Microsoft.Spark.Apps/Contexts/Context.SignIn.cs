@@ -42,14 +42,14 @@ public partial class Context<TActivity> : IContext<TActivity>
 
         try
         {
-            var res = await Api.Users.Token.GetAsync(new()
+            var tokenResponse = await Api.Users.Token.GetAsync(new()
             {
                 UserId = Activity.From.Id,
                 ChannelId = Activity.ChannelId,
                 ConnectionName = connectionName,
             });
 
-            return res.Token;
+            return tokenResponse.Token;
         }
         catch { }
 
@@ -57,7 +57,7 @@ public partial class Context<TActivity> : IContext<TActivity>
         // because groupchats don't support it.
         if (Activity.Conversation.IsGroup == true)
         {
-            var res = await Api.Conversations.CreateAsync(new()
+            var (id, _, _) = await Api.Conversations.CreateAsync(new()
             {
                 TenantId = Ref.Conversation.TenantId,
                 IsGroup = false,
@@ -65,9 +65,21 @@ public partial class Context<TActivity> : IContext<TActivity>
                 Members = [Activity.From]
             });
 
-            await Send(oauthCardText);
-            reference.Conversation.Id = res.Id;
+            reference.Conversation.Id = id;
             reference.Conversation.IsGroup = false;
+
+            var oauthCardActivity = await Sender.Send(new MessageActivity(oauthCardText), reference);
+            await ActivitySentEvent(Sender, new()
+            {
+                Activity = oauthCardActivity,
+                Bot = Ref.Bot,
+                ChannelId = Ref.ChannelId,
+                Conversation = Ref.Conversation,
+                ServiceUrl = Ref.ServiceUrl,
+                ActivityId = Ref.ActivityId,
+                Locale = Ref.Locale,
+                User = Ref.User
+            });
         }
 
         var tokenExchangeState = new Api.TokenExchange.State()
@@ -100,8 +112,19 @@ public partial class Context<TActivity> : IContext<TActivity>
             ]
         });
 
-        Log.Debug(activity);
-        await Send(activity);
+        var res = await Sender.Send(activity, reference);
+        await ActivitySentEvent(Sender, new()
+        {
+            Activity = res,
+            Bot = Ref.Bot,
+            ChannelId = Ref.ChannelId,
+            Conversation = Ref.Conversation,
+            ServiceUrl = Ref.ServiceUrl,
+            ActivityId = Ref.ActivityId,
+            Locale = Ref.Locale,
+            User = Ref.User
+        });
+
         return null;
     }
 
