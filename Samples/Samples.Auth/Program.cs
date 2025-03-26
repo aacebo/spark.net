@@ -27,7 +27,8 @@ spark.OnMessage(async context =>
         return;
     }
 
-    await context.Send("you are signed in!");
+    var me = await context.UserGraph.Me.GetAsync();
+    await context.Send($"user '{me!.DisplayName}' is signed in!");
 });
 
 app.UseSpark();

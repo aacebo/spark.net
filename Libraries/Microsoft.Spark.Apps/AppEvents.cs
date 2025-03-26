@@ -1,5 +1,6 @@
 using Microsoft.Spark.Api;
 using Microsoft.Spark.Api.Activities;
+using Microsoft.Spark.Api.Auth;
 using Microsoft.Spark.Apps.Plugins;
 using Microsoft.Spark.Common.Http;
 
@@ -105,7 +106,7 @@ public partial class App
 
         try
         {
-            string? userToken = null;
+            JsonWebToken? userToken = null;
 
             try
             {
@@ -116,7 +117,7 @@ public partial class App
                     ConnectionName = "graph"
                 });
 
-                userToken = res.Token;
+                userToken = new JsonWebToken(res);
             }
             catch { }
 
@@ -138,17 +139,24 @@ public partial class App
                 Conversation = args.Activity.Conversation,
             };
 
-            var context = new Context<IActivity>(
-                sender,
-                args.Token.AppId ?? Id ?? string.Empty,
-                Logger.Child(path),
-                Api,
-                args.Activity,
-                reference
-            );
+            var userGraphTokenProvider = Azure.Core.DelegatedTokenCredential.Create((context, _) =>
+            {
+                if (userToken == null) return default;
+                return new Azure.Core.AccessToken(userToken.ToString(), userToken.Token.ValidTo);
+            });
 
-            context.IsSignedIn = userToken != null;
-            context.ActivitySentEvent = (sender, args) => ActivitySentEvent(this, sender, args);
+            var context = new Context<IActivity>()
+            {
+                Sender = sender,
+                AppId = args.Token.AppId ?? Id ?? string.Empty,
+                Log = Logger.Child(path),
+                Api = Api,
+                Activity = args.Activity,
+                Ref = reference,
+                IsSignedIn = userToken != null,
+                UserGraph = new Graph.GraphServiceClient(userGraphTokenProvider),
+                ActivitySentEvent = (sender, args) => ActivitySentEvent(this, sender, args)
+            };
 
             foreach (var route in routes)
             {

@@ -39,9 +39,42 @@ public partial interface IContext<TActivity> where TActivity : IActivity
     public ConversationReference Ref { get; set; }
 
     /// <summary>
+    /// the users graph client
+    /// </summary>
+    public Graph.GraphServiceClient UserGraph { get; set; }
+
+    /// <summary>
     /// any extra data
     /// </summary>
     public IDictionary<string, object> Extra { get; set; }
+
+    /// <summary>
+    /// destruct the context
+    /// </summary>
+    /// <param name="log">the ILogger instance</param>
+    /// <param name="api">the api client</param>
+    /// <param name="activity">the inbound activity</param>
+    public void Deconstruct(out ILogger log, out ApiClient api, out TActivity activity);
+
+    /// <summary>
+    /// destruct the context
+    /// </summary>
+    /// <param name="log">the ILogger instance</param>
+    /// <param name="api">the api client</param>
+    /// <param name="activity">the inbound activity</param>
+    /// <param name="send">the methods to send activities</param>
+    public void Deconstruct(out ILogger log, out ApiClient api, out TActivity activity, out IContext.Send send);
+
+    /// <summary>
+    /// destruct the context
+    /// </summary>
+    /// <param name="appId">the apps id</param>
+    /// <param name="log">the ILogger instance</param>
+    /// <param name="api">the api client</param>
+    /// <param name="activity">the inbound activity</param>
+    /// <param name="reference">the inbound conversation reference</param>
+    /// <param name="send">the methods to send activities</param>
+    public void Deconstruct(out string appId, out ILogger log, out ApiClient api, out TActivity activity, out ConversationReference reference, out IContext.Send send);
 
     /// <summary>
     /// send an activity to the conversation
@@ -69,87 +102,26 @@ public partial interface IContext<TActivity> where TActivity : IActivity
     /// <summary>
     /// convert the context to that of another activity type
     /// </summary>
+    public IContext<IActivity> ToActivityType();
+
+    /// <summary>
+    /// convert the context to that of another activity type
+    /// </summary>
     public IContext<TToActivity> ToActivityType<TToActivity>() where TToActivity : IActivity;
-
-    /// <summary>
-    /// destruct the context
-    /// </summary>
-    /// <param name="log">the ILogger instance</param>
-    /// <param name="api">the api client</param>
-    /// <param name="activity">the inbound activity</param>
-    public void Deconstruct(
-        out ILogger log,
-        out ApiClient api,
-        out TActivity activity
-    );
-
-    /// <summary>
-    /// destruct the context
-    /// </summary>
-    /// <param name="log">the ILogger instance</param>
-    /// <param name="api">the api client</param>
-    /// <param name="activity">the inbound activity</param>
-    /// <param name="send">the methods to send activities</param>
-    public void Deconstruct(
-        out ILogger log,
-        out ApiClient api,
-        out TActivity activity,
-        out IContext.Send send
-    );
-
-    /// <summary>
-    /// destruct the context
-    /// </summary>
-    /// <param name="appId">the apps id</param>
-    /// <param name="log">the ILogger instance</param>
-    /// <param name="api">the api client</param>
-    /// <param name="activity">the inbound activity</param>
-    /// <param name="reference">the inbound conversation reference</param>
-    /// <param name="send">the methods to send activities</param>
-    public void Deconstruct(
-        out string appId,
-        out ILogger log,
-        out ApiClient api,
-        out TActivity activity,
-        out ConversationReference reference,
-        out IContext.Send send
-    );
 }
 
 public partial class Context<TActivity> : IContext<TActivity> where TActivity : IActivity
 {
-    public string AppId { get; set; }
-    public ILogger Log { get; set; }
-    public ApiClient Api { get; set; }
-    public TActivity Activity { get; set; }
-    public ConversationReference Ref { get; set; }
+    public required ISender Sender { get; set; }
+    public required string AppId { get; set; }
+    public required ILogger Log { get; set; }
+    public required ApiClient Api { get; set; }
+    public required TActivity Activity { get; set; }
+    public required ConversationReference Ref { get; set; }
+    public required Graph.GraphServiceClient UserGraph { get; set; }
     public IDictionary<string, object> Extra { get; set; } = new Dictionary<string, object>();
 
-    protected ISender Sender { get; }
     internal ActivitySentEventHandler ActivitySentEvent { get; set; } = (_, _) => Task.Run(() => { });
-
-    public Context(ISender sender, string appId, ILogger log, ApiClient api, TActivity activity, ConversationReference reference)
-    {
-        Sender = sender;
-        AppId = appId;
-        Log = log;
-        Api = api;
-        Activity = activity;
-        Ref = reference;
-    }
-
-    public Context(Context<TActivity> context)
-    {
-        AppId = context.AppId;
-        Log = context.Log;
-        Api = context.Api;
-        Activity = context.Activity;
-        Ref = context.Ref;
-        Extra = context.Extra;
-        Sender = context.Sender;
-        IsSignedIn = context.IsSignedIn;
-        ActivitySentEvent = context.ActivitySentEvent;
-    }
 
     public void Deconstruct(out ILogger log, out ApiClient api, out TActivity activity)
     {
@@ -239,8 +211,15 @@ public partial class Context<TActivity> : IContext<TActivity> where TActivity : 
 
     public IContext<TToActivity> ToActivityType<TToActivity>() where TToActivity : IActivity
     {
-        return new Context<TToActivity>(Sender, AppId, Log, Api, (TToActivity)Activity.ToType(typeof(TToActivity), null), Ref)
+        return new Context<TToActivity>()
         {
+            Sender = Sender,
+            AppId = AppId,
+            Log = Log,
+            Api = Api,
+            Activity = (TToActivity)Activity.ToType(typeof(TToActivity), null),
+            Ref = Ref,
+            UserGraph = UserGraph,
             IsSignedIn = IsSignedIn,
             Extra = Extra,
             ActivitySentEvent = ActivitySentEvent

@@ -8,19 +8,19 @@ public class JsonWebToken : IToken
     [JsonPropertyName("appid")]
     public string? AppId
     {
-        get => (string?)_token.Payload.GetValueOrDefault("appid");
+        get => (string?)Token.Payload.GetValueOrDefault("appid");
     }
 
     [JsonPropertyName("app_displayname")]
     public string? AppDisplayName
     {
-        get => (string?)_token.Payload.GetValueOrDefault("app_displayname");
+        get => (string?)Token.Payload.GetValueOrDefault("app_displayname");
     }
 
     [JsonPropertyName("tid")]
     public string? TenantId
     {
-        get => (string?)_token.Payload.GetValueOrDefault("tid");
+        get => (string?)Token.Payload.GetValueOrDefault("tid");
     }
 
     [JsonPropertyName("serviceurl")]
@@ -28,7 +28,7 @@ public class JsonWebToken : IToken
     {
         get
         {
-            var value = ((string?)_token.Payload.GetValueOrDefault("serviceurl")) ?? "https://smba.trafficmanager.net/teams";
+            var value = ((string?)Token.Payload.GetValueOrDefault("serviceurl")) ?? "https://smba.trafficmanager.net/teams";
 
             if (value.EndsWith('/'))
             {
@@ -51,14 +51,21 @@ public class JsonWebToken : IToken
         get => From.IsBot ? $"urn:botframework:aadappid:{AppId}" : "urn:botframework:azure";
     }
 
-    private readonly JwtSecurityToken _token;
+    public JwtSecurityToken Token { get; }
     private readonly string _tokenAsString;
 
     public JsonWebToken(string token)
     {
         var handler = new JwtSecurityTokenHandler();
-        _token = handler.ReadJwtToken(token);
+        Token = handler.ReadJwtToken(token);
         _tokenAsString = token;
+    }
+
+    public JsonWebToken(Token.Response response)
+    {
+        var handler = new JwtSecurityTokenHandler();
+        Token = handler.ReadJwtToken(response.Token);
+        _tokenAsString = response.Token;
     }
 
     public override string ToString() => _tokenAsString;

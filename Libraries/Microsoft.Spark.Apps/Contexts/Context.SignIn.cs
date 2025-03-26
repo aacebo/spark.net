@@ -19,11 +19,7 @@ public partial interface IContext<TActivity>
     /// <param name="oauthCardText">the oauth card text</param>
     /// <param name="signInButtonText">the signin button text</param>
     /// <returns>the existing user token if found</returns>
-    public Task<string?> SignIn(
-        string connectionName = "graph",
-        string oauthCardText = "Please Sign In...",
-        string signInButtonText = "Sign In"
-    );
+    public Task<string?> SignIn(string connectionName = "graph", string oauthCardText = "Please Sign In...", string signInButtonText = "Sign In");
 
     /// <summary>
     /// trigger user signin flow for the activity sender
