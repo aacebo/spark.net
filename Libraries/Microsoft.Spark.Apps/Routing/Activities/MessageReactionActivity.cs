@@ -10,16 +10,20 @@ public class MessageReactionAttribute() : ActivityAttribute(ActivityType.Message
 
 public partial interface IRoutingModule
 {
-    public IRoutingModule OnMessageReaction(Func<IContext<MessageReactionActivity>, Task<object?>> handler);
+    public IRoutingModule OnMessageReaction(Func<IContext<MessageReactionActivity>, Task> handler);
 }
 
 public partial class RoutingModule : IRoutingModule
 {
-    public IRoutingModule OnMessageReaction(Func<IContext<MessageReactionActivity>, Task<object?>> handler)
+    public IRoutingModule OnMessageReaction(Func<IContext<MessageReactionActivity>, Task> handler)
     {
         Router.Register(new Route()
         {
-            Handler = context => handler(context.ToActivityType<MessageReactionActivity>()),
+            Handler = async context =>
+            {
+                await handler(context.ToActivityType<MessageReactionActivity>());
+                return null;
+            },
             Selector = activity =>
             {
                 if (activity is MessageReactionActivity messageReaction)

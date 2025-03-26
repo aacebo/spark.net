@@ -12,12 +12,12 @@ spark.OnMessage("/signout", async context =>
     if (!context.IsSignedIn)
     {
         await context.Send("you are not signed in!");
-        return null;
+        return;
     }
 
     await context.SignOut();
     await context.Send("you have been signed out!");
-    return null;
+    return;
 });
 
 spark.OnMessage(async context =>
@@ -25,11 +25,11 @@ spark.OnMessage(async context =>
     if (!context.IsSignedIn)
     {
         await context.SignIn();
-        return null;
+        return;
     }
 
     await context.Send("you are signed in!");
-    return null;
+    return;
 });
 
 app.UseSpark();

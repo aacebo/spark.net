@@ -10,16 +10,20 @@ public class EndOfConversationAttribute() : ActivityAttribute(ActivityType.EndOf
 
 public partial interface IRoutingModule
 {
-    public IRoutingModule OnEndOfConversation(Func<IContext<EndOfConversationActivity>, Task<object?>> handler);
+    public IRoutingModule OnEndOfConversation(Func<IContext<EndOfConversationActivity>, Task> handler);
 }
 
 public partial class RoutingModule : IRoutingModule
 {
-    public IRoutingModule OnEndOfConversation(Func<IContext<EndOfConversationActivity>, Task<object?>> handler)
+    public IRoutingModule OnEndOfConversation(Func<IContext<EndOfConversationActivity>, Task> handler)
     {
         Router.Register(new Route()
         {
-            Handler = context => handler(context.ToActivityType<EndOfConversationActivity>()),
+            Handler = async context =>
+            {
+                await handler(context.ToActivityType<EndOfConversationActivity>());
+                return null;
+            },
             Selector = activity =>
             {
                 if (activity is EndOfConversationActivity endOfConversation)

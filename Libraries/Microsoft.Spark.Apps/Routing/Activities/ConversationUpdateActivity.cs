@@ -10,16 +10,20 @@ public class ConversationUpdateAttribute() : ActivityAttribute(ActivityType.Conv
 
 public partial interface IRoutingModule
 {
-    public IRoutingModule OnConversationUpdate(Func<IContext<ConversationUpdateActivity>, Task<object?>> handler);
+    public IRoutingModule OnConversationUpdate(Func<IContext<ConversationUpdateActivity>, Task> handler);
 }
 
 public partial class RoutingModule : IRoutingModule
 {
-    public IRoutingModule OnConversationUpdate(Func<IContext<ConversationUpdateActivity>, Task<object?>> handler)
+    public IRoutingModule OnConversationUpdate(Func<IContext<ConversationUpdateActivity>, Task> handler)
     {
         Router.Register(new Route()
         {
-            Handler = context => handler(context.ToActivityType<ConversationUpdateActivity>()),
+            Handler = async context =>
+            {
+                await handler(context.ToActivityType<ConversationUpdateActivity>());
+                return null;
+            },
             Selector = activity =>
             {
                 if (activity is ConversationUpdateActivity conversationUpdate)

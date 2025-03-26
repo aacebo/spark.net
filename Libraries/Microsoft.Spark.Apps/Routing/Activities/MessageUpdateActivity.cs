@@ -10,16 +10,20 @@ public class MessageUpdateAttribute() : ActivityAttribute(ActivityType.MessageUp
 
 public partial interface IRoutingModule
 {
-    public IRoutingModule OnMessageUpdate(Func<IContext<MessageUpdateActivity>, Task<object?>> handler);
+    public IRoutingModule OnMessageUpdate(Func<IContext<MessageUpdateActivity>, Task> handler);
 }
 
 public partial class RoutingModule : IRoutingModule
 {
-    public IRoutingModule OnMessageUpdate(Func<IContext<MessageUpdateActivity>, Task<object?>> handler)
+    public IRoutingModule OnMessageUpdate(Func<IContext<MessageUpdateActivity>, Task> handler)
     {
         Router.Register(new Route()
         {
-            Handler = context => handler(context.ToActivityType<MessageUpdateActivity>()),
+            Handler = async context =>
+            {
+                await handler(context.ToActivityType<MessageUpdateActivity>());
+                return null;
+            },
             Selector = activity =>
             {
                 if (activity is MessageUpdateActivity messageUpdate)

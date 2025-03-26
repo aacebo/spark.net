@@ -10,16 +10,20 @@ public class InstallUpdateAttribute() : ActivityAttribute(ActivityType.InstallUp
 
 public partial interface IRoutingModule
 {
-    public IRoutingModule OnInstallUpdate(Func<IContext<InstallUpdateActivity>, Task<object?>> handler);
+    public IRoutingModule OnInstallUpdate(Func<IContext<InstallUpdateActivity>, Task> handler);
 }
 
 public partial class RoutingModule : IRoutingModule
 {
-    public IRoutingModule OnInstallUpdate(Func<IContext<InstallUpdateActivity>, Task<object?>> handler)
+    public IRoutingModule OnInstallUpdate(Func<IContext<InstallUpdateActivity>, Task> handler)
     {
         Router.Register(new Route()
         {
-            Handler = context => handler(context.ToActivityType<InstallUpdateActivity>()),
+            Handler = async context =>
+            {
+                await handler(context.ToActivityType<InstallUpdateActivity>());
+                return null;
+            },
             Selector = activity =>
             {
                 if (activity is InstallUpdateActivity installUpdate)

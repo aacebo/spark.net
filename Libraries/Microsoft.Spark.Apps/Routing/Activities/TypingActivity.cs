@@ -10,16 +10,20 @@ public class TypingAttribute() : ActivityAttribute(ActivityType.Typing, typeof(T
 
 public partial interface IRoutingModule
 {
-    public IRoutingModule OnTyping(Func<IContext<TypingActivity>, Task<object?>> handler);
+    public IRoutingModule OnTyping(Func<IContext<TypingActivity>, Task> handler);
 }
 
 public partial class RoutingModule : IRoutingModule
 {
-    public IRoutingModule OnTyping(Func<IContext<TypingActivity>, Task<object?>> handler)
+    public IRoutingModule OnTyping(Func<IContext<TypingActivity>, Task> handler)
     {
         Router.Register(new Route()
         {
-            Handler = context => handler(context.ToActivityType<TypingActivity>()),
+            Handler = async context =>
+            {
+                await handler(context.ToActivityType<TypingActivity>());
+                return null;
+            },
             Selector = activity =>
             {
                 if (activity is TypingActivity typing)
