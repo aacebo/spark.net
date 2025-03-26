@@ -80,6 +80,7 @@ public partial class Context<TActivity> : IContext<TActivity> where TActivity : 
     public IDictionary<string, object> Extra { get; set; } = new Dictionary<string, object>();
 
     protected ISender Sender { get; }
+    internal event ActivitySentEventHandler ActivitySentEvent = (_, _) => Task.Run(() => {});
 
     public Context(ISender sender, string appId, ILogger log, ApiClient api, TActivity activity, ConversationReference reference)
     {
@@ -105,6 +106,19 @@ public partial class Context<TActivity> : IContext<TActivity> where TActivity : 
     public async Task<T> Send<T>(T activity) where T : IActivity
     {
         var res = await Sender.Send(activity, Ref);
+
+        await ActivitySentEvent(Sender, new()
+        {
+            Activity = res,
+            Bot = Ref.Bot,
+            ChannelId = Ref.ChannelId,
+            Conversation = Ref.Conversation,
+            ServiceUrl = Ref.ServiceUrl,
+            ActivityId = Ref.ActivityId,
+            Locale = Ref.Locale,
+            User = Ref.User
+        });
+
         return res;
     }
 
@@ -117,8 +131,7 @@ public partial class Context<TActivity> : IContext<TActivity> where TActivity : 
             Conversation = Ref.Conversation
         };
 
-        var res = await Sender.Send(activity, Ref);
-        return res;
+        return await Send(activity);
     }
 
     public async Task<MessageActivity> Send(Cards.Card card)
@@ -131,8 +144,7 @@ public partial class Context<TActivity> : IContext<TActivity> where TActivity : 
         };
 
         activity = activity.AddAttachment(card);
-        var res = await Sender.Send(activity, Ref);
-        return res;
+       return await Send(activity);
     }
 
     public async Task<TypingActivity> Typing()
@@ -144,8 +156,7 @@ public partial class Context<TActivity> : IContext<TActivity> where TActivity : 
             Conversation = Ref.Conversation
         };
 
-        var res = await Sender.Send(activity, Ref);
-        return res;
+        return await Send(activity);
     }
 
     public IContext<IActivity> ToActivityType()
@@ -172,4 +183,6 @@ public partial class Context<TActivity> : IContext<TActivity> where TActivity : 
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
         });
     }
+
+    public delegate Task ActivitySentEventHandler(ISender plugin, Events.ActivitySentEventArgs args);
 }

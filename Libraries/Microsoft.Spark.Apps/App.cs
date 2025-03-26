@@ -191,6 +191,19 @@ public partial class App : IApp
         }
 
         var res = await sender.Send(activity, reference);
+
+        await ActivitySentEvent(this, sender, new()
+        {
+            Activity = res,
+            Bot = reference.Bot,
+            ChannelId = reference.ChannelId,
+            Conversation = reference.Conversation,
+            ServiceUrl = reference.ServiceUrl,
+            ActivityId = reference.ActivityId,
+            Locale = reference.Locale,
+            User = reference.User
+        });
+
         return res;
     }
 
