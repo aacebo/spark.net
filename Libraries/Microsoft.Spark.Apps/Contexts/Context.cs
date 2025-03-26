@@ -9,7 +9,8 @@ using Microsoft.Spark.Common.Logging;
 
 namespace Microsoft.Spark.Apps;
 
-internal delegate Task ActivitySentEventHandler(ISender plugin, Events.ActivitySentEventArgs args);
+internal delegate Task<object?> NextHandler();
+internal delegate Task ActivitySentHandler(ISender plugin, Events.ActivitySentEventArgs args);
 
 public partial interface IContext<TActivity> where TActivity : IActivity
 {
@@ -77,27 +78,10 @@ public partial interface IContext<TActivity> where TActivity : IActivity
     public void Deconstruct(out string appId, out ILogger log, out ApiClient api, out TActivity activity, out ConversationReference reference, out IContext.Client client);
 
     /// <summary>
-    /// send an activity to the conversation
+    /// called to continue the chain of route handlers,
+    /// if not called no other handlers in the sequence will be executed
     /// </summary>
-    /// <param name="activity">activity activity to send</param>
-    public Task<T> Send<T>(T activity) where T : IActivity;
-
-    /// <summary>
-    /// send a message activity to the conversation
-    /// </summary>
-    /// <param name="text">the text to send</param>
-    public Task<MessageActivity> Send(string text);
-
-    /// <summary>
-    /// send a message activity with a card attachment
-    /// </summary>
-    /// <param name="card">the card to send as an attachment</param>
-    public Task<MessageActivity> Send(Cards.Card card);
-
-    /// <summary>
-    /// send a typing activity
-    /// </summary>
-    public Task<TypingActivity> Typing();
+    public Task<object?> Next();
 
     /// <summary>
     /// convert the context to that of another activity type
@@ -121,7 +105,8 @@ public partial class Context<TActivity> : IContext<TActivity> where TActivity : 
     public required Graph.GraphServiceClient UserGraph { get; set; }
     public IDictionary<string, object> Extra { get; set; } = new Dictionary<string, object>();
 
-    internal ActivitySentEventHandler ActivitySentEvent { get; set; } = (_, _) => Task.Run(() => { });
+    internal NextHandler OnNext { get; set; } = () => Task.FromResult<object?>(null);
+    internal ActivitySentHandler OnActivitySent { get; set; } = (_, _) => Task.Run(() => { });
 
     public void Deconstruct(out ILogger log, out ApiClient api, out TActivity activity)
     {
@@ -148,67 +133,8 @@ public partial class Context<TActivity> : IContext<TActivity> where TActivity : 
         client = new IContext.Client(ToActivityType());
     }
 
-    public async Task<T> Send<T>(T activity) where T : IActivity
-    {
-        var res = await Sender.Send(activity, Ref);
-
-        await ActivitySentEvent(Sender, new()
-        {
-            Activity = res,
-            Bot = Ref.Bot,
-            ChannelId = Ref.ChannelId,
-            Conversation = Ref.Conversation,
-            ServiceUrl = Ref.ServiceUrl,
-            ActivityId = Ref.ActivityId,
-            Locale = Ref.Locale,
-            User = Ref.User
-        });
-
-        return res;
-    }
-
-    public async Task<MessageActivity> Send(string text)
-    {
-        var activity = new MessageActivity(text)
-        {
-            From = Ref.Bot,
-            Recipient = Ref.User,
-            Conversation = Ref.Conversation
-        };
-
-        return await Send(activity);
-    }
-
-    public async Task<MessageActivity> Send(Cards.Card card)
-    {
-        var activity = new MessageActivity()
-        {
-            From = Ref.Bot,
-            Recipient = Ref.User,
-            Conversation = Ref.Conversation
-        };
-
-        activity = activity.AddAttachment(card);
-        return await Send(activity);
-    }
-
-    public async Task<TypingActivity> Typing()
-    {
-        var activity = new TypingActivity()
-        {
-            From = Ref.Bot,
-            Recipient = Ref.User,
-            Conversation = Ref.Conversation
-        };
-
-        return await Send(activity);
-    }
-
-    public IContext<IActivity> ToActivityType()
-    {
-        return ToActivityType<IActivity>();
-    }
-
+    public Task<object?> Next() => OnNext();
+    public IContext<IActivity> ToActivityType() => ToActivityType<IActivity>();
     public IContext<TToActivity> ToActivityType<TToActivity>() where TToActivity : IActivity
     {
         return new Context<TToActivity>()
@@ -222,7 +148,8 @@ public partial class Context<TActivity> : IContext<TActivity> where TActivity : 
             UserGraph = UserGraph,
             IsSignedIn = IsSignedIn,
             Extra = Extra,
-            ActivitySentEvent = ActivitySentEvent
+            OnNext = OnNext,
+            OnActivitySent = OnActivitySent
         };
     }
 

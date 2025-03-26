@@ -126,6 +126,7 @@ public partial class App
                 await plugin.OnActivity(this, sender, args);
             }
 
+            var i = 0;
             var path = args.Activity.GetPath();
             Logger.Debug(path);
 
@@ -141,9 +142,14 @@ public partial class App
 
             var userGraphTokenProvider = Azure.Core.DelegatedTokenCredential.Create((context, _) =>
             {
-                if (userToken == null) return default;
-                return new Azure.Core.AccessToken(userToken.ToString(), userToken.Token.ValidTo);
+                return userToken == null ? default : new Azure.Core.AccessToken(userToken.ToString(), userToken.Token.ValidTo);
             });
+
+            object? data = null;
+            NextHandler next = () =>
+            {
+                if (i == routes.Count - 1) return 
+            };
 
             var context = new Context<IActivity>()
             {
@@ -155,7 +161,7 @@ public partial class App
                 Ref = reference,
                 IsSignedIn = userToken != null,
                 UserGraph = new Graph.GraphServiceClient(userGraphTokenProvider),
-                ActivitySentEvent = (sender, args) => ActivitySentEvent(this, sender, args)
+                OnActivitySent = (sender, args) => ActivitySentEvent(this, sender, args)
             };
 
             foreach (var route in routes)

@@ -64,7 +64,7 @@ public partial class Context<TActivity> : IContext<TActivity>
             reference.Conversation.IsGroup = false;
 
             var oauthCardActivity = await Sender.Send(new MessageActivity(options.OAuthCardText), reference);
-            await ActivitySentEvent(Sender, new()
+            await OnActivitySent(Sender, new()
             {
                 Activity = oauthCardActivity,
                 Bot = Ref.Bot,
@@ -108,7 +108,7 @@ public partial class Context<TActivity> : IContext<TActivity>
         });
 
         var res = await Sender.Send(activity, reference);
-        await ActivitySentEvent(Sender, new()
+        await OnActivitySent(Sender, new()
         {
             Activity = res,
             Bot = Ref.Bot,
