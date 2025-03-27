@@ -110,14 +110,14 @@ public partial class App
 
             try
             {
-                var res = await Api.Users.Token.GetAsync(new()
+                var tokenResponse = await Api.Users.Token.GetAsync(new()
                 {
                     UserId = args.Activity.From.Id,
                     ChannelId = args.Activity.ChannelId,
                     ConnectionName = "graph"
                 });
 
-                userToken = new JsonWebToken(res);
+                userToken = new JsonWebToken(tokenResponse);
             }
             catch { }
 
@@ -126,7 +126,6 @@ public partial class App
                 await plugin.OnActivity(this, sender, args);
             }
 
-            var i = 0;
             var path = args.Activity.GetPath();
             Logger.Debug(path);
 
@@ -146,10 +145,18 @@ public partial class App
             });
 
             object? data = null;
-            NextHandler next = () =>
+            var i = -1;
+            async Task<object?> next(IContext<IActivity> context)
             {
-                if (i == routes.Count - 1) return 
-            };
+                if (i == routes.Count - 1) return data;
+                i++;
+                var res = await routes[i].Invoke(context);
+
+                if (res != null)
+                    data = res;
+
+                return res;
+            }
 
             var context = new Context<IActivity>()
             {
@@ -160,32 +167,30 @@ public partial class App
                 Activity = args.Activity,
                 Ref = reference,
                 IsSignedIn = userToken != null,
+                OnNext = next,
                 UserGraph = new Graph.GraphServiceClient(userGraphTokenProvider),
                 OnActivitySent = (sender, args) => ActivitySentEvent(this, sender, args)
             };
 
-            foreach (var route in routes)
+            var res = await next(context);
+
+            if (res != null)
             {
-                var res = await route.Invoke(context);
-
-                if (res != null)
+                var response = res is Response value ? value : new Response(System.Net.HttpStatusCode.OK, res);
+                await ActivityResponseEvent(this, sender, new()
                 {
-                    var response = res is Response value ? value : new Response(System.Net.HttpStatusCode.OK, res);
-                    await ActivityResponseEvent(this, sender, new()
-                    {
-                        Activity = context.Activity,
-                        Response = response,
-                        Bot = reference.Bot,
-                        ChannelId = reference.ChannelId,
-                        Conversation = reference.Conversation,
-                        ServiceUrl = reference.ServiceUrl,
-                        ActivityId = reference.ActivityId,
-                        Locale = reference.Locale,
-                        User = reference.User
-                    });
+                    Activity = context.Activity,
+                    Response = response,
+                    Bot = reference.Bot,
+                    ChannelId = reference.ChannelId,
+                    Conversation = reference.Conversation,
+                    ServiceUrl = reference.ServiceUrl,
+                    ActivityId = reference.ActivityId,
+                    Locale = reference.Locale,
+                    User = reference.User
+                });
 
-                    return response;
-                }
+                return response;
             }
 
             return null;

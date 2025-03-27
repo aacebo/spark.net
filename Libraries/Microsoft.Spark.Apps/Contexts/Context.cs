@@ -9,7 +9,6 @@ using Microsoft.Spark.Common.Logging;
 
 namespace Microsoft.Spark.Apps;
 
-internal delegate Task<object?> NextHandler();
 internal delegate Task ActivitySentHandler(ISender plugin, Events.ActivitySentEventArgs args);
 
 public partial interface IContext<TActivity> where TActivity : IActivity
@@ -105,7 +104,7 @@ public partial class Context<TActivity> : IContext<TActivity> where TActivity : 
     public required Graph.GraphServiceClient UserGraph { get; set; }
     public IDictionary<string, object> Extra { get; set; } = new Dictionary<string, object>();
 
-    internal NextHandler OnNext { get; set; } = () => Task.FromResult<object?>(null);
+    internal Func<IContext<IActivity>, Task<object?>> OnNext { get; set; } = (_) => Task.FromResult<object?>(null);
     internal ActivitySentHandler OnActivitySent { get; set; } = (_, _) => Task.Run(() => { });
 
     public void Deconstruct(out ILogger log, out ApiClient api, out TActivity activity)
@@ -133,7 +132,7 @@ public partial class Context<TActivity> : IContext<TActivity> where TActivity : 
         client = new IContext.Client(ToActivityType());
     }
 
-    public Task<object?> Next() => OnNext();
+    public Task<object?> Next() => OnNext(ToActivityType());
     public IContext<IActivity> ToActivityType() => ToActivityType<IActivity>();
     public IContext<TToActivity> ToActivityType<TToActivity>() where TToActivity : IActivity
     {

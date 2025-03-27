@@ -1,3 +1,5 @@
+using System.Reflection;
+
 using Microsoft.Spark.Api.Activities;
 
 namespace Microsoft.Spark.Apps;
@@ -14,52 +16,76 @@ public partial interface IContext
         Context = AppId | Activity | Ref,
     }
 
+    /// <summary>
+    /// the base for any context property attribute
+    /// </summary>
     [AttributeUsage(AttributeTargets.Parameter, Inherited = true)]
-    public class AppIdAttribute() : Attribute
+    public abstract class PropertyAttribute : Attribute
     {
-
+        /// <summary>
+        /// resolves the context property value
+        /// </summary>
+        public abstract object Resolve(IContext<IActivity> context, ParameterInfo parameter);
     }
 
     [AttributeUsage(AttributeTargets.Parameter, Inherited = true)]
-    public class LoggerAttribute() : Attribute
+    public class AppIdAttribute : PropertyAttribute
     {
-
+        public override object Resolve(IContext<IActivity> context, ParameterInfo parameter) => context.AppId;
     }
 
     [AttributeUsage(AttributeTargets.Parameter, Inherited = true)]
-    public class ApiAttribute() : Attribute
+    public class LoggerAttribute : PropertyAttribute
     {
-
+        public override object Resolve(IContext<IActivity> context, ParameterInfo parameter) => context.Log;
     }
 
     [AttributeUsage(AttributeTargets.Parameter, Inherited = true)]
-    public class ActivityAttribute() : Attribute
+    public class ApiAttribute : PropertyAttribute
     {
-
+        public override object Resolve(IContext<IActivity> context, ParameterInfo parameter) => context.Api;
     }
 
     [AttributeUsage(AttributeTargets.Parameter, Inherited = true)]
-    public class RefAttribute() : Attribute
+    public class ActivityAttribute : PropertyAttribute
     {
-
+        public override object Resolve(IContext<IActivity> context, ParameterInfo parameter)
+        {
+            return context.Activity.ToType(parameter.ParameterType, null);
+        }
     }
 
     [AttributeUsage(AttributeTargets.Parameter, Inherited = true)]
-    public class UserGraphAttribute() : Attribute
+    public class RefAttribute : PropertyAttribute
     {
-
+        public override object Resolve(IContext<IActivity> context, ParameterInfo parameter) => context.Ref;
     }
 
     [AttributeUsage(AttributeTargets.Parameter, Inherited = true)]
-    public class ClientAttribute() : Attribute
+    public class UserGraphAttribute : PropertyAttribute
     {
-
+        public override object Resolve(IContext<IActivity> context, ParameterInfo parameter) => context.UserGraph;
     }
 
     [AttributeUsage(AttributeTargets.Parameter, Inherited = true)]
-    public class IsSignedInAttribute() : Attribute
+    public class ClientAttribute : PropertyAttribute
     {
+        public override object Resolve(IContext<IActivity> context, ParameterInfo parameter) => new Client(context);
+    }
 
+    [AttributeUsage(AttributeTargets.Parameter, Inherited = true)]
+    public class IsSignedInAttribute : PropertyAttribute
+    {
+        public override object Resolve(IContext<IActivity> context, ParameterInfo parameter) => context.IsSignedIn;
+    }
+
+    [AttributeUsage(AttributeTargets.Parameter, Inherited = true)]
+    public class NextAttribute : PropertyAttribute
+    {
+        public override object Resolve(IContext<IActivity> context, ParameterInfo parameter)
+        {
+            return new Next(context.Next);
+        }
     }
 
     /// <summary>
@@ -104,4 +130,9 @@ public partial interface IContext
         /// <param name="connectionName">the connection name</param>
         public Task SignOut(string? connectionName = null) => context.SignOut(connectionName);
     }
+
+    /// <summary>
+    /// calls the next handler in the route chain
+    /// </summary>
+    public delegate Task<object?> Next();
 }

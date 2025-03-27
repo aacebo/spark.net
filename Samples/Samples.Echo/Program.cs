@@ -1,6 +1,5 @@
 using Microsoft.Spark.Api.Activities;
 using Microsoft.Spark.Apps;
-using Microsoft.Spark.Apps.Events;
 using Microsoft.Spark.Apps.Routing;
 using Microsoft.Spark.AspNetCore;
 
@@ -26,16 +25,17 @@ public static partial class Program
         app.Run();
     }
 
+    [Activity]
+    public static async Task OnActivity(IContext<Activity> context, [IContext.Next] IContext.Next next)
+    {
+        context.Log.Info(context.AppId);
+        await next();
+    }
+
     [Message(log: IContext.Property.Activity)]
     public static async Task OnMessage([IContext.Activity] MessageActivity activity, [IContext.Client] IContext.Client client)
     {
         await client.Typing();
         await client.Send($"you said '{activity.Text}'");
-    }
-
-    [ErrorEvent]
-    public static void OnEvent()
-    {
-
     }
 }

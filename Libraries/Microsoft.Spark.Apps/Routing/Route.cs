@@ -32,28 +32,11 @@ public class AttributeRoute : IRoute
 
         foreach (var param in Method.GetParameters())
         {
-            var appId = param.GetCustomAttribute<IContext.AppIdAttribute>();
-            var logger = param.GetCustomAttribute<IContext.LoggerAttribute>();
-            var api = param.GetCustomAttribute<IContext.ApiAttribute>();
-            var activity = param.GetCustomAttribute<IContext.ActivityAttribute>();
-            var reference = param.GetCustomAttribute<IContext.RefAttribute>();
-            var userGraph = param.GetCustomAttribute<IContext.UserGraphAttribute>();
-            var client = param.GetCustomAttribute<IContext.ClientAttribute>();
-            var isSignedIn = param.GetCustomAttribute<IContext.IsSignedInAttribute>();
+            var attribute = param.GetCustomAttribute<IContext.PropertyAttribute>();
             var generic = param.ParameterType.GenericTypeArguments.FirstOrDefault();
             var isContext = generic?.IsAssignableTo(Attr.Type) ?? false;
 
-            if (
-                appId == null &&
-                logger == null &&
-                api == null &&
-                activity == null &&
-                reference == null &&
-                userGraph == null &&
-                client == null &&
-                isSignedIn == null &&
-                !isContext
-            )
+            if (attribute == null && !isContext)
                 result.AddError(param.Name ?? "??", "type must be `IContext<TActivity>` or an `IContext` property attribute");
         }
 
@@ -66,24 +49,8 @@ public class AttributeRoute : IRoute
         var contextClient = new IContext.Client(context);
         var args = Method.GetParameters().Select(param =>
         {
-            var appId = param.GetCustomAttribute<IContext.AppIdAttribute>();
-            var logger = param.GetCustomAttribute<IContext.LoggerAttribute>();
-            var api = param.GetCustomAttribute<IContext.ApiAttribute>();
-            var activity = param.GetCustomAttribute<IContext.ActivityAttribute>();
-            var reference = param.GetCustomAttribute<IContext.RefAttribute>();
-            var userGraph = param.GetCustomAttribute<IContext.UserGraphAttribute>();
-            var client = param.GetCustomAttribute<IContext.ClientAttribute>();
-            var isSignedIn = param.GetCustomAttribute<IContext.IsSignedInAttribute>();
-
-            if (appId != null) return context.AppId;
-            if (logger != null) return context.Log;
-            if (api != null) return context.Api;
-            if (activity != null) return context.Activity.ToType(param.ParameterType, null);
-            if (reference != null) return context.Ref;
-            if (userGraph != null) return context.UserGraph;
-            if (client != null) return contextClient;
-            if (isSignedIn != null) return context.IsSignedIn;
-            return Attr.Coerce(context);
+            var attribute = param.GetCustomAttribute<IContext.PropertyAttribute>();
+            return attribute == null ? Attr.Coerce(context) : attribute.Resolve(context, param);
         });
 
         if (Attr.Log.HasFlag(IContext.Property.Context))
