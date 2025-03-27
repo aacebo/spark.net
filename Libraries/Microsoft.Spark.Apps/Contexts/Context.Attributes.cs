@@ -41,6 +41,12 @@ public partial interface IContext
     }
 
     [AttributeUsage(AttributeTargets.Parameter, Inherited = true)]
+    public class StorageAttribute : PropertyAttribute
+    {
+        public override object Resolve(IContext<IActivity> context, ParameterInfo parameter) => context.Storage;
+    }
+
+    [AttributeUsage(AttributeTargets.Parameter, Inherited = true)]
     public class ApiAttribute : PropertyAttribute
     {
         public override object Resolve(IContext<IActivity> context, ParameterInfo parameter) => context.Api;

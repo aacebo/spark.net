@@ -6,6 +6,7 @@ using Microsoft.Spark.Api.Activities;
 using Microsoft.Spark.Api.Clients;
 using Microsoft.Spark.Apps.Plugins;
 using Microsoft.Spark.Common.Logging;
+using Microsoft.Spark.Common.Storage;
 
 namespace Microsoft.Spark.Apps;
 
@@ -22,6 +23,11 @@ public partial interface IContext<TActivity> where TActivity : IActivity
     /// the app logger instance
     /// </summary>
     public ILogger Log { get; set; }
+
+    /// <summary>
+    /// the app storage instance
+    /// </summary>
+    public IStorage<string, object> Storage { get; set; }
 
     /// <summary>
     /// the api client
@@ -98,6 +104,7 @@ public partial class Context<TActivity> : IContext<TActivity> where TActivity : 
     public required ISender Sender { get; set; }
     public required string AppId { get; set; }
     public required ILogger Log { get; set; }
+    public required IStorage<string, object> Storage { get; set; }
     public required ApiClient Api { get; set; }
     public required TActivity Activity { get; set; }
     public required ConversationReference Ref { get; set; }
@@ -141,6 +148,7 @@ public partial class Context<TActivity> : IContext<TActivity> where TActivity : 
             Sender = Sender,
             AppId = AppId,
             Log = Log,
+            Storage = Storage,
             Api = Api,
             Activity = (TToActivity)Activity.ToType(typeof(TToActivity), null),
             Ref = Ref,

@@ -163,6 +163,7 @@ public partial class App
                 Sender = sender,
                 AppId = args.Token.AppId ?? Id ?? string.Empty,
                 Log = Logger.Child(path),
+                Storage = Storage,
                 Api = Api,
                 Activity = args.Activity,
                 Ref = reference,
