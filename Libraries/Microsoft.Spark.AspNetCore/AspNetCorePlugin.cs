@@ -15,7 +15,7 @@ using Microsoft.Spark.Common.Logging;
 namespace Microsoft.Spark.AspNetCore;
 
 [Plugin(name: "Microsoft.Spark.AspNetCore", version: "0.0.0")]
-public class AspNetCorePlugin : ISender
+public partial class AspNetCorePlugin : ISender
 {
     [AllowNull]
     [Dependency]
@@ -91,7 +91,14 @@ public class AspNetCorePlugin : ISender
 
     public IStreamer CreateStream(ConversationReference reference)
     {
-        throw new NotImplementedException();
+        return new Stream()
+        {
+            Send = async activity =>
+            {
+                var res = await Send(activity, reference);
+                return res;
+            }
+        };
     }
 
     internal async Task<IResult> OnMessage(HttpContext context)

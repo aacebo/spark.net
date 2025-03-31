@@ -158,9 +158,24 @@ public partial class App
                 return res;
             }
 
-            var context = new Context<IActivity>()
+            var stream = sender.CreateStream(reference);
+            stream.OnChunk += activity =>
             {
-                Sender = sender,
+                ActivitySentEvent(this, sender, new()
+                {
+                    Activity = activity,
+                    Bot = reference.Bot,
+                    ChannelId = reference.ChannelId,
+                    Conversation = reference.Conversation,
+                    ServiceUrl = reference.ServiceUrl,
+                    ActivityId = reference.ActivityId,
+                    Locale = reference.Locale,
+                    User = reference.User
+                });
+            };
+
+            var context = new Context<IActivity>(sender, stream)
+            {
                 AppId = args.Token.AppId ?? Id ?? string.Empty,
                 Log = Logger.Child(path),
                 Storage = Storage,

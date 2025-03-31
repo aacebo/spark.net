@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 
+using Microsoft.Spark.Api.Entities;
 using Microsoft.Spark.Common;
 
 namespace Microsoft.Spark.Api.Activities;
@@ -23,5 +24,17 @@ public class TypingActivity : Activity
     public TypingActivity(string text) : base(ActivityType.Typing)
     {
         Text = text;
+    }
+
+    public TypingActivity AddStreamUpdate(int sequence = 0)
+    {
+        AddEntity(new StreamInfoEntity()
+        {
+            StreamId = Id,
+            StreamType = StreamType.Streaming,
+            StreamSequence = sequence
+        });
+
+        return this;
     }
 }

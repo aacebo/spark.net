@@ -71,14 +71,35 @@ public class MessageActivity : Activity
         Text = text;
     }
 
-    public MessageActivity AddAttachment(Attachment value)
+    public override MessageActivity WithId(string value) => (MessageActivity)base.WithId(value);
+    public override MessageActivity WithReplyToId(string value) => (MessageActivity)base.WithReplyToId(value);
+    public override MessageActivity WithChannelId(ChannelId value) => (MessageActivity)base.WithChannelId(value);
+    public override MessageActivity WithFrom(Account value) => (MessageActivity)base.WithFrom(value);
+    public override MessageActivity WithConversation(Conversation value) => (MessageActivity)base.WithConversation(value);
+    public override MessageActivity WithRelatesTo(ConversationReference value) => (MessageActivity)base.WithRelatesTo(value);
+    public override MessageActivity WithRecipient(Account value) => (MessageActivity)base.WithRecipient(value);
+    public override MessageActivity WithServiceUrl(string value) => (MessageActivity)base.WithServiceUrl(value);
+    public override MessageActivity WithTimestamp(DateTime value) => (MessageActivity)base.WithTimestamp(value);
+    public override MessageActivity WithLocale(string value) => (MessageActivity)base.WithLocale(value);
+    public override MessageActivity WithLocalTimestamp(DateTime value) => (MessageActivity)base.WithLocalTimestamp(value);
+    public override MessageActivity WithData(ChannelData value) => (MessageActivity)base.WithData(value);
+    public override MessageActivity WithData(string key, object? value) => (MessageActivity)base.WithData(key, value);
+    public override MessageActivity WithAppId(string value) => (MessageActivity)base.WithAppId(value);
+    public override MessageActivity AddEntity(params IEntity[] entities) => (MessageActivity)base.AddEntity(entities);
+    public override MessageActivity AddAIGenerated() => (MessageActivity)base.AddAIGenerated();
+    public override MessageActivity AddSensitivityLabel(string name, string? description = null, DefinedTerm? pattern = null) => (MessageActivity)base.AddSensitivityLabel(name, description, pattern);
+    public override MessageActivity AddFeedback(bool value = true) => (MessageActivity)base.AddFeedback(value);
+    public override MessageActivity AddCitation(int position, CitationAppearance appearance) => (MessageActivity)base.AddCitation(position, appearance);
+
+    public MessageActivity AddAttachment(params Attachment[] value)
     {
-        if (Attachments == null)
+        Attachments ??= [];
+
+        foreach (var attachment in value)
         {
-            Attachments = [];
+            Attachments.Add(attachment);
         }
 
-        Attachments.Add(value);
         return this;
     }
 
@@ -104,5 +125,26 @@ public class MessageActivity : Activity
             Mentioned = account,
             Text = $"<at>{account.Name}</at>"
         });
+    }
+
+    public MessageActivity AddStreamFinal()
+    {
+        AddEntity(new StreamInfoEntity()
+        {
+            StreamId = Id,
+            StreamType = StreamType.Final
+        });
+
+        return this;
+    }
+
+    public bool IsRecipientMentioned()
+    {
+        return (Entities ?? []).Any(e => e is MentionEntity mention && mention.Mentioned.Id == Recipient.Id);
+    }
+
+    public MentionEntity? GetAccountMention(string accountId)
+    {
+        return (MentionEntity?)(Entities ?? []).FirstOrDefault(e => e is MentionEntity mention && mention.Mentioned.Id == accountId);
     }
 }

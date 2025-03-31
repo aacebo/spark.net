@@ -8,6 +8,11 @@ namespace Microsoft.Spark.Apps.Plugins;
 public interface IStreamer
 {
     /// <summary>
+    /// event emitted on each chunk send
+    /// </summary>
+    public event OnChunkHandler OnChunk;
+
+    /// <summary>
     /// emit an activity
     /// </summary>
     /// <param name="activity">the activity</param>
@@ -28,5 +33,10 @@ public interface IStreamer
     /// <summary>
     /// close the stream
     /// </summary>
-    public Task Close();
+    public Task<MessageActivity> Close();
+
+    /// <summary>
+    /// handler called on each chunk send
+    /// </summary>
+    public delegate void OnChunkHandler(IActivity activity);
 }

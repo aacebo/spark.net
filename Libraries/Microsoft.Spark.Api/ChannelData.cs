@@ -68,6 +68,25 @@ public class ChannelData
     /// </summary>
     [JsonExtensionData]
     public IDictionary<string, object?> Properties { get; set; } = new Dictionary<string, object?>();
+
+    /// <summary>
+    /// merge two channel data objects
+    /// </summary>
+    /// <param name="from">the object to copy from</param>
+    public ChannelData Merge(ChannelData from)
+    {
+        foreach (var property in GetType().GetProperties().Where(p => p.CanRead && p.CanWrite))
+        {
+            var value = property.GetValue(from, null);
+
+            if (value != null)
+            {
+                property.SetValue(this, value, null);
+            }
+        }
+
+        return this;
+    }
 }
 
 /// <summary>

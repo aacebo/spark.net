@@ -45,6 +45,11 @@ public partial interface IContext<TActivity> where TActivity : IActivity
     public ConversationReference Ref { get; set; }
 
     /// <summary>
+    /// the stream instance
+    /// </summary>
+    public IStreamer Stream { get; }
+
+    /// <summary>
     /// the users graph client
     /// </summary>
     public Graph.GraphServiceClient UserGraph { get; set; }
@@ -99,9 +104,11 @@ public partial interface IContext<TActivity> where TActivity : IActivity
     public IContext<TToActivity> ToActivityType<TToActivity>() where TToActivity : IActivity;
 }
 
-public partial class Context<TActivity> : IContext<TActivity> where TActivity : IActivity
+public partial class Context<TActivity>(ISender sender, IStreamer stream) : IContext<TActivity> where TActivity : IActivity
 {
-    public required ISender Sender { get; set; }
+    public ISender Sender { get; set; } = sender;
+    public IStreamer Stream { get; set; } = stream;
+
     public required string AppId { get; set; }
     public required ILogger Log { get; set; }
     public required IStorage<string, object> Storage { get; set; }
@@ -143,7 +150,7 @@ public partial class Context<TActivity> : IContext<TActivity> where TActivity : 
     public IContext<IActivity> ToActivityType() => ToActivityType<IActivity>();
     public IContext<TToActivity> ToActivityType<TToActivity>() where TToActivity : IActivity
     {
-        return new Context<TToActivity>()
+        return new Context<TToActivity>(Sender, Stream)
         {
             Sender = Sender,
             AppId = AppId,
