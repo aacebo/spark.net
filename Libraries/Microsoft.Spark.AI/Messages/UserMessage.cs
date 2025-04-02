@@ -23,8 +23,9 @@ public class UserMessage : IMessage
 
     [JsonPropertyName("content")]
     [JsonPropertyOrder(1)]
-    public required object Content { get; set; }
+    public object Content { get; set; }
 
+    [JsonConstructor]
     public UserMessage(string content)
     {
         Content = content;
