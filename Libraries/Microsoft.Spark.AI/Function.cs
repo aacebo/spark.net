@@ -27,7 +27,7 @@ public interface IFunction<T>
     /// the Json Schema representing what
     /// parameters the function accepts
     /// </summary>
-    public object? Parameters { get; }
+    public ISchema? Parameters { get; }
 
     /// <summary>
     /// called by the model to invoke your function
@@ -51,7 +51,7 @@ public class Function : Function<object>
     {
     }
 
-    public Function(string name, string description, object parameters, Func<object?, Task<object?>> handler) : base(name, description, parameters, handler)
+    public Function(string name, string description, ISchema parameters, Func<object?, Task<object?>> handler) : base(name, description, parameters, handler)
     {
     }
 }
@@ -64,7 +64,7 @@ public class Function<T> : IFunction<T>
 {
     public string Name { get; set; }
     public string Description { get; set; }
-    public object? Parameters { get; set; }
+    public ISchema? Parameters { get; set; }
     public Func<T?, Task<object?>> Handler { get; set; }
 
     public Function(string name, string description, Func<T?, Task<object?>> handler)
@@ -74,7 +74,7 @@ public class Function<T> : IFunction<T>
         Handler = handler;
     }
 
-    public Function(string name, string description, object parameters, Func<T?, Task<object?>> handler)
+    public Function(string name, string description, ISchema parameters, Func<T?, Task<object?>> handler)
     {
         Name = name;
         Description = description;

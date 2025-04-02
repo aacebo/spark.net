@@ -21,7 +21,7 @@ public class StringSchema : AnySchema
 
     [JsonPropertyName("enum")]
     [JsonPropertyOrder(6)]
-    public new string?[]? Enum { get; set; }
+    public string?[]? Enum { get; set; }
 
     [JsonPropertyName("pattern")]
     [JsonPropertyOrder(7)]
@@ -44,7 +44,12 @@ public class StringSchema : AnySchema
     public override StringSchema WithId(string value) => (StringSchema)base.WithId(value);
     public override StringSchema WithTitle(string value) => (StringSchema)base.WithTitle(value);
     public override StringSchema WithDescription(string value) => (StringSchema)base.WithDescription(value);
-    public StringSchema WithEnum(params string?[] value) => (StringSchema)base.WithEnum(value);
+
+    public StringSchema WithEnum(params string?[] value)
+    {
+        Enum = value;
+        return this;
+    }
 
     public StringSchema WithPattern(string value)
     {

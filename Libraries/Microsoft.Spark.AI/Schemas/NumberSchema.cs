@@ -21,7 +21,7 @@ public class NumberSchema : AnySchema
 
     [JsonPropertyName("enum")]
     [JsonPropertyOrder(6)]
-    public new float?[]? Enum { get; set; }
+    public float?[]? Enum { get; set; }
 
     [JsonPropertyName("min")]
     [JsonPropertyOrder(7)]
@@ -40,7 +40,12 @@ public class NumberSchema : AnySchema
     public override NumberSchema WithId(string value) => (NumberSchema)base.WithId(value);
     public override NumberSchema WithTitle(string value) => (NumberSchema)base.WithTitle(value);
     public override NumberSchema WithDescription(string value) => (NumberSchema)base.WithDescription(value);
-    public NumberSchema WithEnum(params float?[] value) => (NumberSchema)base.WithEnum(value);
+
+    public NumberSchema WithEnum(params float?[] value)
+    {
+        Enum = value;
+        return this;
+    }
 
     public NumberSchema WithMin(float value)
     {

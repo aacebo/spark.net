@@ -21,7 +21,7 @@ public class IntSchema : AnySchema
 
     [JsonPropertyName("enum")]
     [JsonPropertyOrder(6)]
-    public new int?[]? Enum { get; set; }
+    public int?[]? Enum { get; set; }
 
     [JsonPropertyName("min")]
     [JsonPropertyOrder(7)]
@@ -40,7 +40,12 @@ public class IntSchema : AnySchema
     public override IntSchema WithId(string value) => (IntSchema)base.WithId(value);
     public override IntSchema WithTitle(string value) => (IntSchema)base.WithTitle(value);
     public override IntSchema WithDescription(string value) => (IntSchema)base.WithDescription(value);
-    public IntSchema WithEnum(params int?[] value) => (IntSchema)base.WithEnum(value);
+
+    public IntSchema WithEnum(params int?[] value)
+    {
+        Enum = value;
+        return this;
+    }
 
     public IntSchema WithMin(int value)
     {

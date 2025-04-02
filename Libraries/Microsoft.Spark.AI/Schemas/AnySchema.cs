@@ -40,10 +40,6 @@ public class AnySchema : ISchema
     [JsonPropertyOrder(5)]
     public virtual SchemaType? Type => null;
 
-    [JsonPropertyName("enum")]
-    [JsonPropertyOrder(6)]
-    public object?[]? Enum { get; set; }
-
     public virtual AnySchema WithSchema(string value)
     {
         Schema = value;
@@ -71,12 +67,6 @@ public class AnySchema : ISchema
     public virtual AnySchema WithDescription(string value)
     {
         Description = value;
-        return this;
-    }
-
-    public virtual AnySchema WithEnum(params object?[] value)
-    {
-        Enum = value;
         return this;
     }
 

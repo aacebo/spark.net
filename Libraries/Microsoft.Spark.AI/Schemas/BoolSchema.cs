@@ -21,12 +21,17 @@ public class BoolSchema : AnySchema
 
     [JsonPropertyName("enum")]
     [JsonPropertyOrder(6)]
-    public new bool?[]? Enum { get; set; }
+    public bool?[]? Enum { get; set; }
 
     public override BoolSchema WithSchema(string value) => (BoolSchema)base.WithSchema(value);
     public override BoolSchema WithRef(string value) => (BoolSchema)base.WithRef(value);
     public override BoolSchema WithId(string value) => (BoolSchema)base.WithId(value);
     public override BoolSchema WithTitle(string value) => (BoolSchema)base.WithTitle(value);
     public override BoolSchema WithDescription(string value) => (BoolSchema)base.WithDescription(value);
-    public BoolSchema WithEnum(params bool?[] value) => (BoolSchema)base.WithEnum(value);
+
+    public BoolSchema WithEnum(params bool?[] value)
+    {
+        Enum = value;
+        return this;
+    }
 }

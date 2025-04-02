@@ -1,3 +1,4 @@
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace Microsoft.Spark.AI.Messages;
@@ -33,5 +34,15 @@ public class FunctionCall
 
     [JsonPropertyName("arguments")]
     [JsonPropertyOrder(2)]
-    public object? Arguments { get; set; }
+    public string? Arguments { get; set; }
+
+    public IDictionary<string, object?>? Parse()
+    {
+        return JsonSerializer.Deserialize<Dictionary<string, object?>>(Arguments ?? "{}");
+    }
+
+    public T? Parse<T>()
+    {
+        return JsonSerializer.Deserialize<T>(Arguments ?? "{}");
+    }
 }

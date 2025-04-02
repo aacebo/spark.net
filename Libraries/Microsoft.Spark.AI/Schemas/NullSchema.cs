@@ -24,5 +24,4 @@ public class NullSchema : AnySchema
     public override NullSchema WithId(string value) => (NullSchema)base.WithId(value);
     public override NullSchema WithTitle(string value) => (NullSchema)base.WithTitle(value);
     public override NullSchema WithDescription(string value) => (NullSchema)base.WithDescription(value);
-    public override NullSchema WithEnum(params object?[] value) => (NullSchema)base.WithEnum(value);
 }
