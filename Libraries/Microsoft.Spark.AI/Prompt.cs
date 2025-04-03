@@ -6,7 +6,7 @@ namespace Microsoft.Spark.AI;
 /// abstractions that differ with the prompts supported
 /// media types
 /// </summary>
-public interface IPrompt
+public interface IPrompt<TOptions>
 {
     /// <summary>
     /// the prompt name
@@ -19,9 +19,9 @@ public interface IPrompt
     public string? Description { get; }
 
     /// <summary>
-    /// invoke the prompt
+    /// send a message via the prompt
     /// </summary>
     /// <param name="message">the message to send to the model</param>
     /// <returns>the models response</returns>
-    public Task<IMessage> Invoke(IMessage message);
+    public Task<IMessage> Send(IMessage message, TOptions? options);
 }

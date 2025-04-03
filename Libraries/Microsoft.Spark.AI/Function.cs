@@ -4,13 +4,7 @@ namespace Microsoft.Spark.AI;
 /// defines a block of code that
 /// can be called by a model
 /// </summary>
-public interface IFunction : IFunction<object>;
-
-/// <summary>
-/// defines a block of code that
-/// can be called by a model
-/// </summary>
-public interface IFunction<T>
+public interface IFunction
 {
     /// <summary>
     /// the unique name
@@ -21,7 +15,7 @@ public interface IFunction<T>
     /// a description of what the function
     /// should be used for
     /// </summary>
-    public string Description { get; }
+    public string? Description { get; }
 
     /// <summary>
     /// the Json Schema representing what
@@ -38,7 +32,25 @@ public interface IFunction<T>
     /// if it is not already a string. It then gets returned to the model
     /// for processing.
     /// </returns>
-    public Task<object?> Invoke(T? args);
+    public Task<object?> Invoke(object? args);
+}
+
+/// <summary>
+/// defines a block of code that
+/// can be called by a model
+/// </summary>
+public interface IFunction<T> : IFunction
+{
+    /// <summary>
+    /// called by the model to invoke your function
+    /// </summary>
+    /// <param name="args">the arguments</param>
+    /// <returns>
+    /// your functions response, which will be serialized to Json
+    /// if it is not already a string. It then gets returned to the model
+    /// for processing.
+    /// </returns>
+    public Task<object?> Invoke(T args);
 }
 
 /// <summary>
@@ -47,11 +59,11 @@ public interface IFunction<T>
 /// </summary>
 public class Function : Function<object>
 {
-    public Function(string name, string description, Func<object?, Task<object?>> handler) : base(name, description, handler)
+    public Function(string name, string? description, Func<object?, Task<object?>> handler) : base(name, description, handler)
     {
     }
 
-    public Function(string name, string description, ISchema parameters, Func<object?, Task<object?>> handler) : base(name, description, parameters, handler)
+    public Function(string name, string? description, ISchema parameters, Func<object?, Task<object?>> handler) : base(name, description, parameters, handler)
     {
     }
 }
@@ -63,18 +75,18 @@ public class Function : Function<object>
 public class Function<T> : IFunction<T>
 {
     public string Name { get; set; }
-    public string Description { get; set; }
+    public string? Description { get; set; }
     public ISchema? Parameters { get; set; }
-    public Func<T?, Task<object?>> Handler { get; set; }
+    public Func<T, Task<object?>> Handler { get; set; }
 
-    public Function(string name, string description, Func<T?, Task<object?>> handler)
+    public Function(string name, string? description, Func<T, Task<object?>> handler)
     {
         Name = name;
         Description = description;
         Handler = handler;
     }
 
-    public Function(string name, string description, ISchema parameters, Func<T?, Task<object?>> handler)
+    public Function(string name, string? description, ISchema parameters, Func<T, Task<object?>> handler)
     {
         Name = name;
         Description = description;
@@ -82,8 +94,6 @@ public class Function<T> : IFunction<T>
         Handler = handler;
     }
 
-    public Task<object?> Invoke(T? args)
-    {
-        return Handler(args);
-    }
+    public Task<object?> Invoke(T args) => Handler(args);
+    public Task<object?> Invoke(object? args) => Handler((T?)args ?? throw new InvalidDataException());
 }

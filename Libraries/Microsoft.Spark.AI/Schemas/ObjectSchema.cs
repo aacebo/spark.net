@@ -2,6 +2,14 @@ using System.Text.Json.Serialization;
 
 namespace Microsoft.Spark.AI;
 
+public static partial class Schemas
+{
+    /// <summary>
+    /// a schema that validates objects
+    /// </summary>
+    public static ObjectSchema Object() => new();
+}
+
 /// <summary>
 /// a schema that validates objects
 /// </summary>
