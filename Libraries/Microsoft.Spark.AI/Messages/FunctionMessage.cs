@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace Microsoft.Spark.AI.Messages;
 
-public class FunctionMessage : IMessage
+public class FunctionMessage : IMessage<string?>
 {
     [JsonPropertyName("role")]
     [JsonPropertyOrder(0)]

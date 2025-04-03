@@ -3,7 +3,14 @@ using System.Text.Json.Serialization;
 
 namespace Microsoft.Spark.AI.Messages;
 
-public class ModelMessage : IMessage
+public class ModelMessage(object? content) : ModelMessage<object?>(content)
+{
+    public static ModelMessage<string> Text(string content) => new(content);
+    public static ModelMessage<IEnumerable<IContent>> Text(IEnumerable<IContent> content) => new(content);
+    public static ModelMessage<Stream> Media(Stream content) => new(content);
+}
+
+public class ModelMessage<T> : IMessage<T>
 {
     [JsonPropertyName("role")]
     [JsonPropertyOrder(0)]
@@ -11,11 +18,18 @@ public class ModelMessage : IMessage
 
     [JsonPropertyName("content")]
     [JsonPropertyOrder(1)]
-    public string? Content { get; set; }
+    public T Content { get; set; }
 
     [JsonPropertyName("function_calls")]
     [JsonPropertyOrder(2)]
     public IList<FunctionCall>? FunctionCalls { get; set; }
+
+    [JsonConstructor]
+    public ModelMessage(T content, IList<FunctionCall>? functionCalls = null)
+    {
+        Content = content;
+        FunctionCalls = functionCalls;
+    }
 }
 
 /// <summary>

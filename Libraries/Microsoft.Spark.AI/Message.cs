@@ -8,13 +8,24 @@ namespace Microsoft.Spark.AI;
 /// some message sent to or from the LLM
 /// via a Model
 /// </summary>
-public interface IMessage
+public interface IMessage : IMessage<object?>;
+
+/// <summary>
+/// some message sent to or from the LLM
+/// via a Model
+/// </summary>
+public interface IMessage<T>
 {
     /// <summary>
     /// the role of the message, ie
     /// who sent the message
     /// </summary>
     public Role Role { get; }
+
+    /// <summary>
+    /// the content of the message
+    /// </summary>
+    public T Content { get; }
 }
 
 [JsonConverter(typeof(JsonConverter<Role>))]

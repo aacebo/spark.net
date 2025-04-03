@@ -7,5 +7,15 @@
 /// </summary>
 public interface IModel
 {
+    /// <summary>
+    /// the model name
+    /// </summary>
+    public string Name { get; }
 
+    /// <summary>
+    /// send a message to the model
+    /// </summary>
+    /// <param name="message">the message to send</param>
+    /// <returns>the models response</returns>
+    public Task<IMessage> Send(IMessage message);
 }

@@ -4,6 +4,9 @@ using Microsoft.Spark.Common;
 
 namespace Microsoft.Spark.AI;
 
+/// <summary>
+/// Any Json Schema
+/// </summary>
 public interface ISchema
 {
     /// <summary>

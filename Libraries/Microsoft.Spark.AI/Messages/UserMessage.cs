@@ -15,7 +15,14 @@ public interface IContent
     public ContentType Type { get; }
 }
 
-public class UserMessage : IMessage
+public class UserMessage(object? content) : UserMessage<object?>(content)
+{
+    public static UserMessage<string> Text(string content) => new(content);
+    public static UserMessage<IEnumerable<IContent>> Text(IEnumerable<IContent> content) => new(content);
+    public static UserMessage<Stream> Media(Stream content) => new(content);
+}
+
+public class UserMessage<T> : IMessage<T>
 {
     [JsonPropertyName("role")]
     [JsonPropertyOrder(0)]
@@ -23,15 +30,10 @@ public class UserMessage : IMessage
 
     [JsonPropertyName("content")]
     [JsonPropertyOrder(1)]
-    public object Content { get; set; }
+    public T Content { get; set; }
 
     [JsonConstructor]
-    public UserMessage(string content)
-    {
-        Content = content;
-    }
-
-    public UserMessage(IEnumerable<IContent> content)
+    public UserMessage(T content)
     {
         Content = content;
     }
@@ -48,7 +50,7 @@ public class UserMessage : IMessage
             return asString;
         }
 
-        return Content.ToString() ?? throw new InvalidCastException();
+        return Content?.ToString() ?? throw new InvalidCastException();
     }
 }
 
