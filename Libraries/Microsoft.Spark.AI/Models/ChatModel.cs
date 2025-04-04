@@ -11,20 +11,15 @@ public interface IChatModel<TOptions> : IModel<TOptions>
     /// <summary>
     /// send a message to the model
     /// </summary>
-    /// <param name="message">the chat request</param>
+    /// <param name="message">the message to send</param>
     /// <returns>the models response</returns>
-    public Task<ModelMessage<string>> Send(Request request);
+    public Task<ModelMessage<string>> Send(IMessage message, Request request);
 
     /// <summary>
     /// options to send with the message
     /// </summary>
     public class Request
     {
-        /// <summary>
-        /// the message to send to the model
-        /// </summary>
-        public IMessage Input { get; set; }
-
         /// <summary>
         /// the initial prompt message that defines
         /// model behavior
