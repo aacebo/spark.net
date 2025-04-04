@@ -17,5 +17,5 @@ public interface IModel<TOptions>
     /// </summary>
     /// <param name="message">the message to send</param>
     /// <returns>the models response</returns>
-    public Task<IMessage> Send(IMessage message, TOptions? options);
+    public Task<IMessage> Send(IMessage message, TOptions? options = default);
 }
