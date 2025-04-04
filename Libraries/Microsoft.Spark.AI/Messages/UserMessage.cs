@@ -4,17 +4,6 @@ using Microsoft.Spark.Common;
 
 namespace Microsoft.Spark.AI.Messages;
 
-/// <summary>
-/// represents some message content
-/// </summary>
-public interface IContent
-{
-    /// <summary>
-    /// the type of content
-    /// </summary>
-    public ContentType Type { get; }
-}
-
 public class UserMessage(object? content) : UserMessage<object?>(content)
 {
     public static UserMessage<string> Text(string content) => new(content);
@@ -22,7 +11,7 @@ public class UserMessage(object? content) : UserMessage<object?>(content)
     public static UserMessage<Stream> Media(Stream content) => new(content);
 }
 
-public class UserMessage<T> : IMessage<T>
+public class UserMessage<T> : IMessage
 {
     [JsonPropertyName("role")]
     [JsonPropertyOrder(0)]
@@ -62,6 +51,17 @@ public class ContentType(string value) : StringEnum(value)
 
     public static readonly ContentType ImageUrl = new("image_url");
     public bool IsImageUrl => ImageUrl.Equals(Value);
+}
+
+/// <summary>
+/// represents some message content
+/// </summary>
+public interface IContent
+{
+    /// <summary>
+    /// the type of content
+    /// </summary>
+    public ContentType Type { get; }
 }
 
 public class TextContent : IContent

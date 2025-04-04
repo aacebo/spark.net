@@ -28,7 +28,7 @@ public partial class ChatPrompt<TOptions>
             required: true
         );
 
-        Functions[prompt.Name] = new Function<Args>(
+        Functions.Add(new Function<Args>(
             prompt.Name,
             prompt.Description,
             schema,
@@ -36,8 +36,8 @@ public partial class ChatPrompt<TOptions>
             {
                 var res = await prompt.Send(args.Text);
                 return res.Content;
-            }  
-        );
+            }
+        ));
 
         return this;
     }

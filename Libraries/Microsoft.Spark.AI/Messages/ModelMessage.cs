@@ -10,7 +10,7 @@ public class ModelMessage(object? content) : ModelMessage<object?>(content)
     public static ModelMessage<Stream> Media(Stream content) => new(content);
 }
 
-public class ModelMessage<T> : IMessage<T>
+public class ModelMessage<T> : IMessage
 {
     [JsonPropertyName("role")]
     [JsonPropertyOrder(0)]

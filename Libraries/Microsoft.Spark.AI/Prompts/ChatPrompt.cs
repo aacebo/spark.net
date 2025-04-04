@@ -57,18 +57,19 @@ public partial class ChatPrompt<TOptions> : IChatPrompt<TOptions>
     public string Name { get; private set; }
     public string Description { get; private set; }
     public IList<IMessage> Messages { get; private set; }
-    public IDictionary<string, IFunction> Functions { get; private set; }
+    public FunctionCollection Functions { get; private set; }
 
     protected IChatModel<TOptions> Model { get; }
     protected ITemplate? Template { get; }
 
-    public ChatPrompt(Options options)
+    public ChatPrompt(IChatModel<TOptions> model, Options? options = null)
     {
+        options ??= new();
         Name = options.Name ?? "chat";
         Description = options.Description ?? "an agent you can chat with";
-        Model = options.Model;
+        Model = model;
         Template = options.Instructions;
         Messages = options.Messages ?? [];
-        Functions = new Dictionary<string, IFunction>();
+        Functions = new();
     }
 }

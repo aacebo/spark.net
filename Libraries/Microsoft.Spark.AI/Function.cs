@@ -22,35 +22,6 @@ public interface IFunction
     /// parameters the function accepts
     /// </summary>
     public ISchema? Parameters { get; }
-
-    /// <summary>
-    /// called by the model to invoke your function
-    /// </summary>
-    /// <param name="args">the arguments</param>
-    /// <returns>
-    /// your functions response, which will be serialized to Json
-    /// if it is not already a string. It then gets returned to the model
-    /// for processing.
-    /// </returns>
-    public Task<object?> Invoke(object? args);
-}
-
-/// <summary>
-/// defines a block of code that
-/// can be called by a model
-/// </summary>
-public interface IFunction<T> : IFunction
-{
-    /// <summary>
-    /// called by the model to invoke your function
-    /// </summary>
-    /// <param name="args">the arguments</param>
-    /// <returns>
-    /// your functions response, which will be serialized to Json
-    /// if it is not already a string. It then gets returned to the model
-    /// for processing.
-    /// </returns>
-    public Task<object?> Invoke(T args);
 }
 
 /// <summary>
@@ -72,12 +43,13 @@ public class Function : Function<object>
 /// defines a block of code that
 /// can be called by a model
 /// </summary>
-public class Function<T> : IFunction<T>
+public class Function<T> : IFunction
 {
     public string Name { get; set; }
     public string? Description { get; set; }
     public ISchema? Parameters { get; set; }
-    public Func<T, Task<object?>> Handler { get; set; }
+
+    internal Func<T, Task<object?>> Handler { get; set; }
 
     public Function(string name, string? description, Func<T, Task<object?>> handler)
     {
@@ -94,6 +66,6 @@ public class Function<T> : IFunction<T>
         Handler = handler;
     }
 
-    public Task<object?> Invoke(T args) => Handler(args);
-    public Task<object?> Invoke(object? args) => Handler((T?)args ?? throw new InvalidDataException());
+    internal Task<object?> Invoke(T args) => Handler(args);
+    internal Task<object?> Invoke(object? args) => Handler((T?)args ?? throw new InvalidDataException());
 }
