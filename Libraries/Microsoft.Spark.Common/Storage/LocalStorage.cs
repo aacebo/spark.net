@@ -41,9 +41,21 @@ public class LocalStorage<TValue> : IStorage<string, TValue>
         return _store.GetValueOrDefault(key);
     }
 
+    public T? Get<T>(string key) where T : TValue
+    {
+        var value = Get(key);
+        return (T?)value;
+    }
+
     public Task<TValue?> GetAsync(string key)
     {
         return Task.FromResult(Get(key));
+    }
+
+    public async Task<T?> GetAsync<T>(string key) where T : TValue
+    {
+        var value = await GetAsync(key);
+        return (T?)value;
     }
 
     public void Set(string key, TValue value)

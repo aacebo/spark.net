@@ -43,7 +43,22 @@ public interface IChatPrompt<TOptions> : IPrompt<TOptions>
     /// </summary>
     public class RequestOptions
     {
+        /// <summary>
+        /// the conversation history
+        /// </summary>
+        public IList<IMessage>? Messages { get; set; }
 
+        /// <summary>
+        /// the model request options
+        /// </summary>
+        public TOptions? Request { get; set; }
+
+        /// <summary>
+        /// the handler called when a stream chunk is
+        /// emitted by the model.
+        /// If not null, streaming is enabled.
+        /// </summary>
+        public Func<string, Task>? OnChunk { get; set; }
     }
 }
 
@@ -62,7 +77,7 @@ public partial class ChatPrompt<TOptions> : IChatPrompt<TOptions>
     protected IChatModel<TOptions> Model { get; }
     protected ITemplate? Template { get; }
 
-    public ChatPrompt(IChatModel<TOptions> model, Options? options = null)
+    public ChatPrompt(IChatModel<TOptions> model, ChatPromptOptions? options = null)
     {
         options ??= new();
         Name = options.Name ?? "chat";

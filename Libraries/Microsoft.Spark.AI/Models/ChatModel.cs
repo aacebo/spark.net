@@ -13,59 +13,69 @@ public interface IChatModel<TOptions> : IModel<TOptions>
     /// </summary>
     /// <param name="message">the message to send</param>
     /// <returns>the models response</returns>
-    public Task<ModelMessage<string>> Send(IMessage message, Request request);
+    public Task<ModelMessage<string>> Send(IMessage message, ChatModelOptions<TOptions> options);
+}
+
+/// <summary>
+/// options to send with the message
+/// </summary>
+public class ChatModelOptions<TOptions>
+{
+    /// <summary>
+    /// the initial prompt message that defines
+    /// model behavior
+    /// </summary>
+    public DeveloperMessage? Prompt { get; set; }
 
     /// <summary>
-    /// options to send with the message
+    /// the conversation history
     /// </summary>
-    public class Request
+    public IList<IMessage>? Messages { get; set; }
+
+    /// <summary>
+    /// the registered functions that can be
+    /// called
+    /// </summary>
+    public required IList<IFunction> Functions { get; set; }
+
+    /// <summary>
+    /// the request options defined by the model
+    /// </summary>
+    public TOptions? Options { get; set; }
+
+    /// <summary>
+    /// the handler used to invoke functions
+    /// </summary>
+    internal Func<string, object?, Task<object?>> OnInvoke;
+
+    /// <summary>
+    /// the handler used to emit string chunks
+    /// </summary>
+    internal Func<string, Task> OnChunk;
+
+    public ChatModelOptions(Func<string, object?, Task<object?>> onInvoke, Func<string, Task> onChunk)
     {
-        /// <summary>
-        /// the initial prompt message that defines
-        /// model behavior
-        /// </summary>
-        public DeveloperMessage? Prompt { get; set; }
+        OnInvoke = onInvoke;
+        OnChunk = onChunk;
+    }
 
-        /// <summary>
-        /// the conversation history
-        /// </summary>
-        public IList<IMessage>? Messages { get; set; }
+    /// <summary>
+    /// invoke a function
+    /// </summary>
+    /// <param name="name">the function name</param>
+    /// <param name="args">the function args</param>
+    /// <returns>the function response</returns>
+    public Task<object?> Invoke(string name, object? args)
+    {
+        return OnInvoke(name, args);
+    }
 
-        /// <summary>
-        /// the registered functions that can be
-        /// called
-        /// </summary>
-        public required IList<IFunction> Functions { get; set; }
-
-        /// <summary>
-        /// the request options defined by the model
-        /// </summary>
-        public TOptions? Options { get; set; }
-
-        /// <summary>
-        /// the handler used to invoke functions
-        /// </summary>
-        internal Func<string, object?, Task<object?>> InvokeHandler { get; set; }
-
-        /// <summary>
-        /// the handler used to emit string chunks
-        /// </summary>
-        internal Action<string> ChunkHandler { get; set; }
-
-        /// <summary>
-        /// invoke a function
-        /// </summary>
-        /// <param name="name">the function name</param>
-        /// <param name="args">the function args</param>
-        /// <returns>the function response</returns>
-        public Task<object?> Invoke(string name, object? args)
-        {
-            return InvokeHandler(name, args);
-        }
-
-        public void Emit(string chunk)
-        {
-            ChunkHandler(chunk);
-        }
+    /// <summary>
+    /// emit a text chunk for streaming
+    /// </summary>
+    /// <param name="chunk">the text chunk</param>
+    public Task Emit(string chunk)
+    {
+        return OnChunk(chunk);
     }
 }

@@ -6,12 +6,12 @@ namespace Microsoft.Spark.AI.Models.OpenAI;
 
 public partial class Chat
 {
-    public Task<ModelMessage<string>> Send(UserMessage<string> message, ChatCompletionOptions? options)
+    public Task<IMessage> Send(IMessage message, ChatCompletionOptions? options = null)
     {
         throw new NotImplementedException();
     }
 
-    public Task<IMessage> Send(IMessage message, ChatCompletionOptions? options)
+    public Task<ModelMessage<string>> Send(IMessage message, ChatModelOptions<ChatCompletionOptions> options)
     {
         throw new NotImplementedException();
     }
