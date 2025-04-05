@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 using Json.Schema;
 
 namespace Microsoft.Spark.AI;
@@ -47,8 +49,16 @@ public class Function : Function<object>
 /// </summary>
 public class Function<T> : IFunction
 {
+    [JsonPropertyName("name")]
+    [JsonPropertyOrder(0)]
     public string Name { get; set; }
+
+    [JsonPropertyName("description")]
+    [JsonPropertyOrder(1)]
     public string? Description { get; set; }
+
+    [JsonPropertyName("parameters")]
+    [JsonPropertyOrder(2)]
     public JsonSchema? Parameters { get; set; }
 
     internal Func<T, Task<object?>> Handler { get; set; }

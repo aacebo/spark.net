@@ -18,6 +18,12 @@ public partial class Chat : IChatModel<ChatCompletionOptions>
     public OpenAIClient Client { get; set; }
 
     /// <summary>
+    /// the OpenAI chat client used to
+    /// make requests
+    /// </summary>
+    public ChatClient ChatClient { get; set; }
+
+    /// <summary>
     /// the model name
     /// </summary>
     protected string Model { get; set; }
@@ -25,12 +31,13 @@ public partial class Chat : IChatModel<ChatCompletionOptions>
     /// <summary>
     /// the logger instance
     /// </summary>
-    protected ILogger? Logger { get; set; }
+    protected ILogger Logger { get; set; }
 
     public Chat(string model, string apiKey, Options? options = null)
     {
         Model = model;
         Client = new(new ApiKeyCredential(apiKey), options ?? new());
+        ChatClient = Client.GetChatClient(model);
         Logger = (options?.Logger ?? new ConsoleLogger<Chat>()).Child(model);
     }
 
@@ -38,6 +45,7 @@ public partial class Chat : IChatModel<ChatCompletionOptions>
     {
         Model = model;
         Client = new(apiKey, options ?? new());
+        ChatClient = Client.GetChatClient(model);
         Logger = (options?.Logger ?? new ConsoleLogger<Chat>()).Child(model);
     }
 }
