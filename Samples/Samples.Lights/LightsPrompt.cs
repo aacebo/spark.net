@@ -1,4 +1,6 @@
 using Microsoft.Spark.AI.Annotations;
+using Microsoft.Spark.Api.Activities;
+using Microsoft.Spark.Apps;
 using Microsoft.Spark.AspNetCore;
 
 namespace Samples.Lights;
@@ -12,11 +14,11 @@ namespace Samples.Lights;
 )]
 public class LightsPrompt
 {
-    protected SparkContext _context;
+    protected IContext<IActivity> _context;
 
     public LightsPrompt(SparkContext context)
     {
-        _context = context;
+        _context = context.Activity;
     }
 
     [Function]
@@ -30,7 +32,7 @@ public class LightsPrompt
     [Function.Description("turn the lights on")]
     public void LightsOn()
     {
-
+    
     }
 
     [Function]

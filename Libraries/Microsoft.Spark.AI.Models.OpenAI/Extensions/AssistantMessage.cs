@@ -19,7 +19,7 @@ public static partial class Extensions
             };
         });
 
-        return new ModelMessage<string>(message.Content.First().Text, calls.ToList());
+        return new ModelMessage<string>(message.Content.FirstOrDefault()?.Text ?? string.Empty, calls.ToList());
     }
 
     public static AssistantChatMessage ToOpenAI(this ModelMessage<string> message)

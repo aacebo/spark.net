@@ -175,7 +175,8 @@ public partial class ChatPrompt<TOptions> : IChatPrompt<TOptions>
                 functionAttribute.Description ?? functionDescriptionAttribute?.Description,
                 async (args) =>
                 {
-                    var res = method.Invoke(value, [args]);
+                    var count = parameters.Count();
+                    var res = method.Invoke(value, count == 0 ? [] : [args]);
 
                     if (res is Task<object?> task)
                         return await task;
