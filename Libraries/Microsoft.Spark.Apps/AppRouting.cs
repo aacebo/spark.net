@@ -1,6 +1,7 @@
 using System.Net;
 using System.Reflection;
 
+using Microsoft.Spark.Api.Activities;
 using Microsoft.Spark.Apps.Routing;
 using Microsoft.Spark.Common.Http;
 
@@ -58,13 +59,7 @@ public partial class App : RoutingModule
         {
             if (ex.StatusCode != HttpStatusCode.NotFound && ex.StatusCode != HttpStatusCode.BadRequest && ex.StatusCode != HttpStatusCode.PreconditionFailed)
             {
-                await ErrorEvent(this, new()
-                {
-                    Error = ex,
-                    Logger = context.Log,
-                    Activity = context.Activity
-                });
-
+                await ErrorEvent(this, context.Sender, ex, (IContext<IActivity>)context);
                 return new Response(ex.StatusCode);
             }
 
@@ -106,13 +101,7 @@ public partial class App : RoutingModule
         {
             if (ex.StatusCode != HttpStatusCode.NotFound && ex.StatusCode != HttpStatusCode.BadRequest && ex.StatusCode != HttpStatusCode.PreconditionFailed)
             {
-                await ErrorEvent(this, new()
-                {
-                    Error = ex,
-                    Logger = context.Log,
-                    Activity = context.Activity
-                });
-
+                await ErrorEvent(this, context.Sender, ex, (IContext<IActivity>)context);
                 return new Response(ex.StatusCode);
             }
 

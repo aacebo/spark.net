@@ -10,10 +10,20 @@ using Microsoft.Spark.Common.Storage;
 
 namespace Microsoft.Spark.Apps;
 
-internal delegate Task ActivitySentHandler(ISender plugin, Events.ActivitySentEventArgs args);
+internal delegate Task ActivitySentHandler(IActivity activity, IContext<IActivity> context);
 
 public partial interface IContext<TActivity> where TActivity : IActivity
 {
+    /// <summary>
+    /// the plugin that received the activity
+    /// </summary>
+    public ISender Sender { get; }
+
+    /// <summary>
+    /// the stream instance
+    /// </summary>
+    public IStreamer Stream { get; }
+
     /// <summary>
     /// the app id of the bot
     /// </summary>
@@ -43,11 +53,6 @@ public partial interface IContext<TActivity> where TActivity : IActivity
     /// the inbound activity conversation reference
     /// </summary>
     public ConversationReference Ref { get; set; }
-
-    /// <summary>
-    /// the stream instance
-    /// </summary>
-    public IStreamer Stream { get; }
 
     /// <summary>
     /// the users graph client

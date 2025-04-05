@@ -1,3 +1,9 @@
+using System.Reflection;
+
+using Json.Schema;
+using Json.Schema.Generation;
+
+using Microsoft.Spark.AI.Annotations;
 using Microsoft.Spark.AI.Messages;
 using Microsoft.Spark.AI.Models;
 
@@ -86,5 +92,79 @@ public partial class ChatPrompt<TOptions> : IChatPrompt<TOptions>
         Template = options.Instructions;
         Messages = options.Messages ?? [];
         Functions = new();
+    }
+
+    /// <summary>
+    /// create a ChatPrompt from any class
+    /// utilizing the ChatPromptAttribute
+    /// </summary>
+    /// <param name="model">the model to use</param>
+    /// <param name="value">the class instance to use</param>
+    /// <returns>a ChatPrompt</returns>
+    /// <exception cref="Exception"></exception>
+    public static ChatPrompt<TOptions> From<T>(IChatModel<TOptions> model, T value) where T : class
+    {
+        var type = value.GetType();
+        var promptAttribute = type.GetCustomAttribute<PromptAttribute>();
+        var nameAttribute = type.GetCustomAttribute<Prompt.NameAttribute>();
+        var descriptionAttribute = type.GetCustomAttribute<Prompt.DescriptionAttribute>();
+        var instructionsAttribute = type.GetCustomAttribute<Prompt.InstructionsAttribute>();
+
+        if (promptAttribute == null)
+        {
+            throw new Exception("only types utilizing the ChatPromptAttribute can be turned into a ChatPrompt");
+        }
+
+        var name = promptAttribute.Name ?? nameAttribute?.Name ?? type.Name;
+        var description = promptAttribute.Description ?? descriptionAttribute?.Description;
+        var instructions = promptAttribute.Instructions ?? instructionsAttribute?.Instructions;
+        var options = new ChatPromptOptions().WithName(name);
+
+        if (description != null)
+        {
+            options = options.WithDescription(description);
+        }
+
+        if (instructions != null)
+        {
+            options = options.WithInstructions(instructions);
+        }
+
+        var prompt = new ChatPrompt<TOptions>(model, options);
+
+        foreach (var method in type.GetMethods())
+        {
+            var functionAttribute = method.GetCustomAttribute<FunctionAttribute>();
+            var functionDescriptionAttribute = method.GetCustomAttribute<Annotations.Function.DescriptionAttribute>();
+
+            if (functionAttribute == null) continue;
+
+            var parameters = method.GetParameters();
+
+            if (parameters.Length > 1)
+            {
+                throw new Exception("invalid ChatPrompt Function signature, at most 1 parameter is allowed");
+            }
+
+            var function = new Function(
+                functionAttribute.Name ?? method.Name,
+                functionAttribute.Description ?? functionDescriptionAttribute?.Description,
+                async (args) =>
+                {
+                    var res = method.Invoke(value, [args]);
+
+                    if (res is Task<object?> task)
+                        return await task;
+
+                    return res;
+                }
+            );
+
+            var param = parameters.FirstOrDefault();
+            function.Parameters = param == null ? null : new JsonSchemaBuilder().FromType(param.ParameterType).Build();
+            prompt.Function(function);
+        }
+
+        return prompt;
     }
 }

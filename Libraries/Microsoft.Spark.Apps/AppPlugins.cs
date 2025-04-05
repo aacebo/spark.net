@@ -31,9 +31,8 @@ public partial class App
         var attr = GetPluginAttribute(plugin);
 
         // broadcast plugin events
-        plugin.ErrorEvent += (_, args) => ErrorEvent(this, args);
-        plugin.ActivityEvent += async (plugin, args) => await ActivityEvent(this, plugin, args);
-
+        plugin.ErrorEvent += (sender, exception) => ErrorEvent(this, sender, exception, null);
+        plugin.ActivityEvent += OnActivityEvent;
         Plugins.Add(plugin);
         Container.Register(attr.Name, new ValueProvider(plugin));
         Container.Register(plugin.GetType().Name, new ValueProvider(plugin));

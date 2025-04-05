@@ -34,18 +34,7 @@ public partial class Context<TActivity> : IContext<TActivity>
     {
         var res = await Sender.Send(activity, Ref);
 
-        await OnActivitySent(Sender, new()
-        {
-            Activity = res,
-            Bot = Ref.Bot,
-            ChannelId = Ref.ChannelId,
-            Conversation = Ref.Conversation,
-            ServiceUrl = Ref.ServiceUrl,
-            ActivityId = Ref.ActivityId,
-            Locale = Ref.Locale,
-            User = Ref.User
-        });
-
+        await OnActivitySent(res, (IContext<IActivity>)this);
         return res;
     }
 

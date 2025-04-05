@@ -3,6 +3,7 @@ using Microsoft.Spark.Api.Activities;
 using Microsoft.Spark.Api.Auth;
 using Microsoft.Spark.Apps.Plugins;
 using Microsoft.Spark.Common.Http;
+using Microsoft.Spark.Common.Logging;
 
 namespace Microsoft.Spark.Apps;
 
@@ -14,11 +15,11 @@ public partial interface IApp
     public IApp OnActivitySent(ActivitySentEventHandler handler);
     public IApp OnActivityResponse(ActivityResponseEventHandler handler);
 
-    public delegate Task ErrorEventHandler(IApp app, Events.ErrorEventArgs args);
-    public delegate Task StartEventHandler(IApp app, Events.StartEventArgs args);
-    public delegate Task<Response?> ActivityEventHandler(IApp app, ISender plugin, Events.ActivityEventArgs args);
-    public delegate Task ActivitySentEventHandler(IApp app, ISender plugin, Events.ActivitySentEventArgs args);
-    public delegate Task ActivityResponseEventHandler(IApp app, ISender plugin, Events.ActivityResponseEventArgs args);
+    public delegate Task StartEventHandler(IApp app, ILogger logger);
+    public delegate Task ErrorEventHandler(IApp app, IPlugin? plugin, Exception exception, IContext<IActivity>? context);
+    public delegate Task ActivityEventHandler(IApp app, IContext<IActivity> context);
+    public delegate Task ActivitySentEventHandler(IApp app, IActivity activity, IContext<IActivity> context);
+    public delegate Task ActivityResponseEventHandler(IApp app, Response? response, IContext<IActivity> context);
 }
 
 public partial class App
@@ -59,153 +60,140 @@ public partial class App
         return this;
     }
 
-    protected async Task OnErrorEvent(Events.ErrorEventArgs args)
+    protected async Task OnErrorEvent(IPlugin? sender, Exception exception, IContext<IActivity>? context)
     {
-        args.Logger.Error(args.Error);
+        Logger.Error(exception);
 
-        if (args.Error is HttpException ex)
+        if (exception is HttpException ex)
         {
-            args.Logger.Error(ex.Request?.RequestUri?.ToString());
-            args.Logger.Error(await ex.Request!.Content!.ReadAsStringAsync());
+            Logger.Error(ex.Request?.RequestUri?.ToString());
+            Logger.Error(await ex.Request!.Content!.ReadAsStringAsync());
         }
 
         foreach (var plugin in Plugins)
         {
-            await plugin.OnError(this, args);
+            if (sender != null && sender.Equals(plugin)) continue;
+            await plugin.OnError(this, sender, exception, context);
         }
     }
 
-    protected Task OnStartEvent(Events.StartEventArgs args)
+    protected Task OnStartEvent()
     {
-        return Task.Run(() => args.Logger.Info("started"));
+        return Task.Run(() => Logger.Info("started"));
     }
 
-    protected async Task OnActivitySentEvent(ISender sender, Events.ActivitySentEventArgs args)
+    protected async Task OnActivitySentEvent(IActivity activity, IContext<IActivity> context)
     {
-        Logger.Debug(args.Activity);
+        Logger.Debug(activity);
 
         foreach (var plugin in Plugins)
         {
-            await plugin.OnActivitySent(this, sender, args);
+            await plugin.OnActivitySent(this, activity, context);
         }
     }
 
-    protected async Task OnActivityResponseEvent(ISender sender, Events.ActivityResponseEventArgs args)
+    protected async Task OnActivitySentEvent(ISender sender, IActivity activity, ConversationReference reference)
     {
-        Logger.Debug(args.Response);
+        Logger.Debug(activity);
 
         foreach (var plugin in Plugins)
         {
-            await plugin.OnActivityResponse(this, sender, args);
+            await plugin.OnActivitySent(this, sender, activity, reference);
         }
     }
 
-    protected async Task<Response?> OnActivityEvent(ISender sender, Events.ActivityEventArgs args)
+    protected async Task OnActivityResponseEvent(Response? response, IContext<IActivity> context)
     {
-        var routes = Router.Select(args.Activity);
+        Logger.Debug(response);
+
+        foreach (var plugin in Plugins)
+        {
+            await plugin.OnActivityResponse(this, response, context);
+        }
+    }
+
+    protected async Task<Response?> OnActivityEvent(ISender sender, IToken token, IActivity activity)
+    {
+        var routes = Router.Select(activity);
+        JsonWebToken? userToken = null;
 
         try
         {
-            JsonWebToken? userToken = null;
-
-            try
+            var tokenResponse = await Api.Users.Token.GetAsync(new()
             {
-                var tokenResponse = await Api.Users.Token.GetAsync(new()
-                {
-                    UserId = args.Activity.From.Id,
-                    ChannelId = args.Activity.ChannelId,
-                    ConnectionName = "graph"
-                });
+                UserId = activity.From.Id,
+                ChannelId = activity.ChannelId,
+                ConnectionName = "graph"
+            });
 
-                userToken = new JsonWebToken(tokenResponse);
-            }
-            catch { }
+            userToken = new JsonWebToken(tokenResponse);
+        }
+        catch { }
+
+        var path = activity.GetPath();
+        Logger.Debug(path);
+
+        var reference = new ConversationReference()
+        {
+            ServiceUrl = activity.ServiceUrl ?? token.ServiceUrl,
+            ChannelId = activity.ChannelId,
+            Bot = activity.Recipient,
+            User = activity.From,
+            Locale = activity.Locale,
+            Conversation = activity.Conversation,
+        };
+
+        var userGraphTokenProvider = Azure.Core.DelegatedTokenCredential.Create((context, _) =>
+        {
+            return userToken == null ? default : new Azure.Core.AccessToken(userToken.ToString(), userToken.Token.ValidTo);
+        });
+
+        object? data = null;
+        var i = -1;
+        async Task<object?> next(IContext<IActivity> context)
+        {
+            if (i == routes.Count - 1) return data;
+            i++;
+            var res = await routes[i].Invoke(context);
+
+            if (res != null)
+                data = res;
+
+            return res;
+        }
+
+        var stream = sender.CreateStream(reference);
+        var context = new Context<IActivity>(sender, stream)
+        {
+            AppId = token.AppId ?? Id ?? string.Empty,
+            Log = Logger.Child(path),
+            Storage = Storage,
+            Api = Api,
+            Activity = activity,
+            Ref = reference,
+            IsSignedIn = userToken != null,
+            OnNext = next,
+            UserGraph = new Graph.GraphServiceClient(userGraphTokenProvider),
+            OnActivitySent = (activity, context) => ActivitySentEvent(this, activity, context)
+        };
+
+        stream.OnChunk += activity => ActivitySentEvent(this, activity, context);
+
+        try
+        {
+            await ActivityEvent(this, context);
 
             foreach (var plugin in Plugins)
             {
-                await plugin.OnActivity(this, sender, args);
+                await plugin.OnActivity(this, context);
             }
-
-            var path = args.Activity.GetPath();
-            Logger.Debug(path);
-
-            var reference = new ConversationReference()
-            {
-                ServiceUrl = args.Activity.ServiceUrl ?? args.Token.ServiceUrl,
-                ChannelId = args.Activity.ChannelId,
-                Bot = args.Activity.Recipient,
-                User = args.Activity.From,
-                Locale = args.Activity.Locale,
-                Conversation = args.Activity.Conversation,
-            };
-
-            var userGraphTokenProvider = Azure.Core.DelegatedTokenCredential.Create((context, _) =>
-            {
-                return userToken == null ? default : new Azure.Core.AccessToken(userToken.ToString(), userToken.Token.ValidTo);
-            });
-
-            object? data = null;
-            var i = -1;
-            async Task<object?> next(IContext<IActivity> context)
-            {
-                if (i == routes.Count - 1) return data;
-                i++;
-                var res = await routes[i].Invoke(context);
-
-                if (res != null)
-                    data = res;
-
-                return res;
-            }
-
-            var stream = sender.CreateStream(reference);
-            stream.OnChunk += activity =>
-            {
-                ActivitySentEvent(this, sender, new()
-                {
-                    Activity = activity,
-                    Bot = reference.Bot,
-                    ChannelId = reference.ChannelId,
-                    Conversation = reference.Conversation,
-                    ServiceUrl = reference.ServiceUrl,
-                    ActivityId = reference.ActivityId,
-                    Locale = reference.Locale,
-                    User = reference.User
-                });
-            };
-
-            var context = new Context<IActivity>(sender, stream)
-            {
-                AppId = args.Token.AppId ?? Id ?? string.Empty,
-                Log = Logger.Child(path),
-                Storage = Storage,
-                Api = Api,
-                Activity = args.Activity,
-                Ref = reference,
-                IsSignedIn = userToken != null,
-                OnNext = next,
-                UserGraph = new Graph.GraphServiceClient(userGraphTokenProvider),
-                OnActivitySent = (sender, args) => ActivitySentEvent(this, sender, args)
-            };
 
             var res = await next(context);
 
             if (res != null)
             {
                 var response = res is Response value ? value : new Response(System.Net.HttpStatusCode.OK, res);
-                await ActivityResponseEvent(this, sender, new()
-                {
-                    Activity = context.Activity,
-                    Response = response,
-                    Bot = reference.Bot,
-                    ChannelId = reference.ChannelId,
-                    Conversation = reference.Conversation,
-                    ServiceUrl = reference.ServiceUrl,
-                    ActivityId = reference.ActivityId,
-                    Locale = reference.Locale,
-                    User = reference.User
-                });
-
+                await ActivityResponseEvent(this, response, context);
                 return response;
             }
 
@@ -213,13 +201,7 @@ public partial class App
         }
         catch (Exception err)
         {
-            await ErrorEvent(this, new()
-            {
-                Error = err,
-                Logger = Logger,
-                Activity = args.Activity
-            });
-
+            await ErrorEvent(this, sender, err, context);
             return new Response(System.Net.HttpStatusCode.InternalServerError);
         }
     }

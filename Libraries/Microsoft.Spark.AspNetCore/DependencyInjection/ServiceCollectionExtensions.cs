@@ -13,11 +13,13 @@ public static class ServiceCollectionExtensions
         var log = new SparkLogger(app.Logger);
 
         collection.AddSingleton(app.Logger);
+        collection.AddSingleton(app.Storage);
         collection.AddSingleton<ILoggerFactory>(_ => new LoggerFactory([new SparkLoggerProvider(log)]));
         collection.AddSingleton<ILogger>(log);
         collection.AddSingleton<IApp>(app);
         collection.AddHostedService<SparkService>();
-        return collection.AddSparkPlugin(new AspNetCorePlugin());
+        collection.AddScoped<SparkContext>();
+        return collection.AddSparkPlugin<AspNetCorePlugin>();
     }
 
     public static IServiceCollection AddSpark(this IServiceCollection collection, IAppBuilder builder)
@@ -26,11 +28,13 @@ public static class ServiceCollectionExtensions
         var log = new SparkLogger(app.Logger);
 
         collection.AddSingleton(app.Logger);
+        collection.AddSingleton(app.Storage);
         collection.AddSingleton<ILoggerFactory>(_ => new LoggerFactory([new SparkLoggerProvider(log)]));
         collection.AddSingleton<ILogger>(log);
         collection.AddSingleton(app);
         collection.AddHostedService<SparkService>();
-        return collection.AddSparkPlugin(new AspNetCorePlugin());
+        collection.AddScoped<SparkContext>();
+        return collection.AddSparkPlugin<AspNetCorePlugin>();
     }
 
     public static IServiceCollection AddSpark(this IServiceCollection collection, IApp app)
@@ -38,11 +42,13 @@ public static class ServiceCollectionExtensions
         var log = new SparkLogger(app.Logger);
 
         collection.AddSingleton(app.Logger);
+        collection.AddSingleton(app.Storage);
         collection.AddSingleton<ILoggerFactory>(_ => new LoggerFactory([new SparkLoggerProvider(log)]));
         collection.AddSingleton<ILogger>(log);
         collection.AddSingleton(app);
         collection.AddHostedService<SparkService>();
-        return collection.AddSparkPlugin(new AspNetCorePlugin());
+        collection.AddScoped<SparkContext>();
+        return collection.AddSparkPlugin<AspNetCorePlugin>();
     }
 
     public static IServiceCollection AddSpark(this IServiceCollection collection, Func<IServiceProvider, IApp> factory)
@@ -52,9 +58,22 @@ public static class ServiceCollectionExtensions
         collection.AddSingleton(log.Logger);
         collection.AddSingleton<ILoggerFactory>(_ => new LoggerFactory([new SparkLoggerProvider(log)]));
         collection.AddSingleton<ILogger>(log);
-        collection.AddSingleton(factory);
         collection.AddHostedService<SparkService>();
-        return collection.AddSparkPlugin(new AspNetCorePlugin());
+        collection.AddScoped<SparkContext>();
+        collection.AddSingleton(factory);
+        collection.AddSingleton(provider =>
+        {
+            var app = provider.GetService<IApp>() ?? throw new Exception("IApp not found");
+            return app.Logger;
+        });
+
+        collection.AddSingleton(provider =>
+        {
+            var app = provider.GetService<IApp>() ?? throw new Exception("IApp not found");
+            return app.Storage;
+        });
+
+        return collection.AddSparkPlugin<AspNetCorePlugin>();
     }
 
     public static IServiceCollection AddSpark(this IServiceCollection collection, Func<IServiceProvider, Task<IApp>> factory)
@@ -64,9 +83,29 @@ public static class ServiceCollectionExtensions
         collection.AddSingleton(log.Logger);
         collection.AddSingleton<ILoggerFactory>(_ => new LoggerFactory([new SparkLoggerProvider(log)]));
         collection.AddSingleton<ILogger>(log);
-        collection.AddSingleton(provider => factory(provider).GetAwaiter().GetResult());
         collection.AddHostedService<SparkService>();
-        return collection.AddSparkPlugin(new AspNetCorePlugin());
+        collection.AddScoped<SparkContext>();
+        collection.AddSingleton(provider => factory(provider).GetAwaiter().GetResult());
+        collection.AddSingleton(provider =>
+        {
+            var app = provider.GetService<IApp>() ?? throw new Exception("IApp not found");
+            return app.Logger;
+        });
+
+        collection.AddSingleton(provider =>
+        {
+            var app = provider.GetService<IApp>() ?? throw new Exception("IApp not found");
+            return app.Storage;
+        });
+
+        return collection.AddSparkPlugin<AspNetCorePlugin>();
+    }
+
+    public static IServiceCollection AddSparkPlugin<TPlugin>(this IServiceCollection collection) where TPlugin : class, IPlugin
+    {
+        collection.AddSingleton<TPlugin>();
+        collection.AddSingleton<IPlugin, TPlugin>();
+        return collection.AddHostedService<SparkPluginService<TPlugin>>();
     }
 
     public static IServiceCollection AddSparkPlugin<TPlugin>(this IServiceCollection collection, TPlugin plugin) where TPlugin : class, IPlugin

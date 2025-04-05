@@ -14,6 +14,7 @@ namespace Microsoft.Spark.Apps;
 public partial interface IApp
 {
     public ILogger Logger { get; }
+    public IStorage<string, object> Storage { get; }
     public ApiClient Api { get; }
     public IHttpClient Client { get; }
     public IHttpCredentials? Credentials { get; }
@@ -29,19 +30,19 @@ public partial interface IApp
     /// send an activity to the conversation
     /// </summary>
     /// <param name="activity">activity activity to send</param>
-    public Task<T> Send<T>(string conversationId, T activity) where T : IActivity;
+    public Task<T> Send<T>(string conversationId, T activity, string? serviceUrl = null) where T : IActivity;
 
     /// <summary>
     /// send a message activity to the conversation
     /// </summary>
     /// <param name="text">the text to send</param>
-    public Task<MessageActivity> Send(string conversationId, string text);
+    public Task<MessageActivity> Send(string conversationId, string text, string? serviceUrl = null);
 
     /// <summary>
     /// send a message activity with a card attachment
     /// </summary>
     /// <param name="card">the card to send as an attachment</param>
-    public Task<MessageActivity> Send(string conversationId, Cards.Card card);
+    public Task<MessageActivity> Send(string conversationId, Cards.Card card, string? serviceUrl = null);
 }
 
 public partial class App : IApp
@@ -87,9 +88,9 @@ public partial class App : IApp
         Credentials = options?.Credentials;
         Api = new ApiClient("https://smba.trafficmanager.net/teams", Client);
         Plugins = options?.Plugins ?? [];
-        ErrorEvent = (_, args) => OnErrorEvent(args);
-        StartEvent = (_, args) => OnStartEvent(args);
-        ActivityEvent = (_, plugin, args) => OnActivityEvent(plugin, args);
+        ErrorEvent = (_, sender, exception, context) => OnErrorEvent(sender, exception, context);
+        StartEvent = (_, _) => OnStartEvent();
+        ActivityEvent = (_, _) => Task.Run(() => { });
         ActivitySentEvent = (_, plugin, args) => OnActivitySentEvent(plugin, args);
         ActivityResponseEvent = (_, plugin, args) => OnActivityResponseEvent(plugin, args);
 
@@ -140,18 +141,14 @@ public partial class App : IApp
 
             foreach (var plugin in Plugins)
             {
-                await plugin.OnStart(this, new() { Logger = Logger });
+                await plugin.OnStart(this);
             }
 
-            await StartEvent(this, new() { Logger = Logger });
+            await StartEvent(this, Logger);
         }
         catch (Exception err)
         {
-            await ErrorEvent(this, new()
-            {
-                Error = err,
-                Logger = Logger
-            });
+            await ErrorEvent(this, null, err, null);
         }
     }
 
@@ -159,7 +156,7 @@ public partial class App : IApp
     /// send an activity to the conversation
     /// </summary>
     /// <param name="activity">activity activity to send</param>
-    public async Task<T> Send<T>(string conversationId, T activity) where T : IActivity
+    public async Task<T> Send<T>(string conversationId, T activity, string? serviceUrl = null) where T : IActivity
     {
         if (Id == null || Name == null)
         {
@@ -169,7 +166,7 @@ public partial class App : IApp
         var reference = new ConversationReference()
         {
             ChannelId = ChannelId.MsTeams,
-            ServiceUrl = Api.ServiceUrl,
+            ServiceUrl = serviceUrl ?? Api.ServiceUrl,
             Bot = new()
             {
                 Id = Id,
@@ -192,9 +189,8 @@ public partial class App : IApp
 
         var res = await sender.Send(activity, reference);
 
-        await ActivitySentEvent(this, sender, new()
+        await OnActivitySentEvent(sender, res, new()
         {
-            Activity = res,
             Bot = reference.Bot,
             ChannelId = reference.ChannelId,
             Conversation = reference.Conversation,
@@ -202,7 +198,7 @@ public partial class App : IApp
             ActivityId = reference.ActivityId,
             Locale = reference.Locale,
             User = reference.User
-        });
+        }).ConfigureAwait(false);
 
         return res;
     }
@@ -211,17 +207,17 @@ public partial class App : IApp
     /// send a message activity to the conversation
     /// </summary>
     /// <param name="text">the text to send</param>
-    public async Task<MessageActivity> Send(string conversationId, string text)
+    public async Task<MessageActivity> Send(string conversationId, string text, string? serviceUrl = null)
     {
-        return await Send(conversationId, new MessageActivity(text));
+        return await Send(conversationId, new MessageActivity(text), serviceUrl);
     }
 
     /// <summary>
     /// send a message activity with a card attachment
     /// </summary>
     /// <param name="card">the card to send as an attachment</param>
-    public async Task<MessageActivity> Send(string conversationId, Cards.Card card)
+    public async Task<MessageActivity> Send(string conversationId, Cards.Card card, string? serviceUrl = null)
     {
-        return await Send(conversationId, new MessageActivity().AddAttachment(card));
+        return await Send(conversationId, new MessageActivity().AddAttachment(card), serviceUrl);
     }
 }

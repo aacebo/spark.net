@@ -8,7 +8,7 @@ public partial class ChatPrompt<TOptions>
     {
         var buffer = string.Empty;
         var prompt = Template != null ? await Template.Render() : null;
-        var res = await Model.Send(message, new(Invoke, (_) => Task.Run(() => {}))
+        var res = await Model.Send(message, new(Invoke, (_) => Task.Run(() => { }))
         {
             Functions = Functions.List,
             Messages = Messages,

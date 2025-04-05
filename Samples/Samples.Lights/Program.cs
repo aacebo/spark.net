@@ -1,24 +1,27 @@
-using Microsoft.Spark.AI.Prompts;
 using Microsoft.Spark.AI.Models.OpenAI;
+using Microsoft.Spark.AI.Prompts;
 using Microsoft.Spark.Apps;
 using Microsoft.Spark.AspNetCore;
+
 using OpenAI.Chat;
 
 using Samples.Lights;
 
 var builder = WebApplication.CreateBuilder(args);
+var apiKey = builder.Configuration.GetRequiredSection("OpenAI").GetValue<string>("ApiKey") ?? throw new Exception("OpenAI.ApiKey is required");
+var model = new Chat("gpt-4o", apiKey);
+
+builder.Services.AddSingleton<LightsPrompt>();
+builder.Services.AddSingleton(provider =>
+{
+    var lightsPrompt = provider.GetService<LightsPrompt>() ?? throw new Exception("LightsPrompt not found");
+    return ChatPrompt<ChatCompletionOptions>.From(model, lightsPrompt);
+});
+
 builder.AddSpark(App.Builder().AddLogger(level: Microsoft.Spark.Common.Logging.LogLevel.Debug));
 
 var app = builder.Build();
 var spark = app.Services.GetService<IApp>()!;
-var apiKey = app.Configuration.GetRequiredSection("OpenAI").GetValue<string>("ApiKey");
-
-if (apiKey == null)
-{
-    throw new Exception("OpenAI.ApiKey is required");
-}
-
-var model = new Chat("gpt-4o", apiKey);
 
 spark.OnMessage(async context =>
 {
@@ -34,24 +37,22 @@ spark.OnMessage(async context =>
     ).Function(
         "get_light_status",
         "get the current light status",
-        (_) => Task.FromResult<object?>(state.Status)
+        (_) => Task.FromResult(state.Status)
     ).Function(
         "lights_on",
-        "turn the lighnts on",
-        (_) =>
+        "turn the lights on",
+        async (_) =>
         {
             state.Status = true;
-            context.Storage.Set(context.Activity.From.Id, state);
-            return Task.FromResult<object?>(null);
+            await context.Storage.SetAsync(context.Activity.From.Id, state);
         }
     ).Function(
         "lights_off",
         "turn the lights off",
-        (_) =>
+        async (_) =>
         {
             state.Status = false;
-            context.Storage.Set(context.Activity.From.Id, state);
-            return Task.FromResult<object?>(null);
+            await context.Storage.SetAsync(context.Activity.From.Id, state);
         }
     );
 

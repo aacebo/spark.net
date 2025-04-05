@@ -1,5 +1,8 @@
 using System.Text.Json.Serialization;
 
+using Json.Schema;
+using Json.Schema.Generation;
+
 namespace Microsoft.Spark.AI.Prompts;
 
 public partial class ChatPrompt<TOptions>
@@ -20,13 +23,9 @@ public partial class ChatPrompt<TOptions>
     /// as a function
     /// </summary>
     /// <param name="prompt">the chat prompt</param>
-    public ChatPrompt<TOptions> Use(IChatPrompt<TOptions> prompt)
+    public ChatPrompt<TOptions> Chain(IChatPrompt<TOptions> prompt)
     {
-        var schema = Schemas.Object().Property(
-            "text",
-            Schemas.String().WithDescription("the text to send to the assistant"),
-            required: true
-        );
+        var schema = new JsonSchemaBuilder().FromType<Args>().Build();
 
         Functions.Add(new Function<Args>(
             prompt.Name,

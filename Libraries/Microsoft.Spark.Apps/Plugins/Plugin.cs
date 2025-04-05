@@ -1,3 +1,7 @@
+using Microsoft.Spark.Api;
+using Microsoft.Spark.Api.Activities;
+using Microsoft.Spark.Api.Auth;
+
 namespace Microsoft.Spark.Apps.Plugins;
 
 /// <summary>
@@ -24,28 +28,33 @@ public interface IPlugin
     /// <summary>
     /// lifecycle method called by the `App` once during startup
     /// </summary>
-    public Task OnStart(IApp app, Events.StartEventArgs args);
+    public Task OnStart(IApp app);
 
     /// <summary>
     /// called by the `App` when an error occurs
     /// </summary>
-    public Task OnError(IApp app, Events.ErrorEventArgs args);
+    public Task OnError(IApp app, IPlugin? plugin, Exception exception, IContext<IActivity>? context);
 
     /// <summary>
     /// called by the `App` when an activity is received
     /// </summary>
-    public Task OnActivity(IApp app, ISender plugin, Events.ActivityEventArgs args);
+    public Task OnActivity(IApp app, IContext<IActivity> context);
 
     /// <summary>
     /// called by the `App` when an activity is sent
     /// </summary>
-    public Task OnActivitySent(IApp app, ISender plugin, Events.ActivitySentEventArgs args);
+    public Task OnActivitySent(IApp app, IActivity activity, IContext<IActivity> context);
+
+    /// <summary>
+    /// called by the `App` when an activity is sent proactively
+    /// </summary>
+    public Task OnActivitySent(IApp app, ISender sender, IActivity activity, ConversationReference reference);
 
     /// <summary>
     /// called by the `App` when an activity response is sent
     /// </summary>
-    public Task OnActivityResponse(IApp app, ISender plugin, Events.ActivityResponseEventArgs args);
+    public Task OnActivityResponse(IApp app, Response? response, IContext<IActivity> context);
 
-    public delegate Task ErrorEventHandler(IPlugin sender, Events.ErrorEventArgs args);
-    public delegate Task<Response?> ActivityEventHandler(ISender sender, Events.ActivityEventArgs args);
+    public delegate Task ErrorEventHandler(IPlugin sender, Exception exception);
+    public delegate Task<Response?> ActivityEventHandler(ISender sender, IToken token, IActivity activity);
 }

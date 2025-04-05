@@ -10,16 +10,16 @@ public static class ApplicationBuilderExtensions
     public static IApplicationBuilder UseSpark(this IApplicationBuilder builder)
     {
         var app = builder.ApplicationServices.GetService<IApp>() ?? new App(builder.ApplicationServices.GetService<IAppOptions>());
-        var aspNetCore = builder.ApplicationServices.GetService<AspNetCorePlugin>();
+        var aspNetCore = builder.ApplicationServices.GetService<AspNetCorePlugin>() ?? throw new ArgumentNullException("`AspNetCorePlugin` not found");
         var plugins = builder.ApplicationServices.GetServices<IPlugin>();
 
-        if (aspNetCore == null)
-            throw new ArgumentNullException("`AspNetCorePlugin` not found");
-
         foreach (var plugin in plugins)
+        {
             app.AddPlugin(plugin);
+        }
 
         builder.UseRouting();
+        builder.UseMiddleware<SparkContextMiddleware>();
         builder.UseEndpoints(endpoints =>
         {
             endpoints.MapPost("/api/messages", async (context) =>

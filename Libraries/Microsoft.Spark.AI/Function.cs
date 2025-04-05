@@ -1,3 +1,5 @@
+using Json.Schema;
+
 namespace Microsoft.Spark.AI;
 
 /// <summary>
@@ -21,7 +23,7 @@ public interface IFunction
     /// the Json Schema representing what
     /// parameters the function accepts
     /// </summary>
-    public ISchema? Parameters { get; }
+    public JsonSchema? Parameters { get; }
 }
 
 /// <summary>
@@ -34,7 +36,7 @@ public class Function : Function<object>
     {
     }
 
-    public Function(string name, string? description, ISchema parameters, Func<object?, Task<object?>> handler) : base(name, description, parameters, handler)
+    public Function(string name, string? description, JsonSchema parameters, Func<object?, Task<object?>> handler) : base(name, description, parameters, handler)
     {
     }
 }
@@ -47,7 +49,7 @@ public class Function<T> : IFunction
 {
     public string Name { get; set; }
     public string? Description { get; set; }
-    public ISchema? Parameters { get; set; }
+    public JsonSchema? Parameters { get; set; }
 
     internal Func<T, Task<object?>> Handler { get; set; }
 
@@ -58,7 +60,7 @@ public class Function<T> : IFunction
         Handler = handler;
     }
 
-    public Function(string name, string? description, ISchema parameters, Func<T, Task<object?>> handler)
+    public Function(string name, string? description, JsonSchema parameters, Func<T, Task<object?>> handler)
     {
         Name = name;
         Description = description;

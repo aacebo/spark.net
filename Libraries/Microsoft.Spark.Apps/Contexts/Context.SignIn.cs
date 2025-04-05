@@ -64,17 +64,7 @@ public partial class Context<TActivity> : IContext<TActivity>
             reference.Conversation.IsGroup = false;
 
             var oauthCardActivity = await Sender.Send(new MessageActivity(options.OAuthCardText), reference);
-            await OnActivitySent(Sender, new()
-            {
-                Activity = oauthCardActivity,
-                Bot = Ref.Bot,
-                ChannelId = Ref.ChannelId,
-                Conversation = Ref.Conversation,
-                ServiceUrl = Ref.ServiceUrl,
-                ActivityId = Ref.ActivityId,
-                Locale = Ref.Locale,
-                User = Ref.User
-            });
+            await OnActivitySent(oauthCardActivity, (IContext<IActivity>)this);
         }
 
         var tokenExchangeState = new Api.TokenExchange.State()
@@ -108,18 +98,7 @@ public partial class Context<TActivity> : IContext<TActivity>
         });
 
         var res = await Sender.Send(activity, reference);
-        await OnActivitySent(Sender, new()
-        {
-            Activity = res,
-            Bot = Ref.Bot,
-            ChannelId = Ref.ChannelId,
-            Conversation = Ref.Conversation,
-            ServiceUrl = Ref.ServiceUrl,
-            ActivityId = Ref.ActivityId,
-            Locale = Ref.Locale,
-            User = Ref.User
-        });
-
+        await OnActivitySent(res, (IContext<IActivity>)this);
         return null;
     }
 
