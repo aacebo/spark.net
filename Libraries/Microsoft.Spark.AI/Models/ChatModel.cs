@@ -12,8 +12,19 @@ public interface IChatModel<TOptions> : IModel<TOptions>
     /// send a message to the model
     /// </summary>
     /// <param name="message">the message to send</param>
+    /// <param name="options">the options</param>
     /// <returns>the models response</returns>
     public Task<ModelMessage<string>> Send(IMessage message, ChatModelOptions<TOptions> options);
+
+    /// <summary>
+    /// send a message to the model and stream
+    /// the response
+    /// </summary>
+    /// <param name="message">the message to send</param>
+    /// <param name="options">the options</param>
+    /// <param name="stream">the stream to use</param>
+    /// <returns>the models response</returns>
+    public Task<ModelMessage<string>> Send(IMessage message, ChatModelOptions<TOptions> options, IStream stream);
 }
 
 /// <summary>
@@ -30,7 +41,7 @@ public class ChatModelOptions<TOptions>
     /// <summary>
     /// the conversation history
     /// </summary>
-    public IList<IMessage>? Messages { get; set; }
+    public IList<IMessage> Messages { get; set; } = [];
 
     /// <summary>
     /// the registered functions that can be
@@ -46,17 +57,11 @@ public class ChatModelOptions<TOptions>
     /// <summary>
     /// the handler used to invoke functions
     /// </summary>
-    internal Func<string, object?, Task<object?>> OnInvoke;
+    internal Func<string, object?, Task<object?>>? OnInvoke;
 
-    /// <summary>
-    /// the handler used to emit string chunks
-    /// </summary>
-    internal Func<string, Task> OnChunk;
-
-    public ChatModelOptions(Func<string, object?, Task<object?>> onInvoke, Func<string, Task> onChunk)
+    public ChatModelOptions(Func<string, object?, Task<object?>>? onInvoke = null)
     {
         OnInvoke = onInvoke;
-        OnChunk = onChunk;
     }
 
     /// <summary>
@@ -67,15 +72,6 @@ public class ChatModelOptions<TOptions>
     /// <returns>the function response</returns>
     public Task<object?> Invoke(string name, object? args)
     {
-        return OnInvoke(name, args);
-    }
-
-    /// <summary>
-    /// emit a text chunk for streaming
-    /// </summary>
-    /// <param name="chunk">the text chunk</param>
-    public Task Emit(string chunk)
-    {
-        return OnChunk(chunk);
+        return OnInvoke == null ? Task.FromResult<object?>(null) : OnInvoke(name, args);
     }
 }

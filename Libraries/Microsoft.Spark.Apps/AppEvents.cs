@@ -189,6 +189,7 @@ public partial class App
             }
 
             var res = await next(context);
+            await stream.Close();
 
             if (res != null)
             {

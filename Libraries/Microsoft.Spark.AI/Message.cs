@@ -1,6 +1,7 @@
 using System.Text.Json.Serialization;
 
 using Microsoft.Spark.Common;
+using Microsoft.Spark.Common.Json;
 
 namespace Microsoft.Spark.AI;
 
@@ -8,6 +9,7 @@ namespace Microsoft.Spark.AI;
 /// some message sent to or from the LLM
 /// via a Model
 /// </summary>
+[JsonConverter(typeof(TrueTypeJsonConverter<IMessage>))]
 public interface IMessage
 {
     /// <summary>

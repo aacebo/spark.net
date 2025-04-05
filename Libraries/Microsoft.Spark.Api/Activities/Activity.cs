@@ -71,6 +71,12 @@ public partial interface IActivity : IConvertible, ICloneable
 
     public IDictionary<string, object?> Properties { get; set; }
 
+    /// <summary>
+    /// is this a streaming activity
+    /// </summary>
+    [JsonIgnore]
+    public bool IsStreaming { get; }
+
     public string GetPath();
 }
 
@@ -169,6 +175,12 @@ public partial class Activity : IActivity
         ChannelData = activity.ChannelData;
         Properties = activity.Properties;
     }
+
+    /// <summary>
+    /// is this a streaming activity
+    /// </summary>
+    [JsonIgnore]
+    public bool IsStreaming => Entities?.Any(entity => entity.Type == "streaminfo" && entity is StreamInfoEntity) ?? false;
 
     public object Clone() => MemberwiseClone();
     public virtual Activity Copy() => (Activity)Clone();
@@ -325,14 +337,6 @@ public partial class Activity : IActivity
             Position = position,
             Appearance = appearance.ToDocument()
         });
-    }
-
-    /// <summary>
-    /// is this a streaming activity
-    /// </summary>
-    public bool IsStreaming()
-    {
-        return Entities?.Any(entity => entity.Type == "streaminfo" && entity is StreamInfoEntity) ?? false;
     }
 
     public CommandActivity ToCommand() => (CommandActivity)this;

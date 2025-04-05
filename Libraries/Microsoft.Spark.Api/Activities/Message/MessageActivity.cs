@@ -120,7 +120,7 @@ public class MessageActivity : Activity
 
     public MessageActivity AddMention(Account account)
     {
-        return (MessageActivity)AddEntity(new MentionEntity()
+        return AddEntity(new MentionEntity()
         {
             Mentioned = account,
             Text = $"<at>{account.Name}</at>"

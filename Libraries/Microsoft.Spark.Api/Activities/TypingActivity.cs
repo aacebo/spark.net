@@ -26,7 +26,7 @@ public class TypingActivity : Activity
         Text = text;
     }
 
-    public TypingActivity AddStreamUpdate(int sequence = 0)
+    public TypingActivity AddStreamUpdate(int sequence = 1)
     {
         AddEntity(new StreamInfoEntity()
         {

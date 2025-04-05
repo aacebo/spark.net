@@ -10,10 +10,12 @@ public static partial class Extensions
 {
     public static IFunction ToSpark(this ChatTool tool)
     {
+        var parameters = tool.FunctionParameters.ToString();
+
         return new Function(
             tool.FunctionName,
             tool.FunctionDescription,
-            JsonSchema.FromText(tool.FunctionParameters.ToString()),
+            JsonSchema.FromText(parameters == string.Empty ? "{}" : parameters),
             (_) => Task.FromResult<object?>(null)
         );
     }
@@ -23,7 +25,8 @@ public static partial class Extensions
         return ChatTool.CreateFunctionTool(
             function.Name,
             function.Description,
-            function.Parameters == null ? BinaryData.Empty : BinaryData.FromString(JsonSerializer.Serialize(function.Parameters))
+            function.Parameters == null ? null : BinaryData.FromString(JsonSerializer.Serialize(function.Parameters)),
+            false
         );
     }
 }

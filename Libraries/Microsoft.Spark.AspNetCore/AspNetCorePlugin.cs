@@ -31,7 +31,7 @@ public partial class AspNetCorePlugin : ISender
     public event IPlugin.ErrorEventHandler ErrorEvent = (_, _) => Task.Run(() => { });
     public event IPlugin.ActivityEventHandler ActivityEvent = (_, _, _) => Task.FromResult<Response?>(null);
 
-    
+
     private SparkContext _context => _services.GetRequiredService<SparkContext>();
     private readonly IServiceProvider _services;
 
@@ -86,7 +86,7 @@ public partial class AspNetCorePlugin : ISender
     {
         var client = new ApiClient(reference.ServiceUrl, Client);
 
-        if (activity.Id != null)
+        if (activity.Id != null && !activity.IsStreaming)
         {
             await client
                 .Conversations

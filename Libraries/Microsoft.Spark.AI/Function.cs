@@ -2,12 +2,15 @@ using System.Text.Json.Serialization;
 
 using Json.Schema;
 
+using Microsoft.Spark.Common.Json;
+
 namespace Microsoft.Spark.AI;
 
 /// <summary>
 /// defines a block of code that
 /// can be called by a model
 /// </summary>
+[JsonConverter(typeof(TrueTypeJsonConverter<IFunction>))]
 public interface IFunction
 {
     /// <summary>

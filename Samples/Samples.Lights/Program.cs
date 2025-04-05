@@ -14,8 +14,12 @@ var model = new Chat("gpt-4o", apiKey);
 builder.Services.AddSingleton<LightsPrompt>();
 builder.Services.AddSingleton(provider =>
 {
+    var logger = provider.GetRequiredService<Microsoft.Spark.Common.Logging.ILogger>();
     var lightsPrompt = provider.GetRequiredService<LightsPrompt>();
-    return ChatPrompt<ChatCompletionOptions>.From(model, lightsPrompt);
+    var prompt = ChatPrompt<ChatCompletionOptions>.From(model, lightsPrompt);
+
+    prompt.OnError(ex => logger.Error(ex.ToString()));
+    return prompt;
 });
 
 builder.AddSpark(App.Builder().AddLogger(level: Microsoft.Spark.Common.Logging.LogLevel.Debug));
@@ -26,11 +30,10 @@ var spark = app.UseSpark();
 spark.OnMessage(async context =>
 {
     var prompt = app.Services.GetRequiredService<ChatPrompt<ChatCompletionOptions>>();
-
-    await prompt.Send(context.Activity.Text, new()
+    await prompt.Send(context.Activity.Text, null, (chunk) => Task.Run(() =>
     {
-        OnChunk = (chunk) => Task.Run(() => context.Stream.Emit(chunk))
-    });
+        context.Stream.Emit(chunk);
+    }));
 });
 
 app.Run();

@@ -19,7 +19,7 @@ public class StreamInfoEntity : Entity
     public StreamInfoEntity() : base("streaminfo") { }
 }
 
-[JsonConverter(typeof(JsonConverter<CitationIcon>))]
+[JsonConverter(typeof(JsonConverter<StreamType>))]
 public class StreamType(string value) : Common.StringEnum(value)
 {
     public static readonly StreamType Informative = new("informative");

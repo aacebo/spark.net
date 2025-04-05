@@ -19,7 +19,7 @@ public static partial class Extensions
     {
         return ChatMessage.CreateToolMessage(
             message.FunctionId,
-            message.Content
+            message.Content ?? string.Empty
         );
     }
 }

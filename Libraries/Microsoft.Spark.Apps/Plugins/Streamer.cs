@@ -8,6 +8,12 @@ namespace Microsoft.Spark.Apps.Plugins;
 public interface IStreamer
 {
     /// <summary>
+    /// whether the final stream
+    /// message has been sent
+    /// </summary>
+    public bool Closed { get; }
+
+    /// <summary>
     /// event emitted on each chunk send
     /// </summary>
     public event OnChunkHandler OnChunk;

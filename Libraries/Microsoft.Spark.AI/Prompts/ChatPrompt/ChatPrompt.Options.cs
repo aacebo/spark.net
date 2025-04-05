@@ -1,4 +1,5 @@
 using Microsoft.Spark.AI.Templates;
+using Microsoft.Spark.Common.Logging;
 
 namespace Microsoft.Spark.AI.Prompts;
 
@@ -30,6 +31,11 @@ public class ChatPromptOptions
     /// </summary>
     public IList<IMessage>? Messages { get; set; }
 
+    /// <summary>
+    /// the logger instance
+    /// </summary>
+    public ILogger? Logger { get; set; }
+
     public ChatPromptOptions WithName(string value)
     {
         Name = value;
@@ -57,6 +63,12 @@ public class ChatPromptOptions
     public ChatPromptOptions WithInstructions(ITemplate value)
     {
         Instructions = value;
+        return this;
+    }
+
+    public ChatPromptOptions WithLogger(ILogger value)
+    {
+        Logger = value;
         return this;
     }
 }

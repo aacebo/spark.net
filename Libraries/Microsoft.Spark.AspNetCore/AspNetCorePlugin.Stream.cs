@@ -10,6 +10,8 @@ public partial class AspNetCorePlugin
 {
     public class Stream : IStreamer
     {
+        public bool Closed => _closedAt != null;
+
         public required Func<IActivity, Task<IActivity>> Send { get; set; }
         public event IStreamer.OnChunkHandler OnChunk = (_) => { };
 
@@ -22,11 +24,13 @@ public partial class AspNetCorePlugin
         protected Queue<IActivity> _queue = [];
 
         private readonly System.Action _flush;
+        private DateTime? _closedAt;
+        private MessageActivity? _result;
 
         public Stream()
         {
             Func<Task> flush = Flush;
-            _flush = flush.Debounce();
+            _flush = flush.Debounce(1);
         }
 
         public void Emit(MessageActivity activity)
@@ -48,9 +52,10 @@ public partial class AspNetCorePlugin
 
         public async Task<MessageActivity> Close()
         {
+            if (_result != null) return _result;
             while (_id == null || _queue.Count > 0)
             {
-                await Task.Delay(200);
+                await Task.Delay(50);
             }
 
             var activity = new MessageActivity(_text)
@@ -61,7 +66,10 @@ public partial class AspNetCorePlugin
                 .AddStreamFinal();
 
             var res = await Send(activity).Retry();
+            OnChunk(res);
 
+            _result = activity;
+            _closedAt = DateTime.Now;
             _index = 0;
             _id = null;
             _text = string.Empty;
@@ -75,7 +83,6 @@ public partial class AspNetCorePlugin
         protected async Task Flush()
         {
             if (_queue.Count == 0) return;
-
             while (_queue.TryDequeue(out var activity))
             {
                 if (activity is MessageActivity message)
@@ -99,12 +106,9 @@ public partial class AspNetCorePlugin
                 toSend.WithId(_id);
             }
 
-            var res = await Send(toSend).Retry();
-
-            if (_id == null)
-            {
-                _id = res.Id;
-            }
+            var res = await Send(toSend).Retry(delay: 50);
+            OnChunk(res);
+            _id ??= res.Id;
         }
     }
 }

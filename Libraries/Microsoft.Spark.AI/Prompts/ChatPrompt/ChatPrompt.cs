@@ -6,6 +6,7 @@ using Json.Schema.Generation;
 using Microsoft.Spark.AI.Annotations;
 using Microsoft.Spark.AI.Messages;
 using Microsoft.Spark.AI.Models;
+using Microsoft.Spark.Common.Logging;
 
 namespace Microsoft.Spark.AI.Prompts;
 
@@ -17,32 +18,58 @@ namespace Microsoft.Spark.AI.Prompts;
 public interface IChatPrompt<TOptions> : IPrompt<TOptions>
 {
     /// <summary>
+    /// register an error handler
+    /// </summary>
+    public IChatPrompt<TOptions> OnError(Action<Exception> onError);
+
+    /// <summary>
+    /// register an error handler
+    /// </summary>
+    public IChatPrompt<TOptions> OnError(Func<Exception, Task> onError);
+
+    /// <summary>
     /// send a message via the prompt using string content
     /// </summary>
     /// <param name="text">the message text</param>
+    /// <param name="options">the request options</param>
+    /// <param name="onChunk">
+    /// the stream chunk handler (if notnull streaming is enabled)
+    /// </param>
     /// <returns>the models response</returns>
-    public Task<ModelMessage<string>> Send(string text, RequestOptions? options = null);
+    public Task<ModelMessage<string>> Send(string text, RequestOptions? options = null, OnStreamChunk? onChunk = null);
 
     /// <summary>
     /// send a message via the prompt using content blocks
     /// </summary>
     /// <param name="content">the message content</param>
+    /// <param name="options">the request options</param>
+    /// <param name="onChunk">
+    /// the stream chunk handler (if notnull streaming is enabled)
+    /// </param>
     /// <returns>the models response</returns>
-    public Task<ModelMessage<string>> Send(IContent[] content, RequestOptions? options = null);
+    public Task<ModelMessage<string>> Send(IContent[] content, RequestOptions? options = null, OnStreamChunk? onChunk = null);
 
     /// <summary>
     /// send a message via the prompt
     /// </summary>
     /// <param name="message">the message to send</param>
+    /// <param name="options">the request options</param>
+    /// <param name="onChunk">
+    /// the stream chunk handler (if notnull streaming is enabled)
+    /// </param>
     /// <returns>the models response</returns>
-    public Task<ModelMessage<string>> Send(UserMessage<string> message, RequestOptions? options = null);
+    public Task<ModelMessage<string>> Send(UserMessage<string> message, RequestOptions? options = null, OnStreamChunk? onChunk = null);
 
     /// <summary>
     /// send a message via the prompt
     /// </summary>
     /// <param name="message">the message to send</param>
+    /// <param name="options">the request options</param>
+    /// <param name="onChunk">
+    /// the stream chunk handler (if notnull streaming is enabled)
+    /// </param>
     /// <returns>the models response</returns>
-    public Task<ModelMessage<string>> Send(UserMessage<IEnumerable<IContent>> message, RequestOptions? options = null);
+    public Task<ModelMessage<string>> Send(UserMessage<IEnumerable<IContent>> message, RequestOptions? options = null, OnStreamChunk? onChunk = null);
 
     /// <summary>
     /// options to send when invoking a prompt
@@ -58,13 +85,6 @@ public interface IChatPrompt<TOptions> : IPrompt<TOptions>
         /// the model request options
         /// </summary>
         public TOptions? Request { get; set; }
-
-        /// <summary>
-        /// the handler called when a stream chunk is
-        /// emitted by the model.
-        /// If not null, streaming is enabled.
-        /// </summary>
-        public Func<string, Task>? OnChunk { get; set; }
     }
 }
 
@@ -82,16 +102,20 @@ public partial class ChatPrompt<TOptions> : IChatPrompt<TOptions>
 
     protected IChatModel<TOptions> Model { get; }
     protected ITemplate? Template { get; }
+    protected ILogger Logger { get; }
+    protected event EventHandler<Exception> ErrorEvent;
 
     public ChatPrompt(IChatModel<TOptions> model, ChatPromptOptions? options = null)
     {
         options ??= new();
-        Name = options.Name ?? "chat";
+        Name = options.Name ?? "Chat";
         Description = options.Description ?? "an agent you can chat with";
         Model = model;
         Template = options.Instructions;
         Messages = options.Messages ?? [];
         Functions = new();
+        Logger = (options.Logger ?? new ConsoleLogger<ChatPrompt<TOptions>>()).Child($"AI.{Name}");
+        ErrorEvent = (_, ex) => Logger.Error(ex);
     }
 
     /// <summary>
