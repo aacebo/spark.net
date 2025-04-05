@@ -75,6 +75,12 @@ public static class HostApplicationBuilderExtensions
         return builder;
     }
 
+    public static IHostApplicationBuilder AddSparkPlugin<TPlugin>(this IHostApplicationBuilder builder) where TPlugin : class, IPlugin
+    {
+        builder.Services.AddSparkPlugin<TPlugin>();
+        return builder;
+    }
+
     public static IHostApplicationBuilder AddSparkPlugin<TPlugin>(this IHostApplicationBuilder builder, TPlugin plugin) where TPlugin : class, IPlugin
     {
         builder.Services.AddSparkPlugin(plugin);

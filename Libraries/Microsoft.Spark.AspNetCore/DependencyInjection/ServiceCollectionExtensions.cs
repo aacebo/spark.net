@@ -19,7 +19,7 @@ public static class ServiceCollectionExtensions
         collection.AddSingleton<IApp>(app);
         collection.AddHostedService<SparkService>();
         collection.AddScoped<SparkContext>();
-        return collection.AddSparkPlugin<AspNetCorePlugin>();
+        return collection.AddSparkPlugin(new AspNetCorePlugin(collection.BuildServiceProvider()));
     }
 
     public static IServiceCollection AddSpark(this IServiceCollection collection, IAppBuilder builder)
@@ -34,7 +34,7 @@ public static class ServiceCollectionExtensions
         collection.AddSingleton(app);
         collection.AddHostedService<SparkService>();
         collection.AddScoped<SparkContext>();
-        return collection.AddSparkPlugin<AspNetCorePlugin>();
+        return collection.AddSparkPlugin(new AspNetCorePlugin(collection.BuildServiceProvider()));
     }
 
     public static IServiceCollection AddSpark(this IServiceCollection collection, IApp app)
@@ -48,7 +48,7 @@ public static class ServiceCollectionExtensions
         collection.AddSingleton(app);
         collection.AddHostedService<SparkService>();
         collection.AddScoped<SparkContext>();
-        return collection.AddSparkPlugin<AspNetCorePlugin>();
+        return collection.AddSparkPlugin(new AspNetCorePlugin(collection.BuildServiceProvider()));
     }
 
     public static IServiceCollection AddSpark(this IServiceCollection collection, Func<IServiceProvider, IApp> factory)
@@ -73,7 +73,7 @@ public static class ServiceCollectionExtensions
             return app.Storage;
         });
 
-        return collection.AddSparkPlugin<AspNetCorePlugin>();
+        return collection.AddSparkPlugin(new AspNetCorePlugin(collection.BuildServiceProvider()));
     }
 
     public static IServiceCollection AddSpark(this IServiceCollection collection, Func<IServiceProvider, Task<IApp>> factory)
@@ -98,7 +98,7 @@ public static class ServiceCollectionExtensions
             return app.Storage;
         });
 
-        return collection.AddSparkPlugin<AspNetCorePlugin>();
+        return collection.AddSparkPlugin(new AspNetCorePlugin(collection.BuildServiceProvider()));
     }
 
     public static IServiceCollection AddSparkPlugin<TPlugin>(this IServiceCollection collection) where TPlugin : class, IPlugin

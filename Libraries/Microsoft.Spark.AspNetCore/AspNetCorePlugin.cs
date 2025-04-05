@@ -32,7 +32,7 @@ public partial class AspNetCorePlugin : ISender
     public event IPlugin.ActivityEventHandler ActivityEvent = (_, _, _) => Task.FromResult<Response?>(null);
 
     
-    private SparkContext _context => _services.GetService<SparkContext>() ?? throw new Exception("failed to retrieve SparkContext");
+    private SparkContext _context => _services.GetRequiredService<SparkContext>();
     private readonly IServiceProvider _services;
 
     public AspNetCorePlugin(IServiceProvider provider)
@@ -127,15 +127,20 @@ public partial class AspNetCorePlugin : ISender
             var authHeader = context.Request.Headers.Authorization.FirstOrDefault() ?? throw new UnauthorizedAccessException();
             var token = new JsonWebToken(authHeader.Replace("Bearer ", ""));
             var activity = await JsonSerializer.DeserializeAsync<Activity>(context.Request.Body) ?? throw new BadHttpRequestException("could not read json activity payload");
-            var res = await ActivityEvent(this, token, activity) ?? new Response(System.Net.HttpStatusCode.OK);
 
+            _context.Http = context;
+            _context.Token = token;
+
+            var res = await ActivityEvent(this, token, activity) ?? new Response(System.Net.HttpStatusCode.OK);
             Logger.Debug(res);
+
             return TypedResults.Json(res.Body, statusCode: (int)res.Status);
         }
         catch (Exception err)
         {
+            Logger.Error(err);
             await ErrorEvent(this, err);
-            return TypedResults.InternalServerError(err);
+            return TypedResults.InternalServerError(err.ToString());
         }
     }
 }
