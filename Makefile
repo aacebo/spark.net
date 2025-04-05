@@ -12,3 +12,6 @@ samples_echo_run:
 
 samples_auth_run:
 	dotnet run --project Samples/Samples.Auth
+
+samples_lights_run:
+	dotnet run --project Samples/Samples.Lights

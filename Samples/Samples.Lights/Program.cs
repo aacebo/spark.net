@@ -14,47 +14,18 @@ var model = new Chat("gpt-4o", apiKey);
 builder.Services.AddSingleton<LightsPrompt>();
 builder.Services.AddSingleton(provider =>
 {
-    var lightsPrompt = provider.GetService<LightsPrompt>() ?? throw new Exception("LightsPrompt not found");
+    var lightsPrompt = provider.GetRequiredService<LightsPrompt>();
     return ChatPrompt<ChatCompletionOptions>.From(model, lightsPrompt);
 });
 
 builder.AddSpark(App.Builder().AddLogger(level: Microsoft.Spark.Common.Logging.LogLevel.Debug));
 
 var app = builder.Build();
-var spark = app.Services.GetService<IApp>()!;
+var spark = app.UseSpark();
 
 spark.OnMessage(async context =>
 {
-    var state = (State?)context.Storage.Get(context.Activity.From.Id) ?? new State();
-    var prompt = new ChatPrompt<ChatCompletionOptions>(
-        model,
-        new ChatPromptOptions().WithInstructions(
-        [
-            "The following is a conversation with an AI assistant.",
-            "The assistant can turn the lights on or off.",
-            "The lights are currently off."
-        ])
-    ).Function(
-        "get_light_status",
-        "get the current light status",
-        (_) => Task.FromResult(state.Status)
-    ).Function(
-        "lights_on",
-        "turn the lights on",
-        async (_) =>
-        {
-            state.Status = true;
-            await context.Storage.SetAsync(context.Activity.From.Id, state);
-        }
-    ).Function(
-        "lights_off",
-        "turn the lights off",
-        async (_) =>
-        {
-            state.Status = false;
-            await context.Storage.SetAsync(context.Activity.From.Id, state);
-        }
-    );
+    var prompt = app.Services.GetRequiredService<ChatPrompt<ChatCompletionOptions>>();
 
     await prompt.Send(context.Activity.Text, new()
     {
@@ -62,5 +33,4 @@ spark.OnMessage(async context =>
     });
 });
 
-app.UseSpark();
 app.Run();

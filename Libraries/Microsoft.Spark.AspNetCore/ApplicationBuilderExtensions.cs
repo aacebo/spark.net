@@ -7,7 +7,7 @@ namespace Microsoft.Spark.AspNetCore;
 
 public static class ApplicationBuilderExtensions
 {
-    public static IApplicationBuilder UseSpark(this IApplicationBuilder builder)
+    public static IApp UseSpark(this IApplicationBuilder builder)
     {
         var app = builder.ApplicationServices.GetService<IApp>() ?? new App(builder.ApplicationServices.GetService<IAppOptions>());
         var aspNetCore = builder.ApplicationServices.GetRequiredService<AspNetCorePlugin>();
@@ -28,6 +28,6 @@ public static class ApplicationBuilderExtensions
             });
         });
 
-        return builder;
+        return app;
     }
 }

@@ -5,7 +5,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.AddSpark(App.Builder().AddLogger(level: Microsoft.Spark.Common.Logging.LogLevel.Debug));
 
 var app = builder.Build();
-var spark = app.Services.GetService<IApp>()!;
+var spark = app.UseSpark();
 
 spark.OnMessage("/signout", async context =>
 {
@@ -31,5 +31,4 @@ spark.OnMessage(async context =>
     await context.Send($"user '{me!.DisplayName}' is signed in!");
 });
 
-app.UseSpark();
 app.Run();

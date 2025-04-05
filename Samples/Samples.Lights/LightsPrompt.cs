@@ -1,5 +1,5 @@
 using Microsoft.Spark.AI.Annotations;
-using Microsoft.Spark.Common.Storage;
+using Microsoft.Spark.AspNetCore;
 
 namespace Samples.Lights;
 
@@ -12,11 +12,11 @@ namespace Samples.Lights;
 )]
 public class LightsPrompt
 {
-    protected IStorage<string, object> _storage;
+    protected SparkContext _context;
 
-    public LightsPrompt(IStorage<string, object> storage)
+    public LightsPrompt(SparkContext context)
     {
-        _storage = storage;
+        _context = context;
     }
 
     [Function]
