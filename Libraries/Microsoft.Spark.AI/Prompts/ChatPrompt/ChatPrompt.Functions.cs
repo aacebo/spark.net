@@ -1,3 +1,5 @@
+using Humanizer;
+
 using Json.Schema;
 
 namespace Microsoft.Spark.AI.Prompts;
@@ -78,27 +80,63 @@ public partial class ChatPrompt<TOptions>
         return this;
     }
 
-    public Task<object?> Invoke(string name, object? args = null)
+    public async Task<object?> Invoke(string name, object? args = null)
     {
-        var function = Functions.Get(name);
+        var function = Functions.Get(name) ?? throw new NotImplementedException();
+        var logger = Logger.Child($"Functions.{name}");
 
-        if (function == null)
+        if (function is Function func)
         {
-            return Task.FromResult<object?>(null);
+            foreach (var plugin in ChatPlugins)
+            {
+                args = await plugin.OnBeforeFunctionCall(this, func, args);
+            }
+
+            var startedAt = DateTime.Now;
+            logger.Debug(args);
+            var res = await func.Invoke(args);
+            var endedAt = DateTime.Now;
+            logger.Debug(res);
+            logger.Debug($"elapse time: {(endedAt - startedAt).Humanize(3)}");
+
+            foreach (var plugin in ChatPlugins)
+            {
+                res = await plugin.OnAfterFunctionCall(this, func, res);
+            }
+
+            return res;
         }
 
-        return function is Function func ? func.Invoke(args) : throw new InvalidDataException();
+        return Task.FromResult<object?>(null);
     }
 
-    public Task<object?> Invoke<T>(string name, T args)
+    public async Task<object?> Invoke<T>(string name, T args)
     {
-        var function = Functions.Get(name);
+        var function = Functions.Get(name) ?? throw new NotImplementedException();
+        var logger = Logger.Child($"Functions.{name}");
 
-        if (function == null)
+        if (function is Function<T> func)
         {
-            return Task.FromResult<object?>(null);
+            foreach (var plugin in ChatPlugins)
+            {
+                args = await plugin.OnBeforeFunctionCall(this, func, args);
+            }
+
+            var startedAt = DateTime.Now;
+            logger.Debug(args);
+            var res = await func.Invoke(args);
+            var endedAt = DateTime.Now;
+            logger.Debug(res);
+            logger.Debug($"elapse time: {(endedAt - startedAt).Humanize(3)}");
+
+            foreach (var plugin in ChatPlugins)
+            {
+                res = await plugin.OnAfterFunctionCall(this, func, res);
+            }
+
+            return res;
         }
 
-        return function is Function<T> func ? func.Invoke(args) : throw new InvalidDataException();
+        return Task.FromResult<object?>(null);
     }
 }

@@ -14,6 +14,21 @@ public interface IStreamer
     public bool Closed { get; }
 
     /// <summary>
+    /// the total number of chunks queued to be sent
+    /// </summary>
+    public int Count { get; }
+
+    /// <summary>
+    /// the sequence number, representing the
+    /// number of stream activities sent
+    /// </summary>
+    /// <remarks>
+    /// several chunks can be aggregated into one
+    /// stream activity due to differences in Api rate limits
+    /// </remarks>
+    public int Sequence { get; }
+
+    /// <summary>
     /// event emitted on each chunk send
     /// </summary>
     public event OnChunkHandler OnChunk;

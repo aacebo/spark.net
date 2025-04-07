@@ -14,17 +14,19 @@ namespace Samples.Lights;
 )]
 public class LightsPrompt
 {
-    protected IContext<IActivity> _context;
+    private IContext<IActivity> Context => _services.GetSparkContext();
+    private readonly IServiceProvider _services;
 
-    public LightsPrompt(SparkContext context)
+    public LightsPrompt(IServiceProvider provider)
     {
-        _context = context.Activity;
+        _services = provider;
     }
 
     [Function]
     [Function.Description("get the current light status")]
     public bool GetLightStatus()
     {
+        Console.WriteLine(Context.Activity);
         return false;
     }
 
@@ -32,7 +34,7 @@ public class LightsPrompt
     [Function.Description("turn the lights on")]
     public void LightsOn()
     {
-    
+
     }
 
     [Function]

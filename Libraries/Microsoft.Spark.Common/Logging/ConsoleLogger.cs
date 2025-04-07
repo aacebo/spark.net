@@ -1,4 +1,5 @@
 
+using System.Reflection;
 using System.Text.RegularExpressions;
 
 namespace Microsoft.Spark.Common.Logging;
@@ -11,9 +12,9 @@ public partial class ConsoleLogger : ILogger
 
     protected Regex _pattern;
 
-    public ConsoleLogger(string name, LogLevel level = LogLevel.Info)
+    public ConsoleLogger(string? name = null, LogLevel level = LogLevel.Info)
     {
-        Name = name;
+        Name = name ?? Assembly.GetEntryAssembly()?.GetName().Name ?? "Microsoft.Spark";
         Level = level;
         _pattern = ParseMagicExpression(Environment.GetEnvironmentVariable("LOG") ?? "*");
     }

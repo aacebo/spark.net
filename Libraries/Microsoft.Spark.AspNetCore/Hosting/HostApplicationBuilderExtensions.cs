@@ -29,11 +29,13 @@ public static class HostApplicationBuilderExtensions
 
         // client credentials
         if (options.Credentials == null && settings?.ClientId != null && settings?.ClientSecret != null)
+        {
             options.Credentials = new ClientCredentials(
                 settings.ClientId,
                 settings.ClientSecret,
                 settings.TenantId
             );
+        }
 
         var app = new App(options);
 
@@ -48,11 +50,13 @@ public static class HostApplicationBuilderExtensions
 
         // client credentials
         if (settings?.ClientId != null && settings?.ClientSecret != null)
+        {
             appBuilder = appBuilder.AddCredentials(new ClientCredentials(
                 settings.ClientId,
                 settings.ClientSecret,
                 settings.TenantId
             ));
+        }
 
         var app = appBuilder.Build();
 

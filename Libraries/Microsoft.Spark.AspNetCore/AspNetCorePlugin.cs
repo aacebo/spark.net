@@ -31,8 +31,7 @@ public partial class AspNetCorePlugin : ISender
     public event IPlugin.ErrorEventHandler ErrorEvent = (_, _) => Task.Run(() => { });
     public event IPlugin.ActivityEventHandler ActivityEvent = (_, _, _) => Task.FromResult<Response?>(null);
 
-
-    private SparkContext _context => _services.GetRequiredService<SparkContext>();
+    private SparkHttpContext Context => _services.GetRequiredService<SparkHttpContext>();
     private readonly IServiceProvider _services;
 
     public AspNetCorePlugin(IServiceProvider provider)
@@ -57,7 +56,7 @@ public partial class AspNetCorePlugin : ISender
 
     public Task OnActivity(IApp app, IContext<IActivity> context)
     {
-        _context.Activity = context;
+        Context.Activity = context;
         return Task.Run(() => Logger.Debug("OnActivity"));
     }
 
@@ -73,7 +72,7 @@ public partial class AspNetCorePlugin : ISender
 
     public Task OnActivityResponse(IApp app, Response? response, IContext<IActivity> context)
     {
-        _context.Response = response;
+        Context.Response = response;
         return Task.Run(() => Logger.Debug("OnActivityResponse"));
     }
 
@@ -127,9 +126,8 @@ public partial class AspNetCorePlugin : ISender
             var authHeader = context.Request.Headers.Authorization.FirstOrDefault() ?? throw new UnauthorizedAccessException();
             var token = new JsonWebToken(authHeader.Replace("Bearer ", ""));
             var activity = await JsonSerializer.DeserializeAsync<Activity>(context.Request.Body) ?? throw new BadHttpRequestException("could not read json activity payload");
-
-            _context.Http = context;
-            _context.Token = token;
+            var sparkContext = context.RequestServices.GetRequiredService<SparkHttpContext>();
+            sparkContext.Token = token;
 
             var res = await ActivityEvent(this, token, activity) ?? new Response(System.Net.HttpStatusCode.OK);
             Logger.Debug(res);

@@ -11,6 +11,8 @@ public partial class AspNetCorePlugin
     public class Stream : IStreamer
     {
         public bool Closed => _closedAt != null;
+        public int Count => _count;
+        public int Sequence => _index;
 
         public required Func<IActivity, Task<IActivity>> Send { get; set; }
         public event IStreamer.OnChunkHandler OnChunk = (_) => { };
@@ -25,6 +27,7 @@ public partial class AspNetCorePlugin
 
         private readonly System.Action _flush;
         private DateTime? _closedAt;
+        private int _count = 0;
         private MessageActivity? _result;
 
         public Stream()
@@ -55,6 +58,7 @@ public partial class AspNetCorePlugin
             if (_result != null) return _result;
             while (_id == null || _queue.Count > 0)
             {
+                _flush();
                 await Task.Delay(50);
             }
 
@@ -83,7 +87,10 @@ public partial class AspNetCorePlugin
         protected async Task Flush()
         {
             if (_queue.Count == 0) return;
-            while (_queue.TryDequeue(out var activity))
+
+            var i = 0;
+
+            while (i <= 10 && _queue.TryDequeue(out var activity))
             {
                 if (activity is MessageActivity message)
                 {
@@ -96,7 +103,12 @@ public partial class AspNetCorePlugin
                 {
                     _channelData = _channelData.Merge(activity.ChannelData);
                 }
+
+                i++;
+                _count++;
             }
+
+            if (i == 0) return;
 
             _index++;
             var toSend = new TypingActivity(_text).AddStreamUpdate(_index);

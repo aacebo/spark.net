@@ -25,12 +25,10 @@ public partial class ChatPrompt<TOptions>
     /// <param name="prompt">the chat prompt</param>
     public ChatPrompt<TOptions> Chain(IChatPrompt<TOptions> prompt)
     {
-        var schema = new JsonSchemaBuilder().FromType<Args>().Build();
-
         Functions.Add(new Function<Args>(
             prompt.Name,
             prompt.Description,
-            schema,
+            new JsonSchemaBuilder().FromType<Args>().Build(),
             async (args) =>
             {
                 var res = await prompt.Send(args.Text);

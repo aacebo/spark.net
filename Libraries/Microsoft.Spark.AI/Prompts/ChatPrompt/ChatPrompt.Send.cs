@@ -75,6 +75,11 @@ public partial class ChatPrompt<TOptions>
         {
             Logger.Debug(message);
 
+            foreach (var plugin in Plugins)
+            {
+                message = await plugin.OnBeforeSend(this, message, requestOptions.Options);
+            }
+
             if (onChunk == null)
             {
                 res = await Model.Send(message, requestOptions);
@@ -85,6 +90,12 @@ public partial class ChatPrompt<TOptions>
             }
 
             Logger.Debug(res);
+
+            foreach (var plugin in Plugins)
+            {
+                res = (ModelMessage<string>)await plugin.OnAfterSend(this, res, requestOptions.Options);
+            }
+
             return res;
         }
         catch (Exception ex)

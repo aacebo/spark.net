@@ -1,5 +1,3 @@
-using System.Reflection;
-
 using Microsoft.Spark.Apps.Plugins;
 
 namespace Microsoft.Spark.Apps;
@@ -44,7 +42,6 @@ public partial class AppBuilder : IAppBuilder
 
     public IAppBuilder AddLogger(string? name = null, Common.Logging.LogLevel level = Common.Logging.LogLevel.Info)
     {
-        name ??= Assembly.GetEntryAssembly()?.GetName().Name ?? "@Spark";
         _options.Logger = new Common.Logging.ConsoleLogger(name, level);
         return this;
     }

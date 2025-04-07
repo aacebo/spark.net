@@ -1,5 +1,3 @@
-using System.Reflection;
-
 using Microsoft.Extensions.Logging;
 
 namespace Microsoft.Spark.AspNetCore;
@@ -11,7 +9,6 @@ public class SparkLogger : ILogger, IDisposable
 
     public SparkLogger(string? name = null, Common.Logging.LogLevel level = Common.Logging.LogLevel.Info)
     {
-        name ??= Assembly.GetEntryAssembly()?.GetName().Name ?? "@Spark";
         _logger = new Common.Logging.ConsoleLogger(name, level);
     }
 

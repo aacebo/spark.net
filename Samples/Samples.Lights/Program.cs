@@ -11,8 +11,9 @@ var builder = WebApplication.CreateBuilder(args);
 var apiKey = builder.Configuration.GetRequiredSection("OpenAI").GetValue<string>("ApiKey") ?? throw new Exception("OpenAI.ApiKey is required");
 var model = new Chat("gpt-4o", apiKey);
 
-builder.Services.AddSingleton<LightsPrompt>();
-builder.Services.AddSingleton(provider =>
+builder.AddSpark(App.Builder().AddLogger(level: Microsoft.Spark.Common.Logging.LogLevel.Debug));
+builder.Services.AddScoped<LightsPrompt>();
+builder.Services.AddScoped(provider =>
 {
     var logger = provider.GetRequiredService<Microsoft.Spark.Common.Logging.ILogger>();
     var lightsPrompt = provider.GetRequiredService<LightsPrompt>();
@@ -21,8 +22,6 @@ builder.Services.AddSingleton(provider =>
     prompt.OnError(ex => logger.Error(ex.ToString()));
     return prompt;
 });
-
-builder.AddSpark(App.Builder().AddLogger(level: Microsoft.Spark.Common.Logging.LogLevel.Debug));
 
 var app = builder.Build();
 var spark = app.UseSpark();

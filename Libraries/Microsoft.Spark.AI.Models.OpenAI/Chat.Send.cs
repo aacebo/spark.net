@@ -1,8 +1,6 @@
 using System.Text;
 using System.Text.Json;
 
-using Humanizer;
-
 using Microsoft.Spark.AI.Messages;
 using Microsoft.Spark.AI.Models.OpenAI.Builders;
 
@@ -144,8 +142,6 @@ public partial class Chat
             foreach (var call in modelMessage.FunctionCalls ?? [])
             {
                 var logger = Logger.Child($"Tools.{call.Name}");
-                var startedAt = DateTime.Now;
-
                 logger.Debug(call.Arguments);
                 string? content;
 
@@ -153,11 +149,9 @@ public partial class Chat
                 {
                     var args = call.Parse();
                     var res = await options.Invoke(call.Name, args);
-                    var endedAt = DateTime.Now;
 
                     content = res is string asString ? asString : JsonSerializer.Serialize(res);
                     logger.Debug(content);
-                    logger.Debug($"elapse time: {(endedAt - startedAt).Humanize(3)}");
                 }
                 catch (Exception ex)
                 {

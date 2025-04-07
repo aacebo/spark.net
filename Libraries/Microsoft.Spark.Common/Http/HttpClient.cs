@@ -1,5 +1,4 @@
 using System.Net.Http.Json;
-using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -27,7 +26,7 @@ public class HttpClient : IHttpClient
     public HttpClient()
     {
         _client = new System.Net.Http.HttpClient();
-        _logger = new ConsoleLogger(Assembly.GetEntryAssembly()?.GetName().Name ?? "@Spark").Child("Http.Client");
+        _logger = new ConsoleLogger().Child("Http.Client");
         Options = new HttpClientOptions();
         Options.Apply(_client);
     }
@@ -35,7 +34,7 @@ public class HttpClient : IHttpClient
     public HttpClient(IHttpClientOptions options)
     {
         _client = new System.Net.Http.HttpClient();
-        _logger = options.Logger?.Child("Http.Client") ?? new ConsoleLogger(Assembly.GetEntryAssembly()?.GetName().Name ?? "@Spark").Child("Http.Client");
+        _logger = options.Logger?.Child("Http.Client") ?? new ConsoleLogger().Child("Http.Client");
         Options = options;
         Options.Apply(_client);
     }
@@ -43,7 +42,7 @@ public class HttpClient : IHttpClient
     public HttpClient(System.Net.Http.HttpClient client)
     {
         _client = client;
-        _logger = new ConsoleLogger(Assembly.GetEntryAssembly()?.GetName().Name ?? "@Spark").Child("Http.Client");
+        _logger = new ConsoleLogger().Child("Http.Client");
         Options = new HttpClientOptions();
         Options.Apply(_client);
     }

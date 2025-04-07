@@ -80,7 +80,7 @@ public partial class App : IApp
 
     public App(IAppOptions? options = null)
     {
-        Logger = options?.Logger ?? new ConsoleLogger(Assembly.GetEntryAssembly()?.GetName().Name ?? "@Spark");
+        Logger = options?.Logger ?? new ConsoleLogger();
         Storage = options?.Storage ?? new LocalStorage<object>();
         Client = options?.Client ?? options?.ClientFactory?.CreateClient() ?? new Common.Http.HttpClient();
         Client.Options.TokenFactory = () => BotToken;
