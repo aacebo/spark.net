@@ -7,6 +7,9 @@ build:
 test:
 	dotnet test
 
+clean:
+	dotnet clean
+
 samples_echo_run:
 	dotnet run --project Samples/Samples.Echo
 
