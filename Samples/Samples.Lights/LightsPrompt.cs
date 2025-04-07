@@ -26,21 +26,26 @@ public class LightsPrompt
     [Function.Description("get the current light status")]
     public bool GetLightStatus()
     {
-        Console.WriteLine(Context.Activity);
-        return false;
+        return State.From(Context).Status;
     }
 
     [Function]
     [Function.Description("turn the lights on")]
-    public void LightsOn()
+    public string LightsOn()
     {
-
+        var state = State.From(Context);
+        state.Status = true;
+        state.Save(Context);
+        return "the lights are now on";
     }
 
     [Function]
     [Function.Description("turn the lights off")]
-    public void LightsOff()
+    public string LightsOff()
     {
-
+        var state = State.From(Context);
+        state.Status = false;
+        state.Save(Context);
+        return "the lights are now off";
     }
 }

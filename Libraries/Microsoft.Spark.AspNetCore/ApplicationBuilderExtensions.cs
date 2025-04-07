@@ -25,6 +25,7 @@ public static class ApplicationBuilderExtensions
             {
                 var res = await aspNetCore.OnMessage(context);
                 await res.ExecuteAsync(context);
+                context.Connection.RequestClose();
             });
         });
 

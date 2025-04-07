@@ -24,6 +24,7 @@ public class ModelMessage<T> : IMessage
     [JsonPropertyOrder(2)]
     public IList<FunctionCall>? FunctionCalls { get; set; }
 
+    [JsonIgnore]
     public bool HasFunctionCalls => FunctionCalls != null && FunctionCalls.Count > 0;
 
     [JsonConstructor]

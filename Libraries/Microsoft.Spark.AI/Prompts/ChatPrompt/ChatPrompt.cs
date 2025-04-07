@@ -116,7 +116,7 @@ public partial class ChatPrompt<TOptions> : IChatPrompt<TOptions>
         Template = options.Instructions;
         Messages = options.Messages ?? [];
         Functions = new();
-        Logger = (options.Logger ?? new ConsoleLogger<ChatPrompt<TOptions>>()).Child($"AI.{Name}");
+        Logger = (options.Logger ?? new ConsoleLogger()).Child($"AI.{Name}");
         Plugins = [];
         ErrorEvent = (_, ex) => Logger.Error(ex);
     }
@@ -128,7 +128,6 @@ public partial class ChatPrompt<TOptions> : IChatPrompt<TOptions>
     /// <param name="model">the model to use</param>
     /// <param name="value">the class instance to use</param>
     /// <returns>a ChatPrompt</returns>
-    /// <exception cref="Exception"></exception>
     public static ChatPrompt<TOptions> From<T>(IChatModel<TOptions> model, T value) where T : class
     {
         var type = value.GetType();

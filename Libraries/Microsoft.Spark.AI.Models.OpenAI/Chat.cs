@@ -1,11 +1,26 @@
 ﻿using System.ClientModel;
 
+using Microsoft.Spark.AI.Prompts;
 using Microsoft.Spark.Common.Logging;
 
 using OpenAI;
 using OpenAI.Chat;
 
 namespace Microsoft.Spark.AI.Models.OpenAI;
+
+public class OpenAIChatPrompt : ChatPrompt<ChatCompletionOptions>
+{
+    public OpenAIChatPrompt(Chat model, ChatPromptOptions? options = null) : base(model, options)
+    {
+
+    }
+
+    public static IChatPrompt<ChatCompletionOptions> From<T>(Chat model, T value) where T : class
+    {
+        return ChatPrompt<ChatCompletionOptions>.From(model, value);
+    }
+}
+
 
 public partial class Chat : IChatModel<ChatCompletionOptions>
 {
@@ -38,7 +53,7 @@ public partial class Chat : IChatModel<ChatCompletionOptions>
         Model = model;
         Client = new(new ApiKeyCredential(apiKey), options ?? new());
         ChatClient = Client.GetChatClient(model);
-        Logger = (options?.Logger ?? new ConsoleLogger<Chat>()).Child(model);
+        Logger = (options?.Logger ?? new ConsoleLogger()).Child(model);
     }
 
     public Chat(string model, ApiKeyCredential apiKey, Options? options = null)
@@ -46,6 +61,6 @@ public partial class Chat : IChatModel<ChatCompletionOptions>
         Model = model;
         Client = new(apiKey, options ?? new());
         ChatClient = Client.GetChatClient(model);
-        Logger = (options?.Logger ?? new ConsoleLogger<Chat>()).Child(model);
+        Logger = (options?.Logger ?? new ConsoleLogger()).Child(model);
     }
 }
