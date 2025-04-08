@@ -4,9 +4,9 @@ namespace Microsoft.Spark.AspNetCore;
 
 public static class LoggingFactoryExtensions
 {
-    public static ILoggerFactory AddSpark(this ILoggerFactory factory, string? name = null, Common.Logging.LogLevel level = Common.Logging.LogLevel.Info)
+    public static ILoggerFactory AddSpark(this ILoggerFactory factory, string? name = null, Common.Logging.LoggingSettings? settings = null)
     {
-        factory.AddProvider(new SparkLoggerProvider(new SparkLogger(name, level)));
+        factory.AddProvider(new SparkLoggerProvider(new SparkLogger(name, settings)));
         return factory;
     }
 

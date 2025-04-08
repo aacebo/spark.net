@@ -4,7 +4,7 @@ using OpenAI;
 
 namespace Microsoft.Spark.AI.Models.OpenAI;
 
-public partial class Chat
+public partial class OpenAIChatModel
 {
     /// <summary>
     /// the model options

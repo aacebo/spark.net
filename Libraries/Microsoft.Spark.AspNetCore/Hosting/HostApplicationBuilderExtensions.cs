@@ -1,7 +1,9 @@
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Spark.Api.Auth;
 using Microsoft.Spark.Apps;
 using Microsoft.Spark.Apps.Plugins;
+using Microsoft.Spark.Common.Logging;
 
 namespace Microsoft.Spark.AspNetCore;
 
@@ -9,15 +11,19 @@ public static class HostApplicationBuilderExtensions
 {
     public static IHostApplicationBuilder AddSpark(this IHostApplicationBuilder builder)
     {
-        var app = new App();
+        var settings = builder.Configuration.GetSpark();
 
+        builder.Services.AddSingleton(settings);
         builder.Logging.AddSpark(app.Logger);
-        builder.Services.AddSpark(app);
+        builder.Services.AddSpark();
         return builder;
     }
 
     public static IHostApplicationBuilder AddSpark(this IHostApplicationBuilder builder, IApp app)
     {
+        var settings = builder.Configuration.GetSpark();
+
+        builder.Services.AddSingleton(settings);
         builder.Logging.AddSpark(app.Logger);
         builder.Services.AddSpark(app);
         return builder;
@@ -28,7 +34,7 @@ public static class HostApplicationBuilderExtensions
         var settings = builder.Configuration.GetSpark();
 
         // client credentials
-        if (options.Credentials == null && settings?.ClientId != null && settings?.ClientSecret != null)
+        if (options.Credentials == null && settings.ClientId != null && settings.ClientSecret != null)
         {
             options.Credentials = new ClientCredentials(
                 settings.ClientId,
@@ -37,8 +43,10 @@ public static class HostApplicationBuilderExtensions
             );
         }
 
+        options.Logger ??= new ConsoleLogger(settings.Logging);
         var app = new App(options);
 
+        builder.Services.AddSingleton(settings);
         builder.Logging.AddSpark(app.Logger);
         builder.Services.AddSpark(app);
         return builder;
@@ -49,7 +57,7 @@ public static class HostApplicationBuilderExtensions
         var settings = builder.Configuration.GetSpark();
 
         // client credentials
-        if (settings?.ClientId != null && settings?.ClientSecret != null)
+        if (settings.ClientId != null && settings.ClientSecret != null)
         {
             appBuilder = appBuilder.AddCredentials(new ClientCredentials(
                 settings.ClientId,
@@ -60,6 +68,7 @@ public static class HostApplicationBuilderExtensions
 
         var app = appBuilder.Build();
 
+        builder.Services.AddSingleton(settings);
         builder.Logging.AddSpark(app.Logger);
         builder.Services.AddSpark(app);
         return builder;
@@ -67,6 +76,9 @@ public static class HostApplicationBuilderExtensions
 
     public static IHostApplicationBuilder AddSpark(this IHostApplicationBuilder builder, Func<IServiceProvider, IApp> factory)
     {
+        var settings = builder.Configuration.GetSpark();
+
+        builder.Services.AddSingleton(settings);
         builder.Logging.AddSpark();
         builder.Services.AddSpark(factory);
         return builder;
@@ -74,6 +86,9 @@ public static class HostApplicationBuilderExtensions
 
     public static IHostApplicationBuilder AddSpark(this IHostApplicationBuilder builder, Func<IServiceProvider, Task<IApp>> factory)
     {
+        var settings = builder.Configuration.GetSpark();
+
+        builder.Services.AddSingleton(settings);
         builder.Logging.AddSpark();
         builder.Services.AddSpark(factory);
         return builder;

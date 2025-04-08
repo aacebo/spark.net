@@ -4,8 +4,8 @@ namespace Microsoft.Spark.AspNetCore;
 
 public static class ConfigurationExtensions
 {
-    public static SparkSettings? GetSpark(this IConfiguration configuration)
+    public static SparkSettings GetSpark(this IConfiguration configuration)
     {
-        return configuration.GetSection("Spark").Get<SparkSettings>();
+        return configuration.GetSection("Spark").Get<SparkSettings>() ?? new();
     }
 }

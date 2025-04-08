@@ -1,4 +1,3 @@
-
 using System.Reflection;
 using System.Text.RegularExpressions;
 
@@ -17,6 +16,21 @@ public partial class ConsoleLogger : ILogger
         Name = name ?? Assembly.GetEntryAssembly()?.GetName().Name ?? "Microsoft.Spark";
         Level = Environment.GetEnvironmentVariable("LOG_LEVEL")?.ToLogLevel() ?? level;
         _pattern = ParseMagicExpression(Environment.GetEnvironmentVariable("LOG") ?? "*");
+    }
+
+    public ConsoleLogger(LoggingSettings settings)
+    {
+        Name = Assembly.GetEntryAssembly()?.GetName().Name ?? "Microsoft.Spark";
+        Level = settings.Level;
+        _pattern = ParseMagicExpression(settings.Enable);
+    }
+
+    public ConsoleLogger(IServiceProvider provider)
+    {
+        var settings = (LoggingSettings?)provider.GetService(typeof(LoggingSettings)) ?? new();
+        Name = Assembly.GetEntryAssembly()?.GetName().Name ?? "Microsoft.Spark";
+        Level = settings.Level;
+        _pattern = ParseMagicExpression(settings.Enable);
     }
 
     public void Debug(params object?[] args)
@@ -56,7 +70,6 @@ public partial class ConsoleLogger : ILogger
 
     public ILogger SetLevel(LogLevel level)
     {
-        Console.WriteLine(level.ToString());
         Level = level;
         return this;
     }

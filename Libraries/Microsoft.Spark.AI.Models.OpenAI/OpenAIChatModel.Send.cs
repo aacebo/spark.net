@@ -8,7 +8,7 @@ using OpenAI.Chat;
 
 namespace Microsoft.Spark.AI.Models.OpenAI;
 
-public partial class Chat
+public partial class OpenAIChatModel
 {
     public async Task<IMessage> Send(IMessage message, ChatCompletionOptions? options = null)
     {

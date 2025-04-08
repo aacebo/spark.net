@@ -9,6 +9,34 @@ namespace Microsoft.Spark.AspNetCore;
 
 public static class ServiceCollectionExtensions
 {
+    public static IServiceCollection AddSpark(this IServiceCollection collection)
+    {
+        collection.AddSingleton<Common.Logging.ConsoleLogger>();
+        collection.AddSingleton<Common.Logging.ILogger>(provider => provider.GetRequiredService<Common.Logging.ConsoleLogger>());
+        collection.AddSingleton<Common.Storage.LocalStorage<object>>();
+        collection.AddSingleton<Common.Storage.IStorage<string, object>>(provider => provider.GetRequiredService<Common.Storage.LocalStorage<object>>());
+
+        collection.AddSingleton<SparkLogger>();
+        collection.AddSingleton<ILogger>(provider => provider.GetRequiredService<SparkLogger>());
+        collection.AddSingleton<ILoggerFactory>(provider =>
+        {
+            var logger = provider.GetRequiredService<SparkLogger>();
+            return new LoggerFactory([new SparkLoggerProvider(logger)]);
+        });
+
+        collection.AddSingleton<IApp>(provider =>
+        {
+
+        });
+
+        collection.AddHostedService<SparkService>();
+        collection.AddScoped<SparkHttpContext>();
+        collection.AddTransient(provider => provider.GetRequiredService<SparkHttpContext>().Activity);
+        collection.AddSparkPlugin<AspNetCorePlugin>();
+        collection.AddControllers().AddApplicationPart(Assembly.GetExecutingAssembly());
+        return collection;
+    }
+
     public static IServiceCollection AddSpark(this IServiceCollection collection, IAppOptions options)
     {
         var app = new App(options);
@@ -108,7 +136,7 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddSparkPlugin<TPlugin>(this IServiceCollection collection, TPlugin plugin) where TPlugin : class, IPlugin
     {
         collection.AddSingleton(plugin);
-        collection.AddSingleton<IPlugin>(plugin);
+        collection.AddSingleton<IPlugin>(provider => provider.GetRequiredService<TPlugin>());
         return collection.AddHostedService<SparkPluginService<TPlugin>>();
     }
 

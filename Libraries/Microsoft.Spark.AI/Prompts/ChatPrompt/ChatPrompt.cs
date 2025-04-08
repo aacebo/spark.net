@@ -121,6 +121,19 @@ public partial class ChatPrompt<TOptions> : IChatPrompt<TOptions>
         ErrorEvent = (_, ex) => Logger.Error(ex);
     }
 
+    public ChatPrompt(ChatPrompt<TOptions> prompt)
+    {
+        Name = prompt.Name;
+        Description = prompt.Description;
+        Messages = prompt.Messages;
+        Functions = prompt.Functions;
+        Model = prompt.Model;
+        Template = prompt.Template;
+        Logger = prompt.Logger;
+        Plugins = prompt.Plugins;
+        ErrorEvent = prompt.ErrorEvent;
+    }
+
     /// <summary>
     /// create a ChatPrompt from any class
     /// utilizing the ChatPromptAttribute
@@ -128,7 +141,7 @@ public partial class ChatPrompt<TOptions> : IChatPrompt<TOptions>
     /// <param name="model">the model to use</param>
     /// <param name="value">the class instance to use</param>
     /// <returns>a ChatPrompt</returns>
-    public static ChatPrompt<TOptions> From<T>(IChatModel<TOptions> model, T value) where T : class
+    public static ChatPrompt<TOptions> From<T>(IChatModel<TOptions> model, T value, ChatPromptOptions? options = null) where T : class
     {
         var type = value.GetType();
         var promptAttribute = type.GetCustomAttribute<PromptAttribute>();
@@ -144,7 +157,7 @@ public partial class ChatPrompt<TOptions> : IChatPrompt<TOptions>
         var name = promptAttribute.Name ?? nameAttribute?.Name ?? type.Name;
         var description = promptAttribute.Description ?? descriptionAttribute?.Description;
         var instructions = promptAttribute.Instructions ?? instructionsAttribute?.Instructions;
-        var options = new ChatPromptOptions().WithName(name);
+        options ??= new ChatPromptOptions().WithName(name);
 
         if (description != null)
         {
