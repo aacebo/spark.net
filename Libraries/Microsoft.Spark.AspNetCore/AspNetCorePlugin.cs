@@ -1,5 +1,4 @@
 using System.Diagnostics.CodeAnalysis;
-using System.Text.Json;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
@@ -116,29 +115,19 @@ public partial class AspNetCorePlugin : ISender
         };
     }
 
-    internal async Task<IResult> OnMessage(HttpContext context)
+    public async Task<IResult> Do(IToken token, Activity activity)
     {
-        context.Request.EnableBuffering();
-        context.Request.Body.Seek(0, SeekOrigin.Begin);
-
         try
         {
-            var authHeader = context.Request.Headers.Authorization.FirstOrDefault() ?? throw new UnauthorizedAccessException();
-            var token = new JsonWebToken(authHeader.Replace("Bearer ", ""));
-            var activity = await JsonSerializer.DeserializeAsync<Activity>(context.Request.Body) ?? throw new BadHttpRequestException("could not read json activity payload");
-            var sparkContext = context.RequestServices.GetRequiredService<SparkHttpContext>();
-            sparkContext.Token = token;
-
             var res = await ActivityEvent(this, token, activity) ?? new Response(System.Net.HttpStatusCode.OK);
             Logger.Debug(res);
-
-            return TypedResults.Json(res.Body, statusCode: (int)res.Status);
+            return Results.Json(res.Body, statusCode: (int)res.Status);
         }
         catch (Exception err)
         {
             Logger.Error(err);
             await ErrorEvent(this, err);
-            return TypedResults.InternalServerError(err.ToString());
+            return Results.InternalServerError(err.ToString());
         }
     }
 }

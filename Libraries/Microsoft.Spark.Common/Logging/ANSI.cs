@@ -1,6 +1,6 @@
 namespace Microsoft.Spark.Common.Logging;
 
-internal class ANSI(string value) : StringEnum(value)
+public class ANSI(string value) : StringEnum(value)
 {
     public static readonly ANSI Reset = new("\x1b[0m");
 

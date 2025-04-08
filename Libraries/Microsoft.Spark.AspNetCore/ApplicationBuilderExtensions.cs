@@ -19,16 +19,7 @@ public static class ApplicationBuilderExtensions
         }
 
         builder.UseRouting();
-        builder.UseEndpoints(endpoints =>
-        {
-            endpoints.MapPost("/api/messages", async (context) =>
-            {
-                var res = await aspNetCore.OnMessage(context);
-                await res.ExecuteAsync(context);
-                context.Connection.RequestClose();
-            });
-        });
-
+        builder.UseEndpoints(endpoints => endpoints.MapControllers());
         return app;
     }
 }

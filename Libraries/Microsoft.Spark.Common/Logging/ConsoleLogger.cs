@@ -15,7 +15,7 @@ public partial class ConsoleLogger : ILogger
     public ConsoleLogger(string? name = null, LogLevel level = LogLevel.Info)
     {
         Name = name ?? Assembly.GetEntryAssembly()?.GetName().Name ?? "Microsoft.Spark";
-        Level = level;
+        Level = Environment.GetEnvironmentVariable("LOG_LEVEL")?.ToLogLevel() ?? level;
         _pattern = ParseMagicExpression(Environment.GetEnvironmentVariable("LOG") ?? "*");
     }
 
@@ -51,11 +51,12 @@ public partial class ConsoleLogger : ILogger
 
     public bool IsEnabled(LogLevel level)
     {
-        return level <= Level || !_pattern.IsMatch(Name);
+        return level <= Level && _pattern.IsMatch(Name);
     }
 
     public ILogger SetLevel(LogLevel level)
     {
+        Console.WriteLine(level.ToString());
         Level = level;
         return this;
     }
@@ -63,19 +64,11 @@ public partial class ConsoleLogger : ILogger
     public object Clone() => MemberwiseClone();
     public ILogger Copy() => (ILogger)Clone();
 
-    internal ANSI GetLevelColor(LogLevel level)
-    {
-        return level == LogLevel.Error ? ANSI.ForegroundRed
-             : level == LogLevel.Warn ? ANSI.ForegroundYellow
-             : level == LogLevel.Info ? ANSI.ForegroundCyan
-             : ANSI.ForegroundMagenta;
-    }
-
     protected void Write(LogLevel level, params object?[] args)
     {
         if (!IsEnabled(level)) return;
 
-        var prefix = $"{GetLevelColor(level)}{ANSI.Bold.Value}[{Enum.GetName(level)?.ToUpper()}]";
+        var prefix = $"{level.Color()}{ANSI.Bold.Value}[{level.ToString()?.ToUpper()}]";
         var name = $"{Name}{ANSI.ForegroundReset.Value}{ANSI.BoldReset.Value}";
 
         foreach (var arg in args)

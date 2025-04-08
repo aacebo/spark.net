@@ -2,7 +2,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Microsoft.Spark.AspNetCore;
 
-[ProviderAlias("SparkLogger")]
+[ProviderAlias("Microsoft.Spark")]
 public class SparkLoggerProvider : ILoggerProvider
 {
     protected SparkLogger? _logger;

@@ -26,6 +26,7 @@ public class LightsPrompt
     [Function.Description("get the current light status")]
     public bool GetLightStatus()
     {
+        Console.WriteLine(Context.Activity);
         return State.From(Context).Status;
     }
 

@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using System.Reflection;
+
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Spark.Apps;
 using Microsoft.Spark.Apps.Plugins;
@@ -20,7 +22,9 @@ public static class ServiceCollectionExtensions
         collection.AddHostedService<SparkService>();
         collection.AddScoped<SparkHttpContext>();
         collection.AddTransient(provider => provider.GetRequiredService<SparkHttpContext>().Activity);
-        return collection.AddSparkPlugin<AspNetCorePlugin>();
+        collection.AddSparkPlugin<AspNetCorePlugin>();
+        collection.AddControllers().AddApplicationPart(Assembly.GetExecutingAssembly());
+        return collection;
     }
 
     public static IServiceCollection AddSpark(this IServiceCollection collection, IAppBuilder builder)
@@ -36,7 +40,9 @@ public static class ServiceCollectionExtensions
         collection.AddHostedService<SparkService>();
         collection.AddScoped<SparkHttpContext>();
         collection.AddTransient(provider => provider.GetRequiredService<SparkHttpContext>().Activity);
-        return collection.AddSparkPlugin<AspNetCorePlugin>();
+        collection.AddSparkPlugin<AspNetCorePlugin>();
+        collection.AddControllers().AddApplicationPart(Assembly.GetExecutingAssembly());
+        return collection;
     }
 
     public static IServiceCollection AddSpark(this IServiceCollection collection, IApp app)
@@ -51,7 +57,9 @@ public static class ServiceCollectionExtensions
         collection.AddHostedService<SparkService>();
         collection.AddScoped<SparkHttpContext>();
         collection.AddTransient(provider => provider.GetRequiredService<SparkHttpContext>().Activity);
-        return collection.AddSparkPlugin<AspNetCorePlugin>();
+        collection.AddSparkPlugin<AspNetCorePlugin>();
+        collection.AddControllers().AddApplicationPart(Assembly.GetExecutingAssembly());
+        return collection;
     }
 
     public static IServiceCollection AddSpark(this IServiceCollection collection, Func<IServiceProvider, IApp> factory)
@@ -67,7 +75,9 @@ public static class ServiceCollectionExtensions
         collection.AddSingleton(factory);
         collection.AddSingleton(provider => provider.GetRequiredService<IApp>().Logger);
         collection.AddSingleton(provider => provider.GetRequiredService<IApp>().Storage);
-        return collection.AddSparkPlugin<AspNetCorePlugin>();
+        collection.AddSparkPlugin<AspNetCorePlugin>();
+        collection.AddControllers().AddApplicationPart(Assembly.GetExecutingAssembly());
+        return collection;
     }
 
     public static IServiceCollection AddSpark(this IServiceCollection collection, Func<IServiceProvider, Task<IApp>> factory)
@@ -83,7 +93,9 @@ public static class ServiceCollectionExtensions
         collection.AddSingleton(provider => factory(provider).GetAwaiter().GetResult());
         collection.AddSingleton(provider => provider.GetRequiredService<IApp>().Logger);
         collection.AddSingleton(provider => provider.GetRequiredService<IApp>().Storage);
-        return collection.AddSparkPlugin<AspNetCorePlugin>();
+        collection.AddSparkPlugin<AspNetCorePlugin>();
+        collection.AddControllers().AddApplicationPart(Assembly.GetExecutingAssembly());
+        return collection;
     }
 
     public static IServiceCollection AddSparkPlugin<TPlugin>(this IServiceCollection collection) where TPlugin : class, IPlugin
