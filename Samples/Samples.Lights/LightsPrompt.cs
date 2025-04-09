@@ -1,7 +1,7 @@
 using Microsoft.Spark.AI.Annotations;
 using Microsoft.Spark.Api.Activities;
 using Microsoft.Spark.Apps;
-using Microsoft.Spark.AspNetCore;
+using Microsoft.Spark.Plugins.AspNetCore;
 
 namespace Samples.Lights;
 

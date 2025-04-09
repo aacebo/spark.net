@@ -1,7 +1,7 @@
 using Microsoft.Spark.Api.Activities;
 using Microsoft.Spark.Apps;
 using Microsoft.Spark.Apps.Routing;
-using Microsoft.Spark.AspNetCore;
+using Microsoft.Spark.Plugins.AspNetCore;
 
 namespace Samples.Echo;
 

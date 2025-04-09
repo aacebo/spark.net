@@ -2,7 +2,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Spark.Apps.Plugins;
 
-namespace Microsoft.Spark.AspNetCore;
+namespace Microsoft.Spark.Plugins.AspNetCore;
 
 public class SparkPluginService<TPlugin> : IHostedLifecycleService where TPlugin : IPlugin
 {

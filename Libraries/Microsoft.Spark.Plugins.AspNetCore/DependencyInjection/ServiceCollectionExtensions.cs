@@ -7,7 +7,7 @@ using Microsoft.Spark.Apps.Plugins;
 using Microsoft.Spark.Extensions.Hosting;
 using Microsoft.Spark.Extensions.Logging;
 
-namespace Microsoft.Spark.AspNetCore;
+namespace Microsoft.Spark.Plugins.AspNetCore;
 
 public static class ServiceCollectionExtensions
 {

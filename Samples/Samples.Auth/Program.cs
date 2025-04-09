@@ -1,5 +1,5 @@
 using Microsoft.Spark.Apps;
-using Microsoft.Spark.AspNetCore;
+using Microsoft.Spark.Plugins.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.AddSpark(App.Builder().AddLogger(level: Microsoft.Spark.Common.Logging.LogLevel.Debug));

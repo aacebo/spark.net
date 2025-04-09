@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Spark.Api.Activities;
 using Microsoft.Spark.Api.Auth;
 
-namespace Microsoft.Spark.AspNetCore;
+namespace Microsoft.Spark.Plugins.AspNetCore;
 
 [Route("api")]
 [ApiController]

@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Spark.Apps;
 using Microsoft.Spark.Apps.Plugins;
 
-namespace Microsoft.Spark.AspNetCore;
+namespace Microsoft.Spark.Plugins.AspNetCore;
 
 public static class ApplicationBuilderExtensions
 {

@@ -4,7 +4,7 @@ using Microsoft.Spark.Api.Entities;
 using Microsoft.Spark.Apps.Plugins;
 using Microsoft.Spark.Common.Extensions;
 
-namespace Microsoft.Spark.AspNetCore;
+namespace Microsoft.Spark.Plugins.AspNetCore;
 
 public partial class AspNetCorePlugin
 {

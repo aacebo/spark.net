@@ -11,9 +11,9 @@ using Microsoft.Spark.Apps.Plugins;
 using Microsoft.Spark.Common.Http;
 using Microsoft.Spark.Common.Logging;
 
-namespace Microsoft.Spark.AspNetCore;
+namespace Microsoft.Spark.Plugins.AspNetCore;
 
-[Plugin(name: "Microsoft.Spark.AspNetCore", version: "0.0.0")]
+[Plugin(name: "Microsoft.Spark.Plugins.AspNetCore", version: "0.0.0")]
 public partial class AspNetCorePlugin : ISender
 {
     [AllowNull]

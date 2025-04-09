@@ -1,7 +1,7 @@
 using Microsoft.Spark.Api.Auth;
 using Microsoft.Spark.Apps;
 
-namespace Microsoft.Spark.AspNetCore;
+namespace Microsoft.Spark.Plugins.AspNetCore;
 
 public class SparkSettings
 {
