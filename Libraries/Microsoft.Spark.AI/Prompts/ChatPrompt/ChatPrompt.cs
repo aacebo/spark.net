@@ -134,6 +134,19 @@ public partial class ChatPrompt<TOptions> : IChatPrompt<TOptions>
         ErrorEvent = prompt.ErrorEvent;
     }
 
+    public ChatPrompt(string name, ChatPrompt<TOptions> prompt)
+    {
+        Name = name;
+        Description = prompt.Description;
+        Messages = prompt.Messages;
+        Functions = prompt.Functions;
+        Model = prompt.Model;
+        Template = prompt.Template;
+        Logger = prompt.Logger.Peer(name);
+        Plugins = prompt.Plugins;
+        ErrorEvent = prompt.ErrorEvent;
+    }
+
     /// <summary>
     /// create a ChatPrompt from any class
     /// utilizing the ChatPromptAttribute

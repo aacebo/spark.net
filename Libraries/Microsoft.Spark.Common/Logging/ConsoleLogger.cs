@@ -63,6 +63,13 @@ public partial class ConsoleLogger : ILogger
         return new ConsoleLogger($"{Name}.{name}", Level);
     }
 
+    public ILogger Peer(string name)
+    {
+        var parts = Name.Split('.').ToList();
+        parts.RemoveAt(parts.Count - 1);
+        return new ConsoleLogger($"{string.Join('.', parts)}.{name}", Level);
+    }
+
     public bool IsEnabled(LogLevel level)
     {
         return level <= Level && _pattern.IsMatch(Name);

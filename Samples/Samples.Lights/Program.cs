@@ -28,7 +28,7 @@ spark.OnMessage(async context =>
     await prompt.Send(context.Activity.Text, new() { Messages = state.Messages }, (chunk) => Task.Run(() =>
     {
         context.Stream.Emit(chunk);
-    }));
+    }), context.CancellationToken);
 
     state.Save(context);
 });
