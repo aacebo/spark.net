@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Configuration;
 
-namespace Microsoft.Spark.AspNetCore;
+namespace Microsoft.Spark.Extensions.Logging;
 
 public static class LoggingBuilderExtensions
 {

@@ -4,6 +4,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Spark.Apps;
 using Microsoft.Spark.Apps.Plugins;
+using Microsoft.Spark.Extensions.Hosting;
+using Microsoft.Spark.Extensions.Logging;
 
 namespace Microsoft.Spark.AspNetCore;
 
@@ -12,21 +14,23 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddSpark(this IServiceCollection collection)
     {
         collection.AddSingleton<Common.Logging.ConsoleLogger>();
-        collection.AddSingleton<Common.Logging.ILogger>(provider => provider.GetRequiredService<Common.Logging.ConsoleLogger>());
+        collection.AddSingleton<Common.Logging.ILogger, Common.Logging.ConsoleLogger>(provider => provider.GetRequiredService<Common.Logging.ConsoleLogger>());
         collection.AddSingleton<Common.Storage.LocalStorage<object>>();
         collection.AddSingleton<Common.Storage.IStorage<string, object>>(provider => provider.GetRequiredService<Common.Storage.LocalStorage<object>>());
 
         collection.AddSingleton<SparkLogger>();
-        collection.AddSingleton<ILogger>(provider => provider.GetRequiredService<SparkLogger>());
-        collection.AddSingleton<ILoggerFactory>(provider =>
+        collection.AddSingleton<ILogger, SparkLogger>(provider => provider.GetRequiredService<SparkLogger>());
+        collection.AddSingleton<ILoggerFactory, LoggerFactory>(provider =>
         {
             var logger = provider.GetRequiredService<SparkLogger>();
             return new LoggerFactory([new SparkLoggerProvider(logger)]);
         });
 
-        collection.AddSingleton<IApp>(provider =>
+        collection.AddSingleton(provider =>
         {
-
+            var settings = provider.GetRequiredService<SparkSettings>();
+            var logger = provider.GetRequiredService<Common.Logging.ILogger>();
+            return App.Builder(settings.Apply()).AddLogger(logger).Build();
         });
 
         collection.AddHostedService<SparkService>();
@@ -62,7 +66,7 @@ public static class ServiceCollectionExtensions
 
         collection.AddSingleton(app.Logger);
         collection.AddSingleton(app.Storage);
-        collection.AddSingleton<ILoggerFactory>(_ => new LoggerFactory([new SparkLoggerProvider(log)]));
+        collection.AddSingleton<ILoggerFactory, LoggerFactory>(_ => new LoggerFactory([new SparkLoggerProvider(log)]));
         collection.AddSingleton<ILogger>(log);
         collection.AddSingleton(app);
         collection.AddHostedService<SparkService>();
@@ -79,7 +83,7 @@ public static class ServiceCollectionExtensions
 
         collection.AddSingleton(app.Logger);
         collection.AddSingleton(app.Storage);
-        collection.AddSingleton<ILoggerFactory>(_ => new LoggerFactory([new SparkLoggerProvider(log)]));
+        collection.AddSingleton<ILoggerFactory, LoggerFactory>(_ => new LoggerFactory([new SparkLoggerProvider(log)]));
         collection.AddSingleton<ILogger>(log);
         collection.AddSingleton(app);
         collection.AddHostedService<SparkService>();
@@ -92,11 +96,9 @@ public static class ServiceCollectionExtensions
 
     public static IServiceCollection AddSpark(this IServiceCollection collection, Func<IServiceProvider, IApp> factory)
     {
-        var log = new SparkLogger();
-
-        collection.AddSingleton(log.Logger);
-        collection.AddSingleton<ILoggerFactory>(_ => new LoggerFactory([new SparkLoggerProvider(log)]));
-        collection.AddSingleton<ILogger>(log);
+        collection.AddSingleton(provider => provider.GetRequiredService<Common.Logging.ILogger>());
+        collection.AddSingleton<ILoggerFactory, LoggerFactory>();
+        collection.AddSingleton<ILogger, SparkLogger>(provider => provider.GetRequiredService<SparkLogger>());
         collection.AddHostedService<SparkService>();
         collection.AddScoped<SparkHttpContext>();
         collection.AddTransient(provider => provider.GetRequiredService<SparkHttpContext>().Activity);
@@ -110,11 +112,9 @@ public static class ServiceCollectionExtensions
 
     public static IServiceCollection AddSpark(this IServiceCollection collection, Func<IServiceProvider, Task<IApp>> factory)
     {
-        var log = new SparkLogger();
-
-        collection.AddSingleton(log.Logger);
-        collection.AddSingleton<ILoggerFactory>(_ => new LoggerFactory([new SparkLoggerProvider(log)]));
-        collection.AddSingleton<ILogger>(log);
+        collection.AddSingleton(provider => provider.GetRequiredService<Common.Logging.ILogger>());
+        collection.AddSingleton<ILoggerFactory, LoggerFactory>();
+        collection.AddSingleton<ILogger, SparkLogger>(provider => provider.GetRequiredService<SparkLogger>());
         collection.AddHostedService<SparkService>();
         collection.AddScoped<SparkHttpContext>();
         collection.AddTransient(provider => provider.GetRequiredService<SparkHttpContext>().Activity);

@@ -1,14 +1,13 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Spark.Common.Logging;
 
-namespace Microsoft.Spark.AspNetCore;
+namespace Microsoft.Spark.Extensions.Logging;
 
 public static class LoggerFactoryExtensions
 {
     public static ILoggerFactory AddSpark(this ILoggerFactory factory, Common.Logging.ILogger? logger = null)
     {
-        logger ??= new ConsoleLogger();
-        factory.AddProvider(new SparkLoggerProvider(new SparkLogger(logger)));
+        factory.AddProvider(new SparkLoggerProvider(new SparkLogger(logger ?? new ConsoleLogger())));
         return factory;
     }
 }

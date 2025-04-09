@@ -11,4 +11,8 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="9.0.4" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Microsoft.Spark.Common\Microsoft.Spark.Common.csproj" />
+  </ItemGroup>
+
 </Project>

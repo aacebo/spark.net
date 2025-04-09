@@ -9,7 +9,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.AddSpark();
 builder.AddOpenAI<LightsPrompt>();
-
 var app = builder.Build();
 var spark = app.UseSpark();
 

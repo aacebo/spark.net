@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Logging;
 
-namespace Microsoft.Spark.AspNetCore;
+namespace Microsoft.Spark.Extensions.Logging;
 
 public static class LogLevelExtensions
 {

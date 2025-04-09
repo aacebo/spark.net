@@ -1,16 +1,16 @@
 using Microsoft.Extensions.Logging;
 
-namespace Microsoft.Spark.AspNetCore;
+namespace Microsoft.Spark.Extensions.Logging;
 
 public class SparkLogger : ILogger, IDisposable
 {
-    public Common.Logging.ILogger Logger { get => _logger; }
+    public Common.Logging.ILogger Logger => _logger;
+
     protected Common.Logging.ILogger _logger;
 
-    public SparkLogger(string? name = null, Common.Logging.LoggingSettings? settings = null)
+    public SparkLogger(Common.Logging.LoggingSettings settings)
     {
-        settings ??= new();
-        _logger = new Common.Logging.ConsoleLogger(name, settings.Level);
+        _logger = new Common.Logging.ConsoleLogger(settings);
     }
 
     public SparkLogger(Common.Logging.ILogger logger)
