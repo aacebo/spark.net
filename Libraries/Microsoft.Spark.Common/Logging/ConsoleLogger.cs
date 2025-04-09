@@ -58,16 +58,27 @@ public partial class ConsoleLogger : ILogger
         Write(level, args);
     }
 
+    public ILogger Create(string name)
+    {
+        var logger = new ConsoleLogger(name, Level);
+        logger._pattern = _pattern;
+        return logger;
+    }
+
     public ILogger Child(string name)
     {
-        return new ConsoleLogger($"{Name}.{name}", Level);
+        var logger = new ConsoleLogger($"{Name}.{name}", Level);
+        logger._pattern = _pattern;
+        return logger;
     }
 
     public ILogger Peer(string name)
     {
         var parts = Name.Split('.').ToList();
         parts.RemoveAt(parts.Count - 1);
-        return new ConsoleLogger($"{string.Join('.', parts)}.{name}", Level);
+        var logger = new ConsoleLogger($"{string.Join('.', parts)}.{name}", Level);
+        logger._pattern = _pattern;
+        return logger;
     }
 
     public bool IsEnabled(LogLevel level)

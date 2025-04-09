@@ -38,8 +38,18 @@ public class SparkLogger : ILogger, IDisposable
         // do nothing
     }
 
+    public ILogger Create(string name)
+    {
+        return new SparkLogger(_logger.Create(name));
+    }
+
     public ILogger Child(string name)
     {
         return new SparkLogger(_logger.Child(name));
+    }
+
+    public ILogger Peer(string name)
+    {
+        return new SparkLogger(_logger.Peer(name));
     }
 }

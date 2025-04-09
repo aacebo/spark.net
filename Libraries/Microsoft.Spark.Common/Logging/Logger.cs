@@ -8,6 +8,7 @@ public partial interface ILogger
     public void Info(params object?[] args);
     public void Debug(params object?[] args);
     public void Log(LogLevel level, params object?[] args);
+    public ILogger Create(string name);
     public ILogger Child(string name);
     public ILogger Peer(string name);
     public ILogger Copy();

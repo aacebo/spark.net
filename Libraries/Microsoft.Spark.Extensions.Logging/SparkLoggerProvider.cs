@@ -30,12 +30,12 @@ public class SparkLoggerProvider : ILoggerProvider, IDisposable
     public ILogger CreateLogger<T>()
     {
         var name = typeof(T).Name;
-        return _logger.Child(name);
+        return _logger.Create(name);
     }
 
     public ILogger CreateLogger(string name)
     {
-        return _logger.Child(name);
+        return _logger.Create(name);
     }
 
     public void Dispose()
