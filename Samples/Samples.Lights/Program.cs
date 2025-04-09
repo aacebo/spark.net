@@ -6,9 +6,8 @@ using Microsoft.Spark.AspNetCore;
 using Samples.Lights;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.AddSpark().AddOpenAI<LightsPrompt>();
 
-builder.AddSpark();
-builder.AddOpenAI<LightsPrompt>();
 var app = builder.Build();
 var spark = app.UseSpark();
 
