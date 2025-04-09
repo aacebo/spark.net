@@ -7,22 +7,22 @@ namespace Microsoft.Spark.Api.Clients;
 
 public class UserTokenClient : Client
 {
-    public UserTokenClient() : base()
+    public UserTokenClient(CancellationToken cancellationToken = default) : base(cancellationToken)
     {
 
     }
 
-    public UserTokenClient(IHttpClient client) : base(client)
+    public UserTokenClient(IHttpClient client, CancellationToken cancellationToken = default) : base(client, cancellationToken)
     {
 
     }
 
-    public UserTokenClient(IHttpClientOptions options) : base(options)
+    public UserTokenClient(IHttpClientOptions options, CancellationToken cancellationToken = default) : base(options, cancellationToken)
     {
 
     }
 
-    public UserTokenClient(IHttpClientFactory factory) : base(factory)
+    public UserTokenClient(IHttpClientFactory factory, CancellationToken cancellationToken = default) : base(factory, cancellationToken)
     {
 
     }
@@ -31,7 +31,7 @@ public class UserTokenClient : Client
     {
         var query = QueryString.Serialize(request);
         var req = HttpRequest.Get($"https://token.botframework.com/api/usertoken/GetToken?{query}");
-        var res = await _http.SendAsync<Token.Response>(req);
+        var res = await _http.SendAsync<Token.Response>(req, _cancellationToken);
         return res.Body;
     }
 
@@ -39,7 +39,7 @@ public class UserTokenClient : Client
     {
         var query = QueryString.Serialize(request);
         var req = HttpRequest.Post($"https://token.botframework.com/api/usertoken/GetAadTokens?{query}", body: request);
-        var res = await _http.SendAsync<IDictionary<string, TokenResponse>>(req);
+        var res = await _http.SendAsync<IDictionary<string, TokenResponse>>(req, _cancellationToken);
         return (IDictionary<string, Token.Response>)res.Body;
     }
 
@@ -47,7 +47,7 @@ public class UserTokenClient : Client
     {
         var query = QueryString.Serialize(request);
         var req = HttpRequest.Get($"https://token.botframework.com/api/usertoken/GetTokenStatus?{query}");
-        var res = await _http.SendAsync<IList<Token.Status>>(req);
+        var res = await _http.SendAsync<IList<Token.Status>>(req, _cancellationToken);
         return res.Body;
     }
 
@@ -55,7 +55,7 @@ public class UserTokenClient : Client
     {
         var query = QueryString.Serialize(request);
         var req = HttpRequest.Delete($"https://token.botframework.com/api/usertoken/SignOut?{query}");
-        await _http.SendAsync(req);
+        await _http.SendAsync(req, _cancellationToken);
     }
 
     public async Task<Token.Response> ExchangeAsync(ExchangeTokenRequest request)
@@ -68,7 +68,7 @@ public class UserTokenClient : Client
         });
 
         var req = HttpRequest.Post($"https://token.botframework.com/api/usertoken/exchange?{query}", request.GetBody());
-        var res = await _http.SendAsync<Token.Response>(req);
+        var res = await _http.SendAsync<Token.Response>(req, _cancellationToken);
         return res.Body;
     }
 

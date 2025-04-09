@@ -21,7 +21,7 @@ public class ClientCredentials : IHttpCredentials
         TenantId = tenantId;
     }
 
-    public async Task<ITokenResponse> Resolve(IHttpClient client, params string[] scopes)
+    public async Task<ITokenResponse> Resolve(IHttpClient client, string[] scopes, CancellationToken cancellationToken = default)
     {
         var tenantId = TenantId ?? "botframework.com";
         var request = HttpRequest.Post(
@@ -37,7 +37,7 @@ public class ClientCredentials : IHttpCredentials
             { "scope", string.Join(',', scopes) }
         };
 
-        var res = await client.SendAsync<TokenResponse>(request);
+        var res = await client.SendAsync<TokenResponse>(request, cancellationToken);
         return res.Body;
     }
 }

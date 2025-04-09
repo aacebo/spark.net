@@ -9,22 +9,22 @@ public class ActivityClient : Client
 {
     public readonly string ServiceUrl;
 
-    public ActivityClient(string serviceUrl) : base()
+    public ActivityClient(string serviceUrl, CancellationToken cancellationToken = default) : base(cancellationToken)
     {
         ServiceUrl = serviceUrl;
     }
 
-    public ActivityClient(string serviceUrl, IHttpClient client) : base(client)
+    public ActivityClient(string serviceUrl, IHttpClient client, CancellationToken cancellationToken = default) : base(client, cancellationToken)
     {
         ServiceUrl = serviceUrl;
     }
 
-    public ActivityClient(string serviceUrl, IHttpClientOptions options) : base(options)
+    public ActivityClient(string serviceUrl, IHttpClientOptions options, CancellationToken cancellationToken = default) : base(options, cancellationToken)
     {
         ServiceUrl = serviceUrl;
     }
 
-    public ActivityClient(string serviceUrl, IHttpClientFactory factory) : base(factory)
+    public ActivityClient(string serviceUrl, IHttpClientFactory factory, CancellationToken cancellationToken = default) : base(factory, cancellationToken)
     {
         ServiceUrl = serviceUrl;
     }
@@ -36,7 +36,7 @@ public class ActivityClient : Client
             body: activity
         );
 
-        var res = await _http.SendAsync(req);
+        var res = await _http.SendAsync(req, _cancellationToken);
 
         if (res.Body == string.Empty) return null;
 
@@ -51,7 +51,7 @@ public class ActivityClient : Client
             body: activity
         );
 
-        var res = await _http.SendAsync(req);
+        var res = await _http.SendAsync(req, _cancellationToken);
 
         if (res.Body == string.Empty) return null;
 
@@ -67,7 +67,7 @@ public class ActivityClient : Client
             body: activity
         );
 
-        var res = await _http.SendAsync(req);
+        var res = await _http.SendAsync(req, _cancellationToken);
 
         if (res.Body == string.Empty) return null;
 
@@ -81,6 +81,6 @@ public class ActivityClient : Client
             $"{ServiceUrl}v3/conversations/{conversationId}/activities/{id}"
         );
 
-        await _http.SendAsync(req);
+        await _http.SendAsync(req, _cancellationToken);
     }
 }

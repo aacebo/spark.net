@@ -24,25 +24,25 @@ public partial interface IApp
     /// <summary>
     /// start the app
     /// </summary>
-    public Task Start();
+    public Task Start(CancellationToken cancellationToken = default);
 
     /// <summary>
     /// send an activity to the conversation
     /// </summary>
     /// <param name="activity">activity activity to send</param>
-    public Task<T> Send<T>(string conversationId, T activity, string? serviceUrl = null) where T : IActivity;
+    public Task<T> Send<T>(string conversationId, T activity, string? serviceUrl = null, CancellationToken cancellationToken = default) where T : IActivity;
 
     /// <summary>
     /// send a message activity to the conversation
     /// </summary>
     /// <param name="text">the text to send</param>
-    public Task<MessageActivity> Send(string conversationId, string text, string? serviceUrl = null);
+    public Task<MessageActivity> Send(string conversationId, string text, string? serviceUrl = null, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// send a message activity with a card attachment
     /// </summary>
     /// <param name="card">the card to send as an attachment</param>
-    public Task<MessageActivity> Send(string conversationId, Cards.Card card, string? serviceUrl = null);
+    public Task<MessageActivity> Send(string conversationId, Cards.Card card, string? serviceUrl = null, CancellationToken cancellationToken = default);
 }
 
 public partial class App : IApp
@@ -113,7 +113,7 @@ public partial class App : IApp
     /// <summary>
     /// start the app
     /// </summary>
-    public async Task Start()
+    public async Task Start(CancellationToken cancellationToken = default)
     {
         try
         {
@@ -136,12 +136,12 @@ public partial class App : IApp
 
             foreach (var plugin in Plugins)
             {
-                await plugin.OnInit(this);
+                await plugin.OnInit(this, cancellationToken);
             }
 
             foreach (var plugin in Plugins)
             {
-                await plugin.OnStart(this);
+                await plugin.OnStart(this, cancellationToken);
             }
 
             await StartEvent(this, Logger);
@@ -156,7 +156,7 @@ public partial class App : IApp
     /// send an activity to the conversation
     /// </summary>
     /// <param name="activity">activity activity to send</param>
-    public async Task<T> Send<T>(string conversationId, T activity, string? serviceUrl = null) where T : IActivity
+    public async Task<T> Send<T>(string conversationId, T activity, string? serviceUrl = null, CancellationToken cancellationToken = default) where T : IActivity
     {
         if (Id == null || Name == null)
         {
@@ -187,19 +187,8 @@ public partial class App : IApp
             throw new Exception("no plugin that can send activities was found");
         }
 
-        var res = await sender.Send(activity, reference);
-
-        await OnActivitySentEvent(sender, res, new()
-        {
-            Bot = reference.Bot,
-            ChannelId = reference.ChannelId,
-            Conversation = reference.Conversation,
-            ServiceUrl = reference.ServiceUrl,
-            ActivityId = reference.ActivityId,
-            Locale = reference.Locale,
-            User = reference.User
-        }).ConfigureAwait(false);
-
+        var res = await sender.Send(activity, reference, cancellationToken);
+        await OnActivitySentEvent(sender, res, reference, cancellationToken).ConfigureAwait(false);
         return res;
     }
 
@@ -207,17 +196,17 @@ public partial class App : IApp
     /// send a message activity to the conversation
     /// </summary>
     /// <param name="text">the text to send</param>
-    public async Task<MessageActivity> Send(string conversationId, string text, string? serviceUrl = null)
+    public async Task<MessageActivity> Send(string conversationId, string text, string? serviceUrl = null, CancellationToken cancellationToken = default)
     {
-        return await Send(conversationId, new MessageActivity(text), serviceUrl);
+        return await Send(conversationId, new MessageActivity(text), serviceUrl, cancellationToken);
     }
 
     /// <summary>
     /// send a message activity with a card attachment
     /// </summary>
     /// <param name="card">the card to send as an attachment</param>
-    public async Task<MessageActivity> Send(string conversationId, Cards.Card card, string? serviceUrl = null)
+    public async Task<MessageActivity> Send(string conversationId, Cards.Card card, string? serviceUrl = null, CancellationToken cancellationToken = default)
     {
-        return await Send(conversationId, new MessageActivity().AddAttachment(card), serviceUrl);
+        return await Send(conversationId, new MessageActivity().AddAttachment(card), serviceUrl, cancellationToken);
     }
 }

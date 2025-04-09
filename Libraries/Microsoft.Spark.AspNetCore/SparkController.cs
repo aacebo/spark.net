@@ -18,12 +18,12 @@ public class SparkController : ControllerBase
     }
 
     [HttpPost("messages")]
-    public Task<IResult> OnMessage([FromBody] Activity activity)
+    public Task<IResult> OnMessage([FromBody] Activity activity, CancellationToken cancellationToken)
     {
         var authHeader = HttpContext.Request.Headers.Authorization.FirstOrDefault() ?? throw new UnauthorizedAccessException();
         var token = new JsonWebToken(authHeader.Replace("Bearer ", ""));
         var context = HttpContext.RequestServices.GetRequiredService<SparkHttpContext>();
         context.Token = token;
-        return _plugin.Do(token, activity);
+        return _plugin.Do(token, activity, cancellationToken);
     }
 }

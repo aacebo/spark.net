@@ -80,7 +80,7 @@ public partial class ChatPrompt<TOptions>
         return this;
     }
 
-    public async Task<object?> Invoke(string name, object? args = null)
+    public async Task<object?> Invoke(string name, object? args = null, CancellationToken cancellationToken = default)
     {
         var function = Functions.Get(name) ?? throw new NotImplementedException();
         var logger = Logger.Child($"Functions.{name}");
@@ -89,7 +89,7 @@ public partial class ChatPrompt<TOptions>
         {
             foreach (var plugin in ChatPlugins)
             {
-                args = await plugin.OnBeforeFunctionCall(this, func, args);
+                args = await plugin.OnBeforeFunctionCall(this, func, args, cancellationToken);
             }
 
             var startedAt = DateTime.Now;
@@ -101,7 +101,7 @@ public partial class ChatPrompt<TOptions>
 
             foreach (var plugin in ChatPlugins)
             {
-                res = await plugin.OnAfterFunctionCall(this, func, res);
+                res = await plugin.OnAfterFunctionCall(this, func, res, cancellationToken);
             }
 
             return res;
@@ -110,7 +110,7 @@ public partial class ChatPrompt<TOptions>
         return Task.FromResult<object?>(null);
     }
 
-    public async Task<object?> Invoke<T>(string name, T args)
+    public async Task<object?> Invoke<T>(string name, T args, CancellationToken cancellationToken = default)
     {
         var function = Functions.Get(name) ?? throw new NotImplementedException();
         var logger = Logger.Child($"Functions.{name}");
@@ -119,7 +119,7 @@ public partial class ChatPrompt<TOptions>
         {
             foreach (var plugin in ChatPlugins)
             {
-                args = await plugin.OnBeforeFunctionCall(this, func, args);
+                args = await plugin.OnBeforeFunctionCall(this, func, args, cancellationToken);
             }
 
             var startedAt = DateTime.Now;
@@ -131,7 +131,7 @@ public partial class ChatPrompt<TOptions>
 
             foreach (var plugin in ChatPlugins)
             {
-                res = await plugin.OnAfterFunctionCall(this, func, res);
+                res = await plugin.OnAfterFunctionCall(this, func, res, cancellationToken);
             }
 
             return res;

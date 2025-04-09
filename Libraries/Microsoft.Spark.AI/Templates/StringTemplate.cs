@@ -6,7 +6,7 @@ namespace Microsoft.Spark.AI.Templates;
 /// </summary>
 public class StringTemplate(string? source = null) : ITemplate
 {
-    public Task<string> Render(object? data = null)
+    public Task<string> Render(object? data = null, CancellationToken cancellationToken = default)
     {
         return Task.FromResult(source ?? string.Empty);
     }

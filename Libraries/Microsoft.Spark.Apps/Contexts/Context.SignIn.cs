@@ -63,7 +63,7 @@ public partial class Context<TActivity> : IContext<TActivity>
             reference.Conversation.Id = id;
             reference.Conversation.IsGroup = false;
 
-            var oauthCardActivity = await Sender.Send(new MessageActivity(options.OAuthCardText), reference);
+            var oauthCardActivity = await Sender.Send(new MessageActivity(options.OAuthCardText), reference, CancellationToken);
             await OnActivitySent(oauthCardActivity, (IContext<IActivity>)this);
         }
 
@@ -97,7 +97,7 @@ public partial class Context<TActivity> : IContext<TActivity>
             ]
         });
 
-        var res = await Sender.Send(activity, reference);
+        var res = await Sender.Send(activity, reference, CancellationToken);
         await OnActivitySent(res, (IContext<IActivity>)this);
         return null;
     }

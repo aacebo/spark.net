@@ -1,6 +1,7 @@
 using Microsoft.Spark.Api;
 using Microsoft.Spark.Api.Activities;
 using Microsoft.Spark.Api.Auth;
+using Microsoft.Spark.Api.Clients;
 using Microsoft.Spark.Apps.Plugins;
 using Microsoft.Spark.Common.Http;
 using Microsoft.Spark.Common.Logging;
@@ -62,18 +63,24 @@ public partial class App
 
     protected async Task OnErrorEvent(IPlugin? sender, Exception exception, IContext<IActivity>? context)
     {
+        var cancellationToken = context?.CancellationToken ?? default;
         Logger.Error(exception);
 
         if (exception is HttpException ex)
         {
             Logger.Error(ex.Request?.RequestUri?.ToString());
-            Logger.Error(await ex.Request!.Content!.ReadAsStringAsync());
+
+            if (ex.Request?.Content != null)
+            {
+                var content = await ex.Request.Content.ReadAsStringAsync(cancellationToken);
+                Logger.Error(content);
+            }
         }
 
         foreach (var plugin in Plugins)
         {
             if (sender != null && sender.Equals(plugin)) continue;
-            await plugin.OnError(this, sender, exception, context);
+            await plugin.OnError(this, sender, exception, context, cancellationToken);
         }
     }
 
@@ -92,13 +99,13 @@ public partial class App
         }
     }
 
-    protected async Task OnActivitySentEvent(ISender sender, IActivity activity, ConversationReference reference)
+    protected async Task OnActivitySentEvent(ISender sender, IActivity activity, ConversationReference reference, CancellationToken cancellationToken = default)
     {
         Logger.Debug(activity);
 
         foreach (var plugin in Plugins)
         {
-            await plugin.OnActivitySent(this, sender, activity, reference);
+            await plugin.OnActivitySent(this, sender, activity, reference, cancellationToken);
         }
     }
 
@@ -112,14 +119,16 @@ public partial class App
         }
     }
 
-    protected async Task<Response?> OnActivityEvent(ISender sender, IToken token, IActivity activity)
+    protected async Task<Response?> OnActivityEvent(ISender sender, IToken token, IActivity activity, CancellationToken cancellationToken = default)
     {
         var routes = Router.Select(activity);
         JsonWebToken? userToken = null;
 
+        var api = new ApiClient(Api);
+
         try
         {
-            var tokenResponse = await Api.Users.Token.GetAsync(new()
+            var tokenResponse = await api.Users.Token.GetAsync(new()
             {
                 UserId = activity.From.Id,
                 ChannelId = activity.ChannelId,
@@ -150,7 +159,7 @@ public partial class App
 
         object? data = null;
         var i = -1;
-        async Task<object?> next(IContext<IActivity> context)
+        async Task<object?> Next(IContext<IActivity> context)
         {
             if (i == routes.Count - 1) return data;
             i++;
@@ -162,18 +171,19 @@ public partial class App
             return res;
         }
 
-        var stream = sender.CreateStream(reference);
+        var stream = sender.CreateStream(reference, cancellationToken);
         var context = new Context<IActivity>(sender, stream)
         {
             AppId = token.AppId ?? Id ?? string.Empty,
             Log = Logger.Child(path),
             Storage = Storage,
-            Api = Api,
+            Api = api,
             Activity = activity,
             Ref = reference,
             IsSignedIn = userToken != null,
-            OnNext = next,
+            OnNext = Next,
             UserGraph = new Graph.GraphServiceClient(userGraphTokenProvider),
+            CancellationToken = cancellationToken,
             OnActivitySent = (activity, context) => ActivitySentEvent(this, activity, context)
         };
 
@@ -188,7 +198,7 @@ public partial class App
                 await plugin.OnActivity(this, context);
             }
 
-            var res = await next(context);
+            var res = await Next(context);
             await stream.Close();
 
             if (res != null)

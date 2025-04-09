@@ -10,10 +10,8 @@ public interface IHttpClient : IDisposable
 {
     public IHttpClientOptions Options { get; }
 
-    public Task<IHttpResponse<string>> SendAsync(IHttpRequest request);
-    public Task<IHttpResponse<TResponseBody>> SendAsync<TResponseBody>(IHttpRequest request);
-    public Task<IHttpResponse<string>> SendAsync(IHttpRequest request, CancellationToken cancellationToken);
-    public Task<IHttpResponse<TResponseBody>> SendAsync<TResponseBody>(IHttpRequest request, CancellationToken cancellationToken);
+    public Task<IHttpResponse<string>> SendAsync(IHttpRequest request, CancellationToken cancellationToken = default);
+    public Task<IHttpResponse<TResponseBody>> SendAsync<TResponseBody>(IHttpRequest request, CancellationToken cancellationToken = default);
 }
 
 public class HttpClient : IHttpClient
@@ -47,28 +45,14 @@ public class HttpClient : IHttpClient
         Options.Apply(_client);
     }
 
-    public async Task<IHttpResponse<string>> SendAsync(IHttpRequest request)
+    public async Task<IHttpResponse<string>> SendAsync(IHttpRequest request, CancellationToken cancellationToken = default)
     {
         var httpRequest = CreateRequest(request);
         var httpResponse = await _client.SendAsync(httpRequest);
-        return await CreateResponse(httpResponse);
-    }
-
-    public async Task<IHttpResponse<TResponseBody>> SendAsync<TResponseBody>(IHttpRequest request)
-    {
-        var httpRequest = CreateRequest(request);
-        var httpResponse = await _client.SendAsync(httpRequest);
-        return await CreateResponse<TResponseBody>(httpResponse);
-    }
-
-    public async Task<IHttpResponse<string>> SendAsync(IHttpRequest request, CancellationToken cancellationToken)
-    {
-        var httpRequest = CreateRequest(request);
-        var httpResponse = await _client.SendAsync(httpRequest, cancellationToken);
         return await CreateResponse(httpResponse, cancellationToken);
     }
 
-    public async Task<IHttpResponse<TResponseBody>> SendAsync<TResponseBody>(IHttpRequest request, CancellationToken cancellationToken)
+    public async Task<IHttpResponse<TResponseBody>> SendAsync<TResponseBody>(IHttpRequest request, CancellationToken cancellationToken = default)
     {
         var httpRequest = CreateRequest(request);
         var httpResponse = await _client.SendAsync(httpRequest, cancellationToken);

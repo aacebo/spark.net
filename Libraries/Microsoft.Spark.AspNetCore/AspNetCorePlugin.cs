@@ -28,7 +28,7 @@ public partial class AspNetCorePlugin : ISender
     public IToken? BotToken { get; set; }
 
     public event IPlugin.ErrorEventHandler ErrorEvent = (_, _) => Task.Run(() => { });
-    public event IPlugin.ActivityEventHandler ActivityEvent = (_, _, _) => Task.FromResult<Response?>(null);
+    public event IPlugin.ActivityEventHandler ActivityEvent = (_, _, _, _) => Task.FromResult<Response?>(null);
 
     private SparkHttpContext Context => _services.GetRequiredService<SparkHttpContext>();
     private readonly IServiceProvider _services;
@@ -38,17 +38,17 @@ public partial class AspNetCorePlugin : ISender
         _services = provider;
     }
 
-    public Task OnInit(IApp app)
+    public Task OnInit(IApp app, CancellationToken cancellationToken = default)
     {
         return Task.Run(() => { });
     }
 
-    public Task OnStart(IApp app)
+    public Task OnStart(IApp app, CancellationToken cancellationToken = default)
     {
         return Task.Run(() => Logger.Debug("OnStart"));
     }
 
-    public Task OnError(IApp app, IPlugin? plugin, Exception exception, IContext<IActivity>? context)
+    public Task OnError(IApp app, IPlugin? plugin, Exception exception, IContext<IActivity>? context, CancellationToken cancellationToken = default)
     {
         return Task.Run(() => Logger.Debug("OnError"));
     }
@@ -64,7 +64,7 @@ public partial class AspNetCorePlugin : ISender
         return Task.Run(() => Logger.Debug("OnActivitySent"));
     }
 
-    public Task OnActivitySent(IApp app, ISender sender, IActivity activity, ConversationReference reference)
+    public Task OnActivitySent(IApp app, ISender sender, IActivity activity, ConversationReference reference, CancellationToken cancellationToken = default)
     {
         return Task.Run(() => Logger.Debug("OnActivitySent"));
     }
@@ -75,12 +75,12 @@ public partial class AspNetCorePlugin : ISender
         return Task.Run(() => Logger.Debug("OnActivityResponse"));
     }
 
-    public async Task<IActivity> Send(IActivity activity, ConversationReference reference)
+    public async Task<IActivity> Send(IActivity activity, ConversationReference reference, CancellationToken cancellationToken = default)
     {
         return await Send<IActivity>(activity, reference);
     }
 
-    public async Task<TActivity> Send<TActivity>(TActivity activity, ConversationReference reference) where TActivity : IActivity
+    public async Task<TActivity> Send<TActivity>(TActivity activity, ConversationReference reference, CancellationToken cancellationToken = default) where TActivity : IActivity
     {
         var client = new ApiClient(reference.ServiceUrl, Client);
 
@@ -103,23 +103,23 @@ public partial class AspNetCorePlugin : ISender
         return activity;
     }
 
-    public IStreamer CreateStream(ConversationReference reference)
+    public IStreamer CreateStream(ConversationReference reference, CancellationToken cancellationToken = default)
     {
         return new Stream()
         {
             Send = async activity =>
             {
-                var res = await Send(activity, reference);
+                var res = await Send(activity, reference, cancellationToken);
                 return res;
             }
         };
     }
 
-    public async Task<IResult> Do(IToken token, Activity activity)
+    public async Task<IResult> Do(IToken token, Activity activity, CancellationToken cancellationToken = default)
     {
         try
         {
-            var res = await ActivityEvent(this, token, activity) ?? new Response(System.Net.HttpStatusCode.OK);
+            var res = await ActivityEvent(this, token, activity, cancellationToken) ?? new Response(System.Net.HttpStatusCode.OK);
             Logger.Debug(res);
             return Results.Json(res.Body, statusCode: (int)res.Status);
         }

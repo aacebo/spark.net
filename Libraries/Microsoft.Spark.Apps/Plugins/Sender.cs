@@ -15,7 +15,7 @@ public interface ISender : IPlugin
     /// <param name="activity">the activity to send</param>
     /// <param name="reference">the conversation reference</param>
     /// <returns>the sent activity</returns>
-    public Task<IActivity> Send(IActivity activity, ConversationReference reference);
+    public Task<IActivity> Send(IActivity activity, ConversationReference reference, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// called by the `App`
@@ -25,7 +25,7 @@ public interface ISender : IPlugin
     /// <param name="activity">the activity to send</param>
     /// <param name="reference">the conversation reference</param>
     /// <returns>the sent activity</returns>
-    public Task<TActivity> Send<TActivity>(TActivity activity, ConversationReference reference) where TActivity : IActivity;
+    public Task<TActivity> Send<TActivity>(TActivity activity, ConversationReference reference, CancellationToken cancellationToken = default) where TActivity : IActivity;
 
     /// <summary>
     /// called by the `App`
@@ -33,5 +33,5 @@ public interface ISender : IPlugin
     /// </summary>
     /// <param name="reference">the conversation reference</param>
     /// <returns>a new stream</returns>
-    public IStreamer CreateStream(ConversationReference reference);
+    public IStreamer CreateStream(ConversationReference reference, CancellationToken cancellationToken = default);
 }

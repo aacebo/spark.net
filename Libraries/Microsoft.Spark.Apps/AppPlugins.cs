@@ -39,7 +39,7 @@ public partial class App
         return this;
     }
 
-    protected PluginAttribute GetPluginAttribute(IPlugin plugin)
+    protected static PluginAttribute GetPluginAttribute(IPlugin plugin)
     {
         var attribute = (PluginAttribute?)Attribute.GetCustomAttribute(plugin.GetType(), typeof(PluginAttribute));
 

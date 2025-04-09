@@ -10,34 +10,34 @@ public class ConversationClient : Client
     public readonly string ServiceUrl;
     public readonly ActivityClient Activities;
 
-    public ConversationClient(string serviceUrl) : base()
+    public ConversationClient(string serviceUrl, CancellationToken cancellationToken = default) : base(cancellationToken)
     {
         ServiceUrl = serviceUrl;
-        Activities = new ActivityClient(serviceUrl, _http);
+        Activities = new ActivityClient(serviceUrl, _http, cancellationToken);
     }
 
-    public ConversationClient(string serviceUrl, IHttpClient client) : base(client)
+    public ConversationClient(string serviceUrl, IHttpClient client, CancellationToken cancellationToken = default) : base(client, cancellationToken)
     {
         ServiceUrl = serviceUrl;
-        Activities = new ActivityClient(serviceUrl, _http);
+        Activities = new ActivityClient(serviceUrl, _http, cancellationToken);
     }
 
-    public ConversationClient(string serviceUrl, IHttpClientOptions options) : base(options)
+    public ConversationClient(string serviceUrl, IHttpClientOptions options, CancellationToken cancellationToken = default) : base(options, cancellationToken)
     {
         ServiceUrl = serviceUrl;
-        Activities = new ActivityClient(serviceUrl, _http);
+        Activities = new ActivityClient(serviceUrl, _http, cancellationToken);
     }
 
-    public ConversationClient(string serviceUrl, IHttpClientFactory factory) : base(factory)
+    public ConversationClient(string serviceUrl, IHttpClientFactory factory, CancellationToken cancellationToken = default) : base(factory, cancellationToken)
     {
         ServiceUrl = serviceUrl;
-        Activities = new ActivityClient(serviceUrl, _http);
+        Activities = new ActivityClient(serviceUrl, _http, cancellationToken);
     }
 
     public async Task<ConversationResource> CreateAsync(CreateRequest request)
     {
         var req = HttpRequest.Post($"{ServiceUrl}v3/conversations", body: request);
-        var res = await _http.SendAsync<ConversationResource>(req);
+        var res = await _http.SendAsync<ConversationResource>(req, _cancellationToken);
         return res.Body;
     }
 

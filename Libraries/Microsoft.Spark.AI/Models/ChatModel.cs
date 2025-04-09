@@ -14,7 +14,7 @@ public interface IChatModel<TOptions> : IModel<TOptions>
     /// <param name="message">the message to send</param>
     /// <param name="options">the options</param>
     /// <returns>the models response</returns>
-    public Task<ModelMessage<string>> Send(IMessage message, ChatModelOptions<TOptions> options);
+    public Task<ModelMessage<string>> Send(IMessage message, ChatModelOptions<TOptions> options, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// send a message to the model and stream
@@ -24,7 +24,7 @@ public interface IChatModel<TOptions> : IModel<TOptions>
     /// <param name="options">the options</param>
     /// <param name="stream">the stream to use</param>
     /// <returns>the models response</returns>
-    public Task<ModelMessage<string>> Send(IMessage message, ChatModelOptions<TOptions> options, IStream stream);
+    public Task<ModelMessage<string>> Send(IMessage message, ChatModelOptions<TOptions> options, IStream stream, CancellationToken cancellationToken = default);
 }
 
 /// <summary>
@@ -57,9 +57,9 @@ public class ChatModelOptions<TOptions>
     /// <summary>
     /// the handler used to invoke functions
     /// </summary>
-    internal Func<string, object?, Task<object?>>? OnInvoke;
+    internal Func<string, object?, CancellationToken, Task<object?>>? OnInvoke;
 
-    public ChatModelOptions(Func<string, object?, Task<object?>>? onInvoke = null)
+    public ChatModelOptions(Func<string, object?, CancellationToken, Task<object?>>? onInvoke = null)
     {
         OnInvoke = onInvoke;
     }
@@ -70,8 +70,8 @@ public class ChatModelOptions<TOptions>
     /// <param name="name">the function name</param>
     /// <param name="args">the function args</param>
     /// <returns>the function response</returns>
-    public Task<object?> Invoke(string name, object? args)
+    public Task<object?> Invoke(string name, object? args = null, CancellationToken cancellationToken = default)
     {
-        return OnInvoke == null ? Task.FromResult<object?>(null) : OnInvoke(name, args);
+        return OnInvoke == null ? Task.FromResult<object?>(null) : OnInvoke(name, args, cancellationToken);
     }
 }

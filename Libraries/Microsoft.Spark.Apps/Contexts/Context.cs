@@ -65,6 +65,11 @@ public partial interface IContext<TActivity> where TActivity : IActivity
     public IDictionary<string, object> Extra { get; set; }
 
     /// <summary>
+    /// the cancellation token
+    /// </summary>
+    public CancellationToken CancellationToken { get; set; }
+
+    /// <summary>
     /// destruct the context
     /// </summary>
     /// <param name="log">the ILogger instance</param>
@@ -122,6 +127,7 @@ public partial class Context<TActivity>(ISender sender, IStreamer stream) : ICon
     public required ConversationReference Ref { get; set; }
     public required Graph.GraphServiceClient UserGraph { get; set; }
     public IDictionary<string, object> Extra { get; set; } = new Dictionary<string, object>();
+    public CancellationToken CancellationToken { get; set; }
 
     internal Func<IContext<IActivity>, Task<object?>> OnNext { get; set; } = (_) => Task.FromResult<object?>(null);
     internal ActivitySentHandler OnActivitySent { get; set; } = (_, _) => Task.Run(() => { });
@@ -167,6 +173,7 @@ public partial class Context<TActivity>(ISender sender, IStreamer stream) : ICon
             UserGraph = UserGraph,
             IsSignedIn = IsSignedIn,
             Extra = Extra,
+            CancellationToken = CancellationToken,
             OnNext = OnNext,
             OnActivitySent = OnActivitySent
         };

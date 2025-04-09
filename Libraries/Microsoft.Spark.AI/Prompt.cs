@@ -23,5 +23,5 @@ public interface IPrompt<TOptions>
     /// </summary>
     /// <param name="message">the message to send to the model</param>
     /// <returns>the models response</returns>
-    public Task<IMessage> Send(IMessage message, TOptions? options = default);
+    public Task<IMessage> Send(IMessage message, TOptions? options = default, CancellationToken cancellationToken = default);
 }

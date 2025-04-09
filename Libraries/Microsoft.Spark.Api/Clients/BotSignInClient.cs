@@ -9,17 +9,17 @@ public class BotSignInClient : Client
 
     }
 
-    public BotSignInClient(IHttpClient client) : base(client)
+    public BotSignInClient(IHttpClient client, CancellationToken cancellationToken = default) : base(client, cancellationToken)
     {
 
     }
 
-    public BotSignInClient(IHttpClientOptions options) : base(options)
+    public BotSignInClient(IHttpClientOptions options, CancellationToken cancellationToken = default) : base(options, cancellationToken)
     {
 
     }
 
-    public BotSignInClient(IHttpClientFactory factory) : base(factory)
+    public BotSignInClient(IHttpClientFactory factory, CancellationToken cancellationToken = default) : base(factory, cancellationToken)
     {
 
     }
@@ -31,7 +31,7 @@ public class BotSignInClient : Client
             $"https://token.botframework.com/api/botsignin/GetSignInUrl?{query}"
         );
 
-        var res = await _http.SendAsync(req);
+        var res = await _http.SendAsync(req, _cancellationToken);
         return res.Body;
     }
 
@@ -42,7 +42,7 @@ public class BotSignInClient : Client
             $"https://token.botframework.com/api/botsignin/GetSignInResource?{query}"
         );
 
-        var res = await _http.SendAsync<SignIn.UrlResponse>(req);
+        var res = await _http.SendAsync<SignIn.UrlResponse>(req, _cancellationToken);
         return res.Body;
     }
 

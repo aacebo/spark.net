@@ -10,20 +10,20 @@ namespace Microsoft.Spark.AI.Models.OpenAI;
 
 public partial class OpenAIChatModel
 {
-    public async Task<IMessage> Send(IMessage message, ChatCompletionOptions? options = null)
+    public async Task<IMessage> Send(IMessage message, ChatCompletionOptions? options = null, CancellationToken cancellationToken = default)
     {
         var res = await Send(message, new ChatModelOptions<ChatCompletionOptions>()
         {
             Functions = [],
             Messages = []
-        });
+        }, cancellationToken);
 
         return res;
     }
 
-    public async Task<ModelMessage<string>> Send(IMessage message, ChatModelOptions<ChatCompletionOptions> options)
+    public async Task<ModelMessage<string>> Send(IMessage message, ChatModelOptions<ChatCompletionOptions> options, CancellationToken cancellationToken = default)
     {
-        var messages = await CallFunctions(message, options);
+        var messages = await CallFunctions(message, options, cancellationToken);
         var chatMessages = messages.Select(m => m.ToOpenAI()).ToList();
 
         if (options.Prompt != null)
@@ -44,14 +44,15 @@ public partial class OpenAIChatModel
 
             var result = await ChatClient.CompleteChatAsync(
                 chatMessages,
-                requestOptions
+                requestOptions,
+                cancellationToken
             );
 
             var modelMessage = ChatMessage.CreateAssistantMessage(result.Value).ToSpark();
 
             if (modelMessage.HasFunctionCalls)
             {
-                return await Send(modelMessage, options);
+                return await Send(modelMessage, options, cancellationToken);
             }
 
             messages.Add(modelMessage);
@@ -64,9 +65,9 @@ public partial class OpenAIChatModel
         }
     }
 
-    public async Task<ModelMessage<string>> Send(IMessage message, ChatModelOptions<ChatCompletionOptions> options, IStream stream)
+    public async Task<ModelMessage<string>> Send(IMessage message, ChatModelOptions<ChatCompletionOptions> options, IStream stream, CancellationToken cancellationToken = default)
     {
-        var messages = await CallFunctions(message, options);
+        var messages = await CallFunctions(message, options, cancellationToken);
         var chatMessages = messages.Select(m => m.ToOpenAI()).ToList();
 
         if (options.Prompt != null)
@@ -85,7 +86,7 @@ public partial class OpenAIChatModel
                 requestOptions.Tools.Add(tool);
             }
 
-            var res = ChatClient.CompleteChatStreamingAsync(chatMessages, requestOptions);
+            var res = ChatClient.CompleteChatStreamingAsync(chatMessages, requestOptions, cancellationToken);
             var content = new StringBuilder();
             var toolCalls = new StreamingChatToolCallsBuilder();
 
@@ -109,7 +110,7 @@ public partial class OpenAIChatModel
                 if (chunk.FinishReason == ChatFinishReason.ToolCalls)
                 {
                     var input = ChatMessage.CreateAssistantMessage(toolCalls.Build()).ToSpark();
-                    return await Send(input, options, stream);
+                    return await Send(input, options, stream, cancellationToken);
                 }
                 else if (chunk.FinishReason == ChatFinishReason.Length)
                 {
@@ -132,7 +133,7 @@ public partial class OpenAIChatModel
         }
     }
 
-    protected async Task<IList<IMessage>> CallFunctions(IMessage message, ChatModelOptions<ChatCompletionOptions> options)
+    protected async Task<IList<IMessage>> CallFunctions(IMessage message, ChatModelOptions<ChatCompletionOptions> options, CancellationToken cancellationToken = default)
     {
         var messages = options.Messages;
         messages.Add(message);
@@ -148,7 +149,7 @@ public partial class OpenAIChatModel
                 try
                 {
                     var args = call.Parse();
-                    var res = await options.Invoke(call.Name, args);
+                    var res = await options.Invoke(call.Name, args, cancellationToken);
 
                     content = res is string asString ? asString : JsonSerializer.Serialize(res);
                     logger.Debug(content);

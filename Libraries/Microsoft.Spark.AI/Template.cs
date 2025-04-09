@@ -11,5 +11,5 @@ public interface ITemplate
     /// </summary>
     /// <param name="data">the context data</param>
     /// <returns>the rendered string</returns>
-    public Task<string> Render(object? data = null);
+    public Task<string> Render(object? data = null, CancellationToken cancellationToken = default);
 }

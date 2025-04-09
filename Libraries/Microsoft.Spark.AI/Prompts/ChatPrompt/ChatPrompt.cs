@@ -36,7 +36,7 @@ public interface IChatPrompt<TOptions> : IPrompt<TOptions>
     /// the stream chunk handler (if notnull streaming is enabled)
     /// </param>
     /// <returns>the models response</returns>
-    public Task<ModelMessage<string>> Send(string text, RequestOptions? options = null, OnStreamChunk? onChunk = null);
+    public Task<ModelMessage<string>> Send(string text, RequestOptions? options = null, OnStreamChunk? onChunk = null, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// send a message via the prompt using content blocks
@@ -47,7 +47,7 @@ public interface IChatPrompt<TOptions> : IPrompt<TOptions>
     /// the stream chunk handler (if notnull streaming is enabled)
     /// </param>
     /// <returns>the models response</returns>
-    public Task<ModelMessage<string>> Send(IContent[] content, RequestOptions? options = null, OnStreamChunk? onChunk = null);
+    public Task<ModelMessage<string>> Send(IContent[] content, RequestOptions? options = null, OnStreamChunk? onChunk = null, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// send a message via the prompt
@@ -58,7 +58,7 @@ public interface IChatPrompt<TOptions> : IPrompt<TOptions>
     /// the stream chunk handler (if notnull streaming is enabled)
     /// </param>
     /// <returns>the models response</returns>
-    public Task<ModelMessage<string>> Send(UserMessage<string> message, RequestOptions? options = null, OnStreamChunk? onChunk = null);
+    public Task<ModelMessage<string>> Send(UserMessage<string> message, RequestOptions? options = null, OnStreamChunk? onChunk = null, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// send a message via the prompt
@@ -69,7 +69,7 @@ public interface IChatPrompt<TOptions> : IPrompt<TOptions>
     /// the stream chunk handler (if notnull streaming is enabled)
     /// </param>
     /// <returns>the models response</returns>
-    public Task<ModelMessage<string>> Send(UserMessage<IEnumerable<IContent>> message, RequestOptions? options = null, OnStreamChunk? onChunk = null);
+    public Task<ModelMessage<string>> Send(UserMessage<IEnumerable<IContent>> message, RequestOptions? options = null, OnStreamChunk? onChunk = null, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// options to send when invoking a prompt

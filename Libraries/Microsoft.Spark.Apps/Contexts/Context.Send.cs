@@ -32,7 +32,7 @@ public partial class Context<TActivity> : IContext<TActivity>
 {
     public async Task<T> Send<T>(T activity) where T : IActivity
     {
-        var res = await Sender.Send(activity, Ref);
+        var res = await Sender.Send(activity, Ref, CancellationToken);
         await OnActivitySent(res, ToActivityType<IActivity>());
         return res;
     }
