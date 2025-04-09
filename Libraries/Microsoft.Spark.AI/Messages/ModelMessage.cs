@@ -33,6 +33,15 @@ public class ModelMessage<T> : IMessage
         Content = content;
         FunctionCalls = functionCalls;
     }
+
+    public override string ToString()
+    {
+        return JsonSerializer.Serialize(this, new JsonSerializerOptions()
+        {
+            WriteIndented = true,
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+        });
+    }
 }
 
 /// <summary>
@@ -61,5 +70,14 @@ public class FunctionCall
     public T? Parse<T>()
     {
         return JsonSerializer.Deserialize<T>(Arguments ?? "{}");
+    }
+
+    public override string ToString()
+    {
+        return JsonSerializer.Serialize(this, new JsonSerializerOptions()
+        {
+            WriteIndented = true,
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+        });
     }
 }

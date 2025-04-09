@@ -1,3 +1,4 @@
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace Microsoft.Spark.AI.Messages;
@@ -16,5 +17,14 @@ public class DeveloperMessage : IMessage
     public DeveloperMessage(string content)
     {
         Content = content;
+    }
+
+    public override string ToString()
+    {
+        return JsonSerializer.Serialize(this, new JsonSerializerOptions()
+        {
+            WriteIndented = true,
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+        });
     }
 }

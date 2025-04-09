@@ -1,3 +1,4 @@
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 using Microsoft.Spark.Common;
@@ -27,7 +28,7 @@ public class UserMessage<T> : IMessage
         Content = content;
     }
 
-    public override string ToString()
+    public string GetText()
     {
         if (Content is IEnumerable<IContent> asEnum)
         {
@@ -40,6 +41,15 @@ public class UserMessage<T> : IMessage
         }
 
         return Content?.ToString() ?? throw new InvalidCastException();
+    }
+
+    public override string ToString()
+    {
+        return JsonSerializer.Serialize(this, new JsonSerializerOptions()
+        {
+            WriteIndented = true,
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+        });
     }
 }
 
