@@ -1,6 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
 
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Spark.Api;
 using Microsoft.Spark.Api.Activities;
@@ -28,7 +27,7 @@ public partial class AspNetCorePlugin : ISender
     public IToken? BotToken { get; set; }
 
     public event IPlugin.ErrorEventHandler ErrorEvent = (_, _) => Task.Run(() => { });
-    public event IPlugin.ActivityEventHandler ActivityEvent = (_, _, _, _) => Task.FromResult<Response?>(null);
+    public event IPlugin.ActivityEventHandler ActivityEvent = (_, _, _, _) => Task.FromResult(new Response(System.Net.HttpStatusCode.OK));
 
     private SparkHttpContext Context => _services.GetRequiredService<SparkHttpContext>();
     private readonly IServiceProvider _services;
@@ -115,19 +114,19 @@ public partial class AspNetCorePlugin : ISender
         };
     }
 
-    public async Task<IResult> Do(IToken token, Activity activity, CancellationToken cancellationToken = default)
+    public async Task<Response> Do(IToken token, IActivity activity, CancellationToken cancellationToken = default)
     {
         try
         {
-            var res = await ActivityEvent(this, token, activity, cancellationToken) ?? new Response(System.Net.HttpStatusCode.OK);
+            var res = await ActivityEvent(this, token, activity, cancellationToken);
             Logger.Debug(res);
-            return Results.Json(res.Body, statusCode: (int)res.Status);
+            return res;
         }
         catch (Exception err)
         {
             Logger.Error(err);
             await ErrorEvent(this, err);
-            return Results.InternalServerError(err.ToString());
+            return new Response(System.Net.HttpStatusCode.InternalServerError, err.ToString());
         }
     }
 }

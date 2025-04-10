@@ -119,7 +119,7 @@ public partial class App
         }
     }
 
-    protected async Task<Response?> OnActivityEvent(ISender sender, IToken token, IActivity activity, CancellationToken cancellationToken = default)
+    protected async Task<Response> OnActivityEvent(ISender sender, IToken token, IActivity activity, CancellationToken cancellationToken = default)
     {
         var routes = Router.Select(activity);
         JsonWebToken? userToken = null;
@@ -208,7 +208,7 @@ public partial class App
                 return response;
             }
 
-            return null;
+            return new Response(System.Net.HttpStatusCode.OK);
         }
         catch (Exception err)
         {

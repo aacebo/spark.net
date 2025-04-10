@@ -55,6 +55,11 @@ public interface IPlugin
     /// </summary>
     public Task OnActivityResponse(IApp app, Response? response, IContext<IActivity> context);
 
+    /// <summary>
+    /// process an activity
+    /// </summary>
+    public Task<Response> Do(IToken token, IActivity activity, CancellationToken cancellationToken = default);
+
     public delegate Task ErrorEventHandler(IPlugin sender, Exception exception);
-    public delegate Task<Response?> ActivityEventHandler(ISender sender, IToken token, IActivity activity, CancellationToken cancellationToken = default);
+    public delegate Task<Response> ActivityEventHandler(ISender sender, IToken token, IActivity activity, CancellationToken cancellationToken = default);
 }
