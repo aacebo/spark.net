@@ -1,5 +1,9 @@
 namespace Microsoft.Spark.Agents;
 
+/// <summary>
+/// handles how messages are
+/// serialized/deserialized
+/// </summary>
 public interface ISerializer
 {
     public string Serialize(IMessage message);

@@ -2,6 +2,10 @@ using Microsoft.Spark.Common.Json;
 
 namespace Microsoft.Spark.Agents;
 
+/// <summary>
+/// the way agents communicate with
+/// one another
+/// </summary>
 [TrueTypeJson<IMessage>]
 public interface IMessage
 {

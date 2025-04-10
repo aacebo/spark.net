@@ -1,6 +1,11 @@
 namespace Microsoft.Spark.Agents;
 
 public delegate void Ack();
+
+/// <summary>
+/// handles how messages between
+/// agents are sent/received
+/// </summary>
 public interface ITransport
 {
     public Task Send(IMessage message, CancellationToken cancellationToken = default);
