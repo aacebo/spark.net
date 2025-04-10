@@ -39,6 +39,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.Spark.Extensions.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.Spark.Plugins.DevTools", "Libraries\Microsoft.Spark.Plugins.DevTools\Microsoft.Spark.Plugins.DevTools.csproj", "{15D7A915-DD11-40BF-811B-C97B2C963785}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.Spark.Agents", "Libraries\Microsoft.Spark.Agents\Microsoft.Spark.Agents.csproj", "{606E13CC-9F41-4739-8659-948D0D5A6DAC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -229,6 +231,18 @@ Global
 		{15D7A915-DD11-40BF-811B-C97B2C963785}.Release|x64.Build.0 = Release|Any CPU
 		{15D7A915-DD11-40BF-811B-C97B2C963785}.Release|x86.ActiveCfg = Release|Any CPU
 		{15D7A915-DD11-40BF-811B-C97B2C963785}.Release|x86.Build.0 = Release|Any CPU
+		{606E13CC-9F41-4739-8659-948D0D5A6DAC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{606E13CC-9F41-4739-8659-948D0D5A6DAC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{606E13CC-9F41-4739-8659-948D0D5A6DAC}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{606E13CC-9F41-4739-8659-948D0D5A6DAC}.Debug|x64.Build.0 = Debug|Any CPU
+		{606E13CC-9F41-4739-8659-948D0D5A6DAC}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{606E13CC-9F41-4739-8659-948D0D5A6DAC}.Debug|x86.Build.0 = Debug|Any CPU
+		{606E13CC-9F41-4739-8659-948D0D5A6DAC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{606E13CC-9F41-4739-8659-948D0D5A6DAC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{606E13CC-9F41-4739-8659-948D0D5A6DAC}.Release|x64.ActiveCfg = Release|Any CPU
+		{606E13CC-9F41-4739-8659-948D0D5A6DAC}.Release|x64.Build.0 = Release|Any CPU
+		{606E13CC-9F41-4739-8659-948D0D5A6DAC}.Release|x86.ActiveCfg = Release|Any CPU
+		{606E13CC-9F41-4739-8659-948D0D5A6DAC}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -249,5 +263,6 @@ Global
 		{A4940ABA-8F4C-4863-A6C3-660BC6AF81E5} = {809F86A1-1C4C-B159-0CD4-DF9D33D876CE}
 		{0A896738-C747-49C2-AF41-A5843F7BBA4F} = {809F86A1-1C4C-B159-0CD4-DF9D33D876CE}
 		{15D7A915-DD11-40BF-811B-C97B2C963785} = {809F86A1-1C4C-B159-0CD4-DF9D33D876CE}
+		{606E13CC-9F41-4739-8659-948D0D5A6DAC} = {809F86A1-1C4C-B159-0CD4-DF9D33D876CE}
 	EndGlobalSection
 EndGlobal
