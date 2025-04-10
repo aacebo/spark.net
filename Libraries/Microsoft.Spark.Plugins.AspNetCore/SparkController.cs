@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Spark.Api.Activities;
 using Microsoft.Spark.Api.Auth;
+using Microsoft.Spark.Apps.Extensions;
 
 namespace Microsoft.Spark.Plugins.AspNetCore;
 
@@ -22,7 +23,7 @@ public class SparkController : ControllerBase
     {
         var authHeader = HttpContext.Request.Headers.Authorization.FirstOrDefault() ?? throw new UnauthorizedAccessException();
         var token = new JsonWebToken(authHeader.Replace("Bearer ", ""));
-        var context = HttpContext.RequestServices.GetRequiredService<SparkHttpContext>();
+        var context = HttpContext.RequestServices.GetRequiredService<SparkContext>();
         context.Token = token;
         var res = await _plugin.Do(token, activity, cancellationToken);
         return Results.Json(res.Body, statusCode: (int)res.Status);

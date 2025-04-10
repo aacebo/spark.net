@@ -1,12 +1,9 @@
-﻿using System.Reflection;
-
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Spark.Apps;
 using Microsoft.Spark.Apps.Plugins;
 using Microsoft.Spark.Extensions.Logging;
 
-namespace Microsoft.Spark.Plugins.AspNetCore;
+namespace Microsoft.Spark.Apps.Extensions;
 
 public static class ServiceCollectionExtensions
 {
@@ -33,10 +30,8 @@ public static class ServiceCollectionExtensions
         });
 
         collection.AddHostedService<SparkService>();
-        collection.AddScoped<SparkHttpContext>();
-        collection.AddTransient(provider => provider.GetRequiredService<SparkHttpContext>().Activity);
-        collection.AddSparkPlugin<AspNetCorePlugin>();
-        collection.AddControllers().AddApplicationPart(Assembly.GetExecutingAssembly());
+        collection.AddScoped<SparkContext>();
+        collection.AddTransient(provider => provider.GetRequiredService<SparkContext>().Activity);
         return collection;
     }
 
@@ -51,10 +46,8 @@ public static class ServiceCollectionExtensions
         collection.AddSingleton<ILogger>(log);
         collection.AddSingleton<IApp>(app);
         collection.AddHostedService<SparkService>();
-        collection.AddScoped<SparkHttpContext>();
-        collection.AddTransient(provider => provider.GetRequiredService<SparkHttpContext>().Activity);
-        collection.AddSparkPlugin<AspNetCorePlugin>();
-        collection.AddControllers().AddApplicationPart(Assembly.GetExecutingAssembly());
+        collection.AddScoped<SparkContext>();
+        collection.AddTransient(provider => provider.GetRequiredService<SparkContext>().Activity);
         return collection;
     }
 
@@ -69,10 +62,8 @@ public static class ServiceCollectionExtensions
         collection.AddSingleton<ILogger>(log);
         collection.AddSingleton(app);
         collection.AddHostedService<SparkService>();
-        collection.AddScoped<SparkHttpContext>();
-        collection.AddTransient(provider => provider.GetRequiredService<SparkHttpContext>().Activity);
-        collection.AddSparkPlugin<AspNetCorePlugin>();
-        collection.AddControllers().AddApplicationPart(Assembly.GetExecutingAssembly());
+        collection.AddScoped<SparkContext>();
+        collection.AddTransient(provider => provider.GetRequiredService<SparkContext>().Activity);
         return collection;
     }
 
@@ -86,10 +77,8 @@ public static class ServiceCollectionExtensions
         collection.AddSingleton<ILogger>(log);
         collection.AddSingleton(app);
         collection.AddHostedService<SparkService>();
-        collection.AddScoped<SparkHttpContext>();
-        collection.AddTransient(provider => provider.GetRequiredService<SparkHttpContext>().Activity);
-        collection.AddSparkPlugin<AspNetCorePlugin>();
-        collection.AddControllers().AddApplicationPart(Assembly.GetExecutingAssembly());
+        collection.AddScoped<SparkContext>();
+        collection.AddTransient(provider => provider.GetRequiredService<SparkContext>().Activity);
         return collection;
     }
 
@@ -99,13 +88,11 @@ public static class ServiceCollectionExtensions
         collection.AddSingleton<ILoggerFactory, LoggerFactory>();
         collection.AddSingleton<ILogger, SparkLogger>(provider => provider.GetRequiredService<SparkLogger>());
         collection.AddHostedService<SparkService>();
-        collection.AddScoped<SparkHttpContext>();
-        collection.AddTransient(provider => provider.GetRequiredService<SparkHttpContext>().Activity);
+        collection.AddScoped<SparkContext>();
+        collection.AddTransient(provider => provider.GetRequiredService<SparkContext>().Activity);
         collection.AddSingleton(factory);
         collection.AddSingleton(provider => provider.GetRequiredService<IApp>().Logger);
         collection.AddSingleton(provider => provider.GetRequiredService<IApp>().Storage);
-        collection.AddSparkPlugin<AspNetCorePlugin>();
-        collection.AddControllers().AddApplicationPart(Assembly.GetExecutingAssembly());
         return collection;
     }
 
@@ -115,13 +102,11 @@ public static class ServiceCollectionExtensions
         collection.AddSingleton<ILoggerFactory, LoggerFactory>();
         collection.AddSingleton<ILogger, SparkLogger>(provider => provider.GetRequiredService<SparkLogger>());
         collection.AddHostedService<SparkService>();
-        collection.AddScoped<SparkHttpContext>();
-        collection.AddTransient(provider => provider.GetRequiredService<SparkHttpContext>().Activity);
+        collection.AddScoped<SparkContext>();
+        collection.AddTransient(provider => provider.GetRequiredService<SparkContext>().Activity);
         collection.AddSingleton(provider => factory(provider).GetAwaiter().GetResult());
         collection.AddSingleton(provider => provider.GetRequiredService<IApp>().Logger);
         collection.AddSingleton(provider => provider.GetRequiredService<IApp>().Storage);
-        collection.AddSparkPlugin<AspNetCorePlugin>();
-        collection.AddControllers().AddApplicationPart(Assembly.GetExecutingAssembly());
         return collection;
     }
 
@@ -142,7 +127,7 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddSparkPlugin<TPlugin>(this IServiceCollection collection, Func<IServiceProvider, TPlugin> factory) where TPlugin : class, IPlugin
     {
         collection.AddSingleton(factory);
-        collection.AddSingleton<IPlugin>(factory);
+        collection.AddSingleton<IPlugin, TPlugin>(factory);
         return collection.AddHostedService<SparkPluginService<TPlugin>>();
     }
 }

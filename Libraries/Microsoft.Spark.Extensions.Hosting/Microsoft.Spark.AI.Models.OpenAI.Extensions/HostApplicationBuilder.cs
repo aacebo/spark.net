@@ -1,7 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace Microsoft.Spark.AI.Models.OpenAI;
+namespace Microsoft.Spark.AI.Models.OpenAI.Extensions;
 
 public static class HostApplicationBuilderExtensions
 {

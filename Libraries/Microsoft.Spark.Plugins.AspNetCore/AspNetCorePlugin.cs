@@ -6,6 +6,7 @@ using Microsoft.Spark.Api.Activities;
 using Microsoft.Spark.Api.Auth;
 using Microsoft.Spark.Api.Clients;
 using Microsoft.Spark.Apps;
+using Microsoft.Spark.Apps.Extensions;
 using Microsoft.Spark.Apps.Plugins;
 using Microsoft.Spark.Common.Http;
 using Microsoft.Spark.Common.Logging;
@@ -29,7 +30,7 @@ public partial class AspNetCorePlugin : ISender
     public event IPlugin.ErrorEventHandler ErrorEvent = (_, _) => Task.Run(() => { });
     public event IPlugin.ActivityEventHandler ActivityEvent = (_, _, _, _) => Task.FromResult(new Response(System.Net.HttpStatusCode.OK));
 
-    private SparkHttpContext Context => _services.GetRequiredService<SparkHttpContext>();
+    private SparkContext Context => _services.GetRequiredService<SparkContext>();
     private readonly IServiceProvider _services;
 
     public AspNetCorePlugin(IServiceProvider provider)
@@ -76,12 +77,12 @@ public partial class AspNetCorePlugin : ISender
 
     public async Task<IActivity> Send(IActivity activity, ConversationReference reference, CancellationToken cancellationToken = default)
     {
-        return await Send<IActivity>(activity, reference);
+        return await Send<IActivity>(activity, reference, cancellationToken);
     }
 
     public async Task<TActivity> Send<TActivity>(TActivity activity, ConversationReference reference, CancellationToken cancellationToken = default) where TActivity : IActivity
     {
-        var client = new ApiClient(reference.ServiceUrl, Client);
+        var client = new ApiClient(reference.ServiceUrl, Client, cancellationToken);
 
         if (activity.Id != null && !activity.IsStreaming)
         {

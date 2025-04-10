@@ -4,7 +4,7 @@ using Microsoft.Spark.Common.Logging;
 
 using OpenAI.Chat;
 
-namespace Microsoft.Spark.AI.Models.OpenAI;
+namespace Microsoft.Spark.AI.Models.OpenAI.Extensions;
 
 public static class ServiceCollectionExtensions
 {

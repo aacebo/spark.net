@@ -16,6 +16,7 @@
     <ProjectReference Include="..\Microsoft.Spark.Extensions.Logging\Microsoft.Spark.Extensions.Logging.csproj" />
     <ProjectReference Include="..\Microsoft.Spark.Extensions.Configuration\Microsoft.Spark.Extensions.Configuration.csproj" />
     <ProjectReference Include="..\Microsoft.Spark.Common\Microsoft.Spark.Common.csproj" />
+    <ProjectReference Include="..\Microsoft.Spark.Extensions.Hosting\Microsoft.Spark.Extensions.Hosting.csproj" />
   </ItemGroup>
 
 </Project>

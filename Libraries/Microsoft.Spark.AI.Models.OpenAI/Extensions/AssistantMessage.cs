@@ -4,7 +4,7 @@ using OpenAI.Chat;
 
 namespace Microsoft.Spark.AI.Models.OpenAI;
 
-public static partial class Extensions
+public static partial class MessageExtensions
 {
     public static ModelMessage<string> ToSpark(this AssistantChatMessage message)
     {

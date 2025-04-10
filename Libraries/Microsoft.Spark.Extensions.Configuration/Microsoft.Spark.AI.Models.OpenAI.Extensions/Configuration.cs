@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Configuration;
 
-namespace Microsoft.Spark.AI.Models.OpenAI;
+namespace Microsoft.Spark.AI.Models.OpenAI.Extensions;
 
 public static class ConfigurationExtensions
 {

@@ -1,22 +1,20 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Spark.Api.Auth;
-using Microsoft.Spark.Apps;
 using Microsoft.Spark.Apps.Plugins;
 using Microsoft.Spark.Common.Logging;
-using Microsoft.Spark.Extensions.Configuration;
 using Microsoft.Spark.Extensions.Logging;
 
-namespace Microsoft.Spark.Plugins.AspNetCore;
+namespace Microsoft.Spark.Apps.Extensions;
 
 public static class HostApplicationBuilderExtensions
 {
-    public static IHostApplicationBuilder AddSpark(this IHostApplicationBuilder builder)
+    public static IHostApplicationBuilder AddSparkCore(this IHostApplicationBuilder builder)
     {
-        return AddSpark(builder, new AppOptions());
+        return AddSparkCore(builder, new AppOptions());
     }
 
-    public static IHostApplicationBuilder AddSpark(this IHostApplicationBuilder builder, IApp app)
+    public static IHostApplicationBuilder AddSparkCore(this IHostApplicationBuilder builder, IApp app)
     {
         builder.Services.AddSingleton(builder.Configuration.GetSpark());
         builder.Services.AddSingleton(builder.Configuration.GetSparkLogging());
@@ -25,7 +23,7 @@ public static class HostApplicationBuilderExtensions
         return builder;
     }
 
-    public static IHostApplicationBuilder AddSpark(this IHostApplicationBuilder builder, IAppOptions options)
+    public static IHostApplicationBuilder AddSparkCore(this IHostApplicationBuilder builder, IAppOptions options)
     {
         var settings = builder.Configuration.GetSpark();
         var loggingSettings = builder.Configuration.GetSparkLogging();
@@ -50,7 +48,7 @@ public static class HostApplicationBuilderExtensions
         return builder;
     }
 
-    public static IHostApplicationBuilder AddSpark(this IHostApplicationBuilder builder, IAppBuilder appBuilder)
+    public static IHostApplicationBuilder AddSparkCore(this IHostApplicationBuilder builder, IAppBuilder appBuilder)
     {
         var settings = builder.Configuration.GetSpark();
         var loggingSettings = builder.Configuration.GetSparkLogging();

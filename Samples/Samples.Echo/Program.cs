@@ -1,5 +1,6 @@
 using Microsoft.Spark.Api.Activities;
 using Microsoft.Spark.Apps;
+using Microsoft.Spark.Apps.Extensions;
 using Microsoft.Spark.Apps.Routing;
 using Microsoft.Spark.Plugins.AspNetCore;
 

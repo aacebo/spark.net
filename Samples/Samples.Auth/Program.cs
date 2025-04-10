@@ -1,4 +1,5 @@
 using Microsoft.Spark.Apps;
+using Microsoft.Spark.Apps.Extensions;
 using Microsoft.Spark.Plugins.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);

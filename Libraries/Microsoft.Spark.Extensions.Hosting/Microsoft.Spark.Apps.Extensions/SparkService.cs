@@ -1,8 +1,7 @@
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.Spark.Apps;
 
-namespace Microsoft.Spark.Plugins.AspNetCore;
+namespace Microsoft.Spark.Apps.Extensions;
 
 public class SparkService : IHostedLifecycleService
 {
