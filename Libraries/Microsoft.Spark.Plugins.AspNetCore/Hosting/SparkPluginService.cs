@@ -7,9 +7,9 @@ namespace Microsoft.Spark.Plugins.AspNetCore;
 public class SparkPluginService<TPlugin> : IHostedLifecycleService where TPlugin : IPlugin
 {
     protected TPlugin _plugin;
-    protected ILogger _logger;
+    protected ILogger<SparkPluginService<TPlugin>> _logger;
 
-    public SparkPluginService(TPlugin plugin, ILogger logger)
+    public SparkPluginService(TPlugin plugin, ILogger<SparkPluginService<TPlugin>> logger)
     {
         _plugin = plugin;
         _logger = logger;

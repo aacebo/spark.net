@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Microsoft.Spark.Common\Microsoft.Spark.Common.csproj" />
+    <ProjectReference Include="..\Microsoft.Spark.AI.Models.OpenAI\Microsoft.Spark.AI.Models.OpenAI.csproj" />
   </ItemGroup>
 
 </Project>

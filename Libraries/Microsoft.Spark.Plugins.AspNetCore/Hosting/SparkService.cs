@@ -2,14 +2,14 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Spark.Apps;
 
-namespace Microsoft.Spark.Extensions.Hosting;
+namespace Microsoft.Spark.Plugins.AspNetCore;
 
 public class SparkService : IHostedLifecycleService
 {
     protected IApp _app;
-    protected ILogger _logger;
+    protected ILogger<SparkService> _logger;
 
-    public SparkService(IApp app, ILogger logger)
+    public SparkService(IApp app, ILogger<SparkService> logger)
     {
         _app = app;
         _logger = logger;
