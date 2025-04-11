@@ -48,7 +48,7 @@ public interface IPlugin
     /// <summary>
     /// called by the `App` when an activity is sent proactively
     /// </summary>
-    public Task OnActivitySent(IApp app, ISender sender, IActivity activity, ConversationReference reference, CancellationToken cancellationToken = default);
+    public Task OnActivitySent(IApp app, ISenderPlugin sender, IActivity activity, ConversationReference reference, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// called by the `App` when an activity response is sent
@@ -61,5 +61,5 @@ public interface IPlugin
     public Task<Response> Do(IToken token, IActivity activity, CancellationToken cancellationToken = default);
 
     public delegate Task ErrorEventHandler(IPlugin sender, Exception exception);
-    public delegate Task<Response> ActivityEventHandler(ISender sender, IToken token, IActivity activity, CancellationToken cancellationToken = default);
+    public delegate Task<Response> ActivityEventHandler(ISenderPlugin sender, IToken token, IActivity activity, CancellationToken cancellationToken = default);
 }

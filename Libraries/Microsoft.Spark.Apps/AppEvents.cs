@@ -99,7 +99,7 @@ public partial class App
         }
     }
 
-    protected async Task OnActivitySentEvent(ISender sender, IActivity activity, ConversationReference reference, CancellationToken cancellationToken = default)
+    protected async Task OnActivitySentEvent(ISenderPlugin sender, IActivity activity, ConversationReference reference, CancellationToken cancellationToken = default)
     {
         Logger.Debug(activity);
 
@@ -119,7 +119,7 @@ public partial class App
         }
     }
 
-    protected async Task<Response> OnActivityEvent(ISender sender, IToken token, IActivity activity, CancellationToken cancellationToken = default)
+    protected async Task<Response> OnActivityEvent(ISenderPlugin sender, IToken token, IActivity activity, CancellationToken cancellationToken = default)
     {
         var routes = Router.Select(activity);
         JsonWebToken? userToken = null;

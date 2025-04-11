@@ -7,6 +7,7 @@ namespace Microsoft.Spark.Apps;
 
 public partial interface IApp
 {
+    public IPlugin? GetPlugin(string name);
     public IPlugin? GetPlugin(Type type);
     public TPlugin? GetPlugin<TPlugin>() where TPlugin : IPlugin;
     public IApp AddPlugin(IPlugin plugin);
@@ -15,6 +16,11 @@ public partial interface IApp
 public partial class App
 {
     protected IList<IPlugin> Plugins { get; set; }
+
+    public IPlugin? GetPlugin(string name)
+    {
+        return Plugins.SingleOrDefault(p => GetPluginAttribute(p).Name == name);
+    }
 
     public IPlugin? GetPlugin(Type type)
     {

@@ -17,7 +17,7 @@ public partial interface IContext<TActivity> where TActivity : IActivity
     /// <summary>
     /// the plugin that received the activity
     /// </summary>
-    public ISender Sender { get; }
+    public ISenderPlugin Sender { get; }
 
     /// <summary>
     /// the stream instance
@@ -114,9 +114,9 @@ public partial interface IContext<TActivity> where TActivity : IActivity
     public IContext<TToActivity> ToActivityType<TToActivity>() where TToActivity : IActivity;
 }
 
-public partial class Context<TActivity>(ISender sender, IStreamer stream) : IContext<TActivity> where TActivity : IActivity
+public partial class Context<TActivity>(ISenderPlugin sender, IStreamer stream) : IContext<TActivity> where TActivity : IActivity
 {
-    public ISender Sender { get; set; } = sender;
+    public ISenderPlugin Sender { get; set; } = sender;
     public IStreamer Stream { get; set; } = stream;
 
     public required string AppId { get; set; }

@@ -1,5 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Spark.Api;
 using Microsoft.Spark.Api.Activities;
@@ -14,7 +15,7 @@ using Microsoft.Spark.Common.Logging;
 namespace Microsoft.Spark.Plugins.AspNetCore;
 
 [Plugin(name: "Microsoft.Spark.Plugins.AspNetCore", version: "0.0.0")]
-public partial class AspNetCorePlugin : ISender
+public partial class AspNetCorePlugin : ISenderPlugin, IAspNetCorePlugin
 {
     [AllowNull]
     [Dependency]
@@ -36,6 +37,17 @@ public partial class AspNetCorePlugin : ISender
     public AspNetCorePlugin(IServiceProvider provider)
     {
         _services = provider;
+    }
+
+    public IApplicationBuilder Configure(IApplicationBuilder builder)
+    {
+        builder.UseRouting();
+        builder.UseEndpoints(endpoints =>
+        {
+            endpoints.MapControllers();
+        });
+
+        return builder;
     }
 
     public Task OnInit(IApp app, CancellationToken cancellationToken = default)
@@ -64,7 +76,7 @@ public partial class AspNetCorePlugin : ISender
         return Task.Run(() => Logger.Debug("OnActivitySent"));
     }
 
-    public Task OnActivitySent(IApp app, ISender sender, IActivity activity, ConversationReference reference, CancellationToken cancellationToken = default)
+    public Task OnActivitySent(IApp app, ISenderPlugin sender, IActivity activity, ConversationReference reference, CancellationToken cancellationToken = default)
     {
         return Task.Run(() => Logger.Debug("OnActivitySent"));
     }

@@ -2,7 +2,7 @@ using System.Text.Json;
 
 using Microsoft.Spark.AI.Models.OpenAI.Extensions;
 using Microsoft.Spark.Apps.Extensions;
-using Microsoft.Spark.Plugins.AspNetCore;
+using Microsoft.Spark.Plugins.AspNetCore.Extensions;
 
 using Samples.Lights;
 

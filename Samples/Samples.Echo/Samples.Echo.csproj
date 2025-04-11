@@ -16,6 +16,7 @@
     <ProjectReference Include="..\..\Libraries\Microsoft.Spark.Apps\Microsoft.Spark.Apps.csproj" />
     <ProjectReference Include="..\..\Libraries\Microsoft.Spark.Plugins.AspNetCore\Microsoft.Spark.Plugins.AspNetCore.csproj" />
     <ProjectReference Include="..\..\Libraries\Microsoft.Spark.Cards\Microsoft.Spark.Cards.csproj" />
+    <ProjectReference Include="..\..\Libraries\Microsoft.Spark.Plugins.AspNetCore.DevTools\Microsoft.Spark.Plugins.AspNetCore.DevTools.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,4 +1,4 @@
-namespace Microsoft.Spark.Common.Logging;
+namespace Microsoft.Spark.Common.Text;
 
 public class ANSI(string value) : StringEnum(value)
 {

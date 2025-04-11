@@ -37,7 +37,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.Spark.Extensions.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.Spark.Extensions.Configuration", "Libraries\Microsoft.Spark.Extensions.Configuration\Microsoft.Spark.Extensions.Configuration.csproj", "{0A896738-C747-49C2-AF41-A5843F7BBA4F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.Spark.Plugins.DevTools", "Libraries\Microsoft.Spark.Plugins.DevTools\Microsoft.Spark.Plugins.DevTools.csproj", "{15D7A915-DD11-40BF-811B-C97B2C963785}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.Spark.Plugins.AspNetCore.DevTools", "Libraries\Microsoft.Spark.Plugins.AspNetCore.DevTools\Microsoft.Spark.Plugins.AspNetCore.DevTools.csproj", "{15D7A915-DD11-40BF-811B-C97B2C963785}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.Spark.Agents", "Libraries\Microsoft.Spark.Agents\Microsoft.Spark.Agents.csproj", "{606E13CC-9F41-4739-8659-948D0D5A6DAC}"
 EndProject

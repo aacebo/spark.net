@@ -2,7 +2,8 @@ using Microsoft.Spark.Api.Activities;
 using Microsoft.Spark.Apps;
 using Microsoft.Spark.Apps.Extensions;
 using Microsoft.Spark.Apps.Routing;
-using Microsoft.Spark.Plugins.AspNetCore;
+using Microsoft.Spark.Plugins.AspNetCore.DevTools.Extensions;
+using Microsoft.Spark.Plugins.AspNetCore.Extensions;
 
 namespace Samples.Echo;
 
@@ -12,7 +13,7 @@ public static partial class Program
     {
         var builder = WebApplication.CreateBuilder(args);
         builder.Services.AddOpenApi();
-        builder.AddSpark(App.Builder().AddLogger(level: Microsoft.Spark.Common.Logging.LogLevel.Debug));
+        builder.AddSpark().AddSparkDevTools();
 
         var app = builder.Build();
 

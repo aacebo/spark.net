@@ -1,4 +1,4 @@
-namespace Microsoft.Spark.AI.Models.OpenAI;
+namespace Microsoft.Spark.AI.Models.OpenAI.Extensions;
 
 public class OpenAISettings
 {

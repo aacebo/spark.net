@@ -180,7 +180,7 @@ public partial class App : IApp
             }
         };
 
-        var sender = Plugins.Where(plugin => plugin is ISender).Select(plugin => plugin as ISender).First();
+        var sender = Plugins.Where(plugin => plugin is ISenderPlugin).Select(plugin => plugin as ISenderPlugin).First();
 
         if (sender == null)
         {

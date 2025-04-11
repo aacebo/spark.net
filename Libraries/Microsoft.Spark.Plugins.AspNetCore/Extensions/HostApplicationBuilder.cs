@@ -5,7 +5,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Spark.Apps;
 using Microsoft.Spark.Apps.Extensions;
 
-namespace Microsoft.Spark.Plugins.AspNetCore;
+namespace Microsoft.Spark.Plugins.AspNetCore.Extensions;
 
 public static class HostApplicationBuilderExtensions
 {

@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace Microsoft.Spark.Plugins.DevTools;
+namespace Microsoft.Spark.Plugins.AspNetCore.DevTools;
 
 /// <summary>
 /// the custom page that can be added

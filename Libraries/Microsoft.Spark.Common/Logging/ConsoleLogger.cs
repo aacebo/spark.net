@@ -1,5 +1,8 @@
 using System.Reflection;
+using System.Text;
 using System.Text.RegularExpressions;
+
+using Microsoft.Spark.Common.Text;
 
 namespace Microsoft.Spark.Common.Logging;
 
@@ -99,8 +102,19 @@ public partial class ConsoleLogger : ILogger
     {
         if (!IsEnabled(level)) return;
 
-        var prefix = $"{level.Color()}{ANSI.Bold.Value}[{level.ToString()?.ToUpper()}]";
-        var name = $"{Name}{ANSI.ForegroundReset.Value}{ANSI.BoldReset.Value}";
+        var name = new StringBuilder()
+            .Append(
+                level.Color(),
+                new StringBuilder().Bold(Name).ToString()
+            )
+            .Reset()
+            .ToString();
+
+        var prefix = new StringBuilder()
+            .Append(
+                level.Color(),
+                new StringBuilder().Bold($"[{level.ToString()?.ToUpper()}]").ToString()
+            ).ToString();
 
         foreach (var arg in args)
         {

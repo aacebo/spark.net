@@ -7,7 +7,6 @@ using Microsoft.Spark.Apps.Extensions;
 
 namespace Microsoft.Spark.Plugins.AspNetCore;
 
-[Route("api")]
 [ApiController]
 public class SparkController : ControllerBase
 {
@@ -18,7 +17,7 @@ public class SparkController : ControllerBase
         _plugin = plugin;
     }
 
-    [HttpPost("messages")]
+    [HttpPost("/api/messages")]
     public async Task<IResult> OnMessage([FromBody] Activity activity, CancellationToken cancellationToken)
     {
         var authHeader = HttpContext.Request.Headers.Authorization.FirstOrDefault() ?? throw new UnauthorizedAccessException();

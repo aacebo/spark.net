@@ -1,3 +1,5 @@
+using Microsoft.Spark.Common.Text;
+
 namespace Microsoft.Spark.Common.Logging;
 
 public enum LogLevel

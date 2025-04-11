@@ -1,6 +1,6 @@
 using Microsoft.Spark.Common.Json;
 
-namespace Microsoft.Spark.Plugins.DevTools;
+namespace Microsoft.Spark.Plugins.AspNetCore.DevTools;
 
 [TrueTypeJson<IEvent>]
 public interface IEvent

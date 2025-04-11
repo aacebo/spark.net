@@ -6,7 +6,7 @@ namespace Microsoft.Spark.Apps.Plugins;
 /// <summary>
 /// a plugin that can send activities
 /// </summary>
-public interface ISender : IPlugin
+public interface ISenderPlugin : IPlugin
 {
     /// <summary>
     /// called by the `App`

@@ -4,6 +4,16 @@
     <ProjectReference Include="..\Microsoft.Spark.Common\Microsoft.Spark.Common.csproj" />
     <ProjectReference Include="..\Microsoft.Spark.Api\Microsoft.Spark.Api.csproj" />
     <ProjectReference Include="..\Microsoft.Spark.Apps\Microsoft.Spark.Apps.csproj" />
+    <ProjectReference Include="..\Microsoft.Spark.Extensions.Hosting\Microsoft.Spark.Extensions.Hosting.csproj" />
+    <ProjectReference Include="..\Microsoft.Spark.Plugins.AspNetCore\Microsoft.Spark.Plugins.AspNetCore.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include=".\web\**" CopyToOutputDirectory="Always" CopyToPublishDirectory="Always" />
   </ItemGroup>
 
   <PropertyGroup>
