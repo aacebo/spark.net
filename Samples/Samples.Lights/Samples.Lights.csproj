@@ -8,6 +8,7 @@
     <ProjectReference Include="..\..\Libraries\Microsoft.Spark.AI\Microsoft.Spark.AI.csproj" />
     <ProjectReference Include="..\..\Libraries\Microsoft.Spark.AI.Models.OpenAI\Microsoft.Spark.AI.Models.OpenAI.csproj" />
     <ProjectReference Include="..\..\Libraries\Microsoft.Spark.Cards\Microsoft.Spark.Cards.csproj" />
+    <ProjectReference Include="..\..\Libraries\Microsoft.Spark.Plugins.AspNetCore.DevTools\Microsoft.Spark.Plugins.AspNetCore.DevTools.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

@@ -2,12 +2,13 @@ using System.Text.Json;
 
 using Microsoft.Spark.AI.Models.OpenAI.Extensions;
 using Microsoft.Spark.Apps.Extensions;
+using Microsoft.Spark.Plugins.AspNetCore.DevTools.Extensions;
 using Microsoft.Spark.Plugins.AspNetCore.Extensions;
 
 using Samples.Lights;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.AddSpark().AddOpenAI<LightsPrompt>();
+builder.AddSpark().AddSparkDevTools().AddOpenAI<LightsPrompt>();
 
 var app = builder.Build();
 var spark = app.UseSpark();
