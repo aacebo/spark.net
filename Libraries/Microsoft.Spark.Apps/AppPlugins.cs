@@ -42,6 +42,7 @@ public partial class App
         Plugins.Add(plugin);
         Container.Register(attr.Name, new ValueProvider(plugin));
         Container.Register(plugin.GetType().Name, new ValueProvider(plugin));
+        Logger.Debug($"plugin {attr.Name} added");
         return this;
     }
 

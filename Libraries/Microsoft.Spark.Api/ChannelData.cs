@@ -1,5 +1,7 @@
 using System.Text.Json.Serialization;
 
+using Microsoft.Spark.Api.Entities;
+
 namespace Microsoft.Spark.Api;
 
 /// <summary>
@@ -62,6 +64,18 @@ public class ChannelData
     [JsonPropertyName("feedbackLoopEnabled")]
     [JsonPropertyOrder(7)]
     public bool? FeedbackLoopEnabled { get; set; }
+
+    [JsonPropertyName("streamId")]
+    [JsonPropertyOrder(8)]
+    public string? StreamId { get; set; }
+
+    [JsonPropertyName("streamType")]
+    [JsonPropertyOrder(9)]
+    public StreamType? StreamType { get; set; }
+
+    [JsonPropertyName("streamSequence")]
+    [JsonPropertyOrder(10)]
+    public int? StreamSequence { get; set; }
 
     /// <summary>
     /// All extra data present

@@ -30,9 +30,9 @@ public class JsonWebToken : IToken
         {
             var value = ((string?)Token.Payload.GetValueOrDefault("serviceurl")) ?? "https://smba.trafficmanager.net/teams";
 
-            if (value.EndsWith('/'))
+            if (!value.EndsWith('/'))
             {
-                value = value[..^1];
+                value += '/';
             }
 
             return value;

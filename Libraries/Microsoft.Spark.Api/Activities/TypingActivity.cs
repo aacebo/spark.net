@@ -28,6 +28,11 @@ public class TypingActivity : Activity
 
     public TypingActivity AddStreamUpdate(int sequence = 1)
     {
+        ChannelData ??= new();
+        ChannelData.StreamId ??= Id;
+        ChannelData.StreamType ??= StreamType.Streaming;
+        ChannelData.StreamSequence ??= sequence;
+
         AddEntity(new StreamInfoEntity()
         {
             StreamId = Id,

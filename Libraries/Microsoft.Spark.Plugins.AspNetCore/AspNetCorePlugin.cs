@@ -41,12 +41,6 @@ public partial class AspNetCorePlugin : ISenderPlugin, IAspNetCorePlugin
 
     public IApplicationBuilder Configure(IApplicationBuilder builder)
     {
-        builder.UseRouting();
-        builder.UseEndpoints(endpoints =>
-        {
-            endpoints.MapControllers();
-        });
-
         return builder;
     }
 
@@ -95,6 +89,10 @@ public partial class AspNetCorePlugin : ISenderPlugin, IAspNetCorePlugin
     public async Task<TActivity> Send<TActivity>(TActivity activity, ConversationReference reference, CancellationToken cancellationToken = default) where TActivity : IActivity
     {
         var client = new ApiClient(reference.ServiceUrl, Client, cancellationToken);
+
+        activity.Conversation = reference.Conversation;
+        activity.From = reference.Bot;
+        activity.Recipient = reference.User;
 
         if (activity.Id != null && !activity.IsStreaming)
         {

@@ -91,8 +91,8 @@ public partial class App : IApp
         ErrorEvent = (_, sender, exception, context) => OnErrorEvent(sender, exception, context);
         StartEvent = (_, _) => OnStartEvent();
         ActivityEvent = (_, _) => Task.Run(() => { });
-        ActivitySentEvent = (_, plugin, args) => OnActivitySentEvent(plugin, args);
-        ActivityResponseEvent = (_, plugin, args) => OnActivityResponseEvent(plugin, args);
+        ActivitySentEvent = (_, activity, context) => OnActivitySentEvent(activity, context);
+        ActivityResponseEvent = (_, res, context) => OnActivityResponseEvent(res, context);
 
         Container = new Container();
         Container.Register(Logger);

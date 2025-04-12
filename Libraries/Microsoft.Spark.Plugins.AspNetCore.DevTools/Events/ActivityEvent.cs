@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 using Microsoft.Spark.Api;
 using Microsoft.Spark.Api.Activities;
 
-namespace Microsoft.Spark.Plugins.AspNetCore.DevTools;
+namespace Microsoft.Spark.Plugins.AspNetCore.DevTools.Events;
 
 public class ActivityEvent : IEvent
 {
