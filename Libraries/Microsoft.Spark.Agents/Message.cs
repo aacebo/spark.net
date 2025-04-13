@@ -21,6 +21,8 @@ public interface IMessage
 public class Message : IMessage
 {
     public IHeaders Headers { get; set; }
+    public string Id { get; set; } = Guid.NewGuid().ToString();
+    public string? ReplyToId { get; set; }
     public string? Subject { get; set; }
     public IList<IContent> Content { get; set; }
     public IList<ITaskRequest> Tasks { get; set; }
