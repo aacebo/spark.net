@@ -3,6 +3,10 @@ using System.Reflection;
 using System.Text;
 
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting.Server;
+using Microsoft.AspNetCore.Hosting.Server.Features;
+using Microsoft.AspNetCore.Http.Features;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Spark.Api;
 using Microsoft.Spark.Api.Activities;
@@ -35,11 +39,13 @@ public class DevToolsPlugin : IAspNetCorePlugin
     internal readonly WebSocketCollection Sockets = [];
 
     private readonly ISenderPlugin _sender;
+    private readonly IServiceProvider _services;
     private readonly IList<Page> _pages = [];
 
-    public DevToolsPlugin(AspNetCorePlugin sender)
+    public DevToolsPlugin(AspNetCorePlugin sender, IServiceProvider provider)
     {
         _sender = sender;
+        _services = provider;
     }
 
     public IApplicationBuilder Configure(IApplicationBuilder builder)
@@ -95,6 +101,14 @@ public class DevToolsPlugin : IAspNetCorePlugin
 
     public Task OnStart(IApp app, CancellationToken cancellationToken = default)
     {
+        var server = _services.GetRequiredService<IServer>();
+        var addresses = server.Features.GetRequiredFeature<IServerAddressesFeature>().Addresses;
+        
+        foreach (var address in addresses)
+        {
+            Logger.Info($"Available at {address}/devtools/index.html");
+        }
+
         return Task.Run(() => Logger.Debug("OnStart"));
     }
 
