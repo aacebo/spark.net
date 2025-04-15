@@ -1,14 +1,14 @@
-using Microsoft.Spark.Apps;
-using Microsoft.Spark.Apps.Extensions;
-using Microsoft.Spark.Plugins.AspNetCore.Extensions;
+using Microsoft.Teams.Apps;
+using Microsoft.Teams.Apps.Extensions;
+using Microsoft.Teams.Plugins.AspNetCore.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.AddSpark(App.Builder().AddLogger(level: Microsoft.Spark.Common.Logging.LogLevel.Debug));
+builder.AddTeams(App.Builder().AddLogger(level: Microsoft.Teams.Common.Logging.LogLevel.Debug));
 
 var app = builder.Build();
-var spark = app.UseSpark();
+var Teams = app.UseTeams();
 
-spark.OnMessage("/signout", async context =>
+Teams.OnMessage("/signout", async context =>
 {
     if (!context.IsSignedIn)
     {
@@ -20,7 +20,7 @@ spark.OnMessage("/signout", async context =>
     await context.Send("you have been signed out!");
 });
 
-spark.OnMessage(async context =>
+Teams.OnMessage(async context =>
 {
     if (!context.IsSignedIn)
     {

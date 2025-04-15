@@ -1,6 +1,6 @@
-using Microsoft.Spark.AI;
-using Microsoft.Spark.Api.Activities;
-using Microsoft.Spark.Apps;
+using Microsoft.Teams.AI;
+using Microsoft.Teams.Api.Activities;
+using Microsoft.Teams.Apps;
 
 namespace Samples.Lights;
 

@@ -1,4 +1,4 @@
-# Spark: DotNet
+# Teams: DotNet
 
 | Typescript               | DotNet                     |
 |--------------------------|----------------------------|

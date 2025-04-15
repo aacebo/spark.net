@@ -1,19 +1,19 @@
 using System.Text.Json;
 
-using Microsoft.Spark.AI.Models.OpenAI.Extensions;
-using Microsoft.Spark.Apps.Extensions;
-using Microsoft.Spark.Plugins.AspNetCore.DevTools.Extensions;
-using Microsoft.Spark.Plugins.AspNetCore.Extensions;
+using Microsoft.Teams.AI.Models.OpenAI.Extensions;
+using Microsoft.Teams.Apps.Extensions;
+using Microsoft.Teams.Plugins.AspNetCore.DevTools.Extensions;
+using Microsoft.Teams.Plugins.AspNetCore.Extensions;
 
 using Samples.Lights;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.AddSpark().AddSparkDevTools().AddOpenAI<LightsPrompt>();
+builder.AddTeams().AddTeamsDevTools().AddOpenAI<LightsPrompt>();
 
 var app = builder.Build();
-var spark = app.UseSpark();
+var Teams = app.UseTeams();
 
-spark.OnMessage("/history", async context =>
+Teams.OnMessage("/history", async context =>
 {
     var state = State.From(context);
     await context.Send(JsonSerializer.Serialize(state.Messages, new JsonSerializerOptions()
@@ -22,7 +22,7 @@ spark.OnMessage("/history", async context =>
     }));
 });
 
-spark.OnMessage(async context =>
+Teams.OnMessage(async context =>
 {
     var state = State.From(context);
     var prompt = app.Services.GetOpenAIChatPrompt();

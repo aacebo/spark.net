@@ -1,7 +1,7 @@
-using Microsoft.Spark.AI.Annotations;
-using Microsoft.Spark.Api.Activities;
-using Microsoft.Spark.Apps;
-using Microsoft.Spark.Apps.Extensions;
+using Microsoft.Teams.AI.Annotations;
+using Microsoft.Teams.Api.Activities;
+using Microsoft.Teams.Apps;
+using Microsoft.Teams.Apps.Extensions;
 
 namespace Samples.Lights;
 
@@ -14,7 +14,7 @@ namespace Samples.Lights;
 )]
 public class LightsPrompt
 {
-    private IContext<IActivity> Context => _services.GetSparkContext();
+    private IContext<IActivity> Context => _services.GetTeamsContext();
     private readonly IServiceProvider _services;
 
     public LightsPrompt(IServiceProvider provider)

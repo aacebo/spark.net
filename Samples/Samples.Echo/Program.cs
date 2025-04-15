@@ -1,9 +1,9 @@
-using Microsoft.Spark.Api.Activities;
-using Microsoft.Spark.Apps;
-using Microsoft.Spark.Apps.Extensions;
-using Microsoft.Spark.Apps.Routing;
-using Microsoft.Spark.Plugins.AspNetCore.DevTools.Extensions;
-using Microsoft.Spark.Plugins.AspNetCore.Extensions;
+using Microsoft.Teams.Api.Activities;
+using Microsoft.Teams.Apps;
+using Microsoft.Teams.Apps.Extensions;
+using Microsoft.Teams.Apps.Routing;
+using Microsoft.Teams.Plugins.AspNetCore.DevTools.Extensions;
+using Microsoft.Teams.Plugins.AspNetCore.Extensions;
 
 namespace Samples.Echo;
 
@@ -13,7 +13,7 @@ public static partial class Program
     {
         var builder = WebApplication.CreateBuilder(args);
         builder.Services.AddOpenApi();
-        builder.AddSpark().AddSparkDevTools();
+        builder.AddTeams().AddTeamsDevTools();
 
         var app = builder.Build();
 
@@ -23,7 +23,7 @@ public static partial class Program
         }
 
         app.UseHttpsRedirection();
-        app.UseSpark();
+        app.UseTeams();
         app.Run();
     }
 

@@ -1,14 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Libraries\Microsoft.Spark.Common\Microsoft.Spark.Common.csproj" />
-    <ProjectReference Include="..\..\Libraries\Microsoft.Spark.Plugins.AspNetCore\Microsoft.Spark.Plugins.AspNetCore.csproj" />
-    <ProjectReference Include="..\..\Libraries\Microsoft.Spark.Api\Microsoft.Spark.Api.csproj" />
-    <ProjectReference Include="..\..\Libraries\Microsoft.Spark.Apps\Microsoft.Spark.Apps.csproj" />
-    <ProjectReference Include="..\..\Libraries\Microsoft.Spark.AI\Microsoft.Spark.AI.csproj" />
-    <ProjectReference Include="..\..\Libraries\Microsoft.Spark.AI.Models.OpenAI\Microsoft.Spark.AI.Models.OpenAI.csproj" />
-    <ProjectReference Include="..\..\Libraries\Microsoft.Spark.Cards\Microsoft.Spark.Cards.csproj" />
-    <ProjectReference Include="..\..\Libraries\Microsoft.Spark.Plugins.AspNetCore.DevTools\Microsoft.Spark.Plugins.AspNetCore.DevTools.csproj" />
+    <ProjectReference Include="..\..\Libraries\Microsoft.Teams.Common\Microsoft.Teams.Common.csproj" />
+    <ProjectReference Include="..\..\Libraries\Microsoft.Teams.Plugins.AspNetCore\Microsoft.Teams.Plugins.AspNetCore.csproj" />
+    <ProjectReference Include="..\..\Libraries\Microsoft.Teams.Api\Microsoft.Teams.Api.csproj" />
+    <ProjectReference Include="..\..\Libraries\Microsoft.Teams.Apps\Microsoft.Teams.Apps.csproj" />
+    <ProjectReference Include="..\..\Libraries\Microsoft.Teams.AI\Microsoft.Teams.AI.csproj" />
+    <ProjectReference Include="..\..\Libraries\Microsoft.Teams.AI.Models.OpenAI\Microsoft.Teams.AI.Models.OpenAI.csproj" />
+    <ProjectReference Include="..\..\Libraries\Microsoft.Teams.Cards\Microsoft.Teams.Cards.csproj" />
+    <ProjectReference Include="..\..\Libraries\Microsoft.Teams.Plugins.AspNetCore.DevTools\Microsoft.Teams.Plugins.AspNetCore.DevTools.csproj" />
   </ItemGroup>
 
   <PropertyGroup>
