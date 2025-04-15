@@ -11,9 +11,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.AddTeams().AddTeamsDevTools().AddOpenAI<LightsPrompt>();
 
 var app = builder.Build();
-var Teams = app.UseTeams();
+var teams = app.UseTeams();
 
-Teams.OnMessage("/history", async context =>
+teams.OnMessage("/history", async context =>
 {
     var state = State.From(context);
     await context.Send(JsonSerializer.Serialize(state.Messages, new JsonSerializerOptions()
@@ -22,7 +22,7 @@ Teams.OnMessage("/history", async context =>
     }));
 });
 
-Teams.OnMessage(async context =>
+teams.OnMessage(async context =>
 {
     var state = State.From(context);
     var prompt = app.Services.GetOpenAIChatPrompt();

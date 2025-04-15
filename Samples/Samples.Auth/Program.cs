@@ -6,9 +6,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.AddTeams(App.Builder().AddLogger(level: Microsoft.Teams.Common.Logging.LogLevel.Debug));
 
 var app = builder.Build();
-var Teams = app.UseTeams();
+var teams = app.UseTeams();
 
-Teams.OnMessage("/signout", async context =>
+teams.OnMessage("/signout", async context =>
 {
     if (!context.IsSignedIn)
     {
@@ -20,7 +20,7 @@ Teams.OnMessage("/signout", async context =>
     await context.Send("you have been signed out!");
 });
 
-Teams.OnMessage(async context =>
+teams.OnMessage(async context =>
 {
     if (!context.IsSignedIn)
     {
